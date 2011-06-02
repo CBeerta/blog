@@ -121,7 +121,7 @@ class Projects
     /**
     * Overview of the projectes.
     *
-    * @return void
+    * @return html
     **/
     public static function overview() 
     {
@@ -135,7 +135,7 @@ class Projects
     /**
     * Detail on a Project
     *
-    * @return void
+    * @return html
     **/
     public static function detail() 
     {
@@ -217,8 +217,6 @@ class Projects
                 utf8_encode($data['post_title'] . "\n\n" . $content)
             );
         }
-        
-    
     }
     
 }

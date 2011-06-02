@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
 * Homebrew Website of Claus Beerta
 *
@@ -36,47 +36,54 @@ if ( ! defined('LIMONADE') ) {
 }
 
 /**
-* Debugging shortcut function
+* Sidebar
 *
-* @param string $message Message to log
-* 
-* @return void
+* @category Personal_Website
+* @package  MyWebPage
+* @author   Claus Beerta <claus@beerta.de>
+* @license  http://www.opensource.org/licenses/mit-license.php MIT License
+* @link     http://claus.beerta.de/
 **/
-function d($message)
+class Sidebar
 {
-    if (!is_string($message)) {
-        $message = print_r($message, true);
+    /**
+    * Load github user json, and return project list
+    *
+    * @param string $username USername on github to pull
+    *
+    * @return html
+    **/
+    public static function github($username = false)
+    {
+        if ( !$username ) {
+            return json("Nu User Specified");
+        }
+        
+        $cache_file = option('cache_dir') . "/github-{$username}.json";
+        
+        if ( file_exists($cache_file) ) {
+            $stat = stat($cache_file);
+            
+            if ($stat['mtime'] < time() + 60*60*24) {
+                return json(file_get_contents($cache_file));
+            }
+        }
+        
+        $ch = curl_init();
+        
+        curl_setopt($ch, CURLOPT_URL, "http://github.com/api/v1/json/" . $username);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+        $ret = curl_exec($ch);
+        curl_close($ch);
+        
+        if (json_decode($ret) !== false) {
+            file_put_contents($cache_file, $ret);
+        }
+
+        return json($ret);
     }
-    
-    if ( class_exists("WebServer", false) ) {
-        WebServer::log($message);
-    } else {
-        error_log($message);
-    }
+
 }
-
-/**
-* Return a Random Header Image
-*
-* @param string $image_dir Directory under $public_dir with images
-*
-* @return void
-**/
-function randomHeaderImage($image_dir)
-{
-    $dir = option('public_dir') . '/' .  $image_dir;
-    $glob = "{{$dir}*.jpg, {$dir}*.png}";
-    
-    $files = array();
-    foreach (glob($glob, GLOB_BRACE) as $filename) {
-        $files[] = $filename;
-    }
-
-    mt_srand((double)microtime()*1000000); // seed for PHP < 4.2
-    $rand = mt_rand(0, count($files) - 1); // $i was incremented as we went along
-
-    return basename($files[$rand]);
-}
-
-
 

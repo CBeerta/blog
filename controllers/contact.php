@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
 * Homebrew Website of Claus Beerta
 *
@@ -36,47 +36,31 @@ if ( ! defined('LIMONADE') ) {
 }
 
 /**
-* Debugging shortcut function
+* Projects
 *
-* @param string $message Message to log
-* 
-* @return void
+* @category Personal_Website
+* @package  MyWebPage
+* @author   Claus Beerta <claus@beerta.de>
+* @license  http://www.opensource.org/licenses/mit-license.php MIT License
+* @link     http://claus.beerta.de/
 **/
-function d($message)
+class Contact
 {
-    if (!is_string($message)) {
-        $message = print_r($message, true);
-    }
+
+    /**
+    * Contact Page
+    *
+    * @return void
+    **/
+    public static function index()
+    {
+        set('title', 'Contact');
     
-    if ( class_exists("WebServer", false) ) {
-        WebServer::log($message);
-    } else {
-        error_log($message);
+        return html('contact.html.php');
     }
+
 }
 
-/**
-* Return a Random Header Image
-*
-* @param string $image_dir Directory under $public_dir with images
-*
-* @return void
-**/
-function randomHeaderImage($image_dir)
-{
-    $dir = option('public_dir') . '/' .  $image_dir;
-    $glob = "{{$dir}*.jpg, {$dir}*.png}";
-    
-    $files = array();
-    foreach (glob($glob, GLOB_BRACE) as $filename) {
-        $files[] = $filename;
-    }
-
-    mt_srand((double)microtime()*1000000); // seed for PHP < 4.2
-    $rand = mt_rand(0, count($files) - 1); // $i was incremented as we went along
-
-    return basename($files[$rand]);
-}
 
 
 

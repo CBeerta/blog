@@ -59,14 +59,8 @@
           <li>
 
             <h2>Github Projects</h2>
-            <ul>
-              <li><a href="#">Fusce dui neque fringilla</a></li>
-              <li><a href="#">Eget tempor eget nonummy</a></li>
-              <li><a href="#">Magna lacus bibendum mauris</a></li>
-              <li><a href="#">Nec metus sed donec</a></li>
-              <li><a href="#">Magna lacus bibendum mauris</a></li>
-              <li><a href="#">Velit semper nisi molestie</a></li>
-              <li><a href="#">Eget tempor eget nonummy</a></li>
+            <ul class="github">
+              <!--li><a href="#">Eget tempor eget nonummy</a></li-->
             </ul>
             
             <h2>Flickr Fotostream</h2>

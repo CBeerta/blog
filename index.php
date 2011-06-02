@@ -48,6 +48,7 @@ function configure ()
     * Options with defaults, overridable in config.ini
     **/
     $options = array (
+        'cache_dir' => '/var/tmp/',
         'dbfile' => './data/planner.db',
         'projects_dir' => './data/projects',
         'upload_url' => 'http://idisk.beerta.net/public/wordpress/',
@@ -83,12 +84,19 @@ function not_found($errno, $errstr)
 
 layout('base.html.php');
 
-
+// Projects related
 dispatch_get('/projects', 'Projects::overview');
 dispatch_get('/projects/:slug', 'Projects::detail');
 
+// Blog stuff
 dispatch_get('/blog', 'Blog::index');
 dispatch_get('/blog/:slug', 'Blog::detail');
+
+// sidebar content. probably ajax
+dispatch_get('/sidebar/github/:username', 'Sidebar::github');
+
+// contact
+dispatch_get('/contact', 'Contact::index');
 
 //dispatch_get('/wpimport', 'Projects::wpImport');
 

@@ -87,7 +87,6 @@ body {
 	background: #FFFFFF;
 	text-align: justify;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 13px;
 	color: #231F20;
 }
 
@@ -95,6 +94,7 @@ h1, h2, h3 {
 }
 
 h1 {
+    font-size: 131%;
 }
 
 h2 {
@@ -151,13 +151,11 @@ blockquote em {
 /* Code */
 code {
 	padding: 0 3px;
-	font-size: 12px;
 	background: #eee;
 	}
 pre {
 	overflow: auto;
 	padding: 9px;
-	font-size: 12px;
 	color: #000;
 	border: 1px solid #ddd;
 	}
@@ -165,9 +163,6 @@ pre code {
 	padding: 0;
 	background: transparent;
 	}
-
-
-
 
 
 #main {
@@ -206,7 +201,7 @@ header {
 #logo h1 {
 	margin: 0;
 	padding: 0;
-	font: normal 48px Georgia, "Times New Roman", Times, serif;
+	font: normal 400% Georgia, "Times New Roman", Times, serif;
     text-shadow: 2px 2px 2px rgba(200, 200, 200, 0.5);
 }
 
@@ -219,7 +214,7 @@ header {
 	padding: 0;
 	text-transform: uppercase;
 	letter-spacing: 2px;
-	font-size: 10px;
+	font-size: 77%;
 	font-weight: bold;
 }
 
@@ -259,7 +254,6 @@ header {
 	text-decoration: none;
 	text-align: center;
 	text-transform: uppercase;
-	font-size: 11px;
 	font-weight: bold;
 	color: #7EBA25;
 }
@@ -328,7 +322,6 @@ header {
 .post .byline {
 	float: right;
 	margin-top: -30px;
-	font-size: 12px;
 	font-weight: bold;
 	color: #5E5E5E;
 }
@@ -369,7 +362,7 @@ sidebar li li {
 sidebar h2 {
 	margin: 0px;
 	padding: 0px 0px 20px 0px;
-	font-size: 160%;
+	font-size: 161.6%;
 	font-weight: normal;
 	color: #7EBA25;
 }
@@ -385,7 +378,7 @@ sidebar p {
 	color: #D4C792;
 }
 
-sidebar a {
+sidebar a, a:visited {
 	border: none;
 	text-decoration: none;
 	color: #4A4949;
