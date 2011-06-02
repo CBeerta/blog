@@ -9,7 +9,7 @@ $(document).ready(function()
     /**
     * Load Github projects async, as it might block on the server
     **/
-    $.get("?/sidebar/github/CBeerta", function(data) {
+    $.get("/sidebar/github/CBeerta", function(data) {
         json = $.parseJSON(data);
         var append;
         for (var repo in json['user']['repositories']) {
@@ -29,7 +29,7 @@ $(document).ready(function()
     /**
     * Load Deviantart Favs
     **/
-    $.get("?/sidebar/deviantart/favby%3Aamg", function(data) {
+    $.get("/sidebar/deviantart/favby%3Aamg", function(data) {
         json = $.parseJSON(data);
         var append;
         for (var item in json)
