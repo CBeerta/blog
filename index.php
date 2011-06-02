@@ -1,0 +1,107 @@
+<?php
+/**
+* Homebrew Website of Claus Beerta
+*
+* PHP Version 5.3
+*
+* Copyright (C) <year> by <copyright holders>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*
+* @category Personal_Website
+* @package  MyWebPage
+* @author   Claus Beerta <claus@beerta.de>
+* @license  http://www.opensource.org/licenses/mit-license.php MIT License
+* @link     http://claus.beerta.de/
+**/
+
+require_once __DIR__.'/vendor/limonade/lib/limonade.php';
+require_once __DIR__.'/vendor/idiorm/idiorm.php';
+require_once __DIR__.'/vendor/markdown/markdown.php';
+
+require_once __DIR__.'/lib/helpers.php';
+
+/**
+* Limonades Configure Abstract. Configure some Basics
+*
+* @return void
+**/
+function configure () 
+{
+    /**
+    * Options with defaults, overridable in config.ini
+    **/
+    $options = array (
+        'dbfile' => './data/planner.db',
+        'projects_dir' => './data/projects',
+        'upload_url' => 'http://idisk.beerta.net/public/wordpress/',
+        );
+
+    /**
+    * Load config file and override default options
+    **/    
+    $config = parse_ini_file(__DIR__."/config.ini");
+    foreach ( $options as $k => $v ) {
+        $v = isset($config[$k]) ? $config[$k] : $options[$k];
+        option($k, $v);
+    }
+
+    ORM::configure('sqlite:' . option('dbfile'));
+}
+
+/**
+* Not Found Handler
+*
+* @param int    $errno  Error Number
+* @param string $errstr Error string
+*
+* @return void
+**/
+function not_found($errno, $errstr) 
+{
+    // FIXME: This should redirect to a search and stuff
+    set('errno', $errno);
+    set('errstr', $errstr);
+    return render("404.html.php", null);
+}
+
+layout('base.html.php');
+
+
+dispatch_get('/projects', 'Projects::overview');
+dispatch_get('/projects/:slug', 'Projects::detail');
+
+dispatch_get('/blog', 'Blog::index');
+dispatch_get('/blog/:slug', 'Blog::detail');
+
+//dispatch_get('/wpimport', 'Projects::wpImport');
+
+dispatch_get('/photography', function() {
+    redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
+});
+
+dispatch_get('/', 'Projects::overview');
+
+require_once __DIR__.'/vendor/limonade/lib/lemon_server.php';
+
+run();
+
+
+
+
