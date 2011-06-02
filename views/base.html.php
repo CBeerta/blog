@@ -12,10 +12,10 @@
   <meta name="author" content="Claus Beerta">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="public/favicon.png">
+  <link rel="shortcut icon" href="/public/favicon.png">
 
-  <link rel="stylesheet" href="public/css/style.css?v=2">
-  <script src="public/js/libs/modernizr-1.7.min.js"></script>
+  <link rel="stylesheet" href="/public/css/style.css?v=2">
+  <script src="/public/js/libs/modernizr-1.7.min.js"></script>
 
 </head>
 
@@ -39,7 +39,7 @@
     </ul>
     </div>
     <!-- end div#menu -->
-    <div id="splash"><img src="public/header-images/<?php echo randomHeaderImage('header-images/'); ?>" width="940" height="255" alt="" /></div>
+    <div id="splash"><img src="/public/header-images/<?php echo randomHeaderImage('header-images/'); ?>" width="940" height="255" alt="" /></div>
     
     <div id="main" role="main">
         <div id="content">
@@ -59,10 +59,10 @@
           </li>
           <li id="social">
             <h2>Social</h2>
-            <a href="<?php echo url_for('blog', 'feed'); ?>"><img src="public/img/social/Rss.png"></a>
-            <a href="mailto:claus@beerta.de"><img src="public/img/social/Mail.png"></a>
-            <a href="http://www.flickr.com/photos/cbeerta"><img src="public/img/social/Flickr.png"></a>
-            <a href="http://amg.deviantart.com/"><img src="public/img/social/deviantart.png"></a>
+            <a href="<?php echo url_for('blog', 'feed'); ?>"><img src="/public/img/social/Rss.png"></a>
+            <a href="mailto:claus@beerta.de"><img src="/public/img/social/Mail.png"></a>
+            <a href="http://www.flickr.com/photos/cbeerta"><img src="/public/img/social/Flickr.png"></a>
+            <a href="http://amg.deviantart.com/"><img src="/public/img/social/deviantart.png"></a>
           </li>
           <li>
             <?php if (isset($sidebar)): ?>
@@ -80,12 +80,11 @@
                 <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=t&layout=x&source=user&user=46080991%40N07"></script> 
               </div> 
             </div> 
+            <!-- End of Flickr Badge -->             
 
             <h2>DeviantART Favourites</h2>
             <ul class="deviantart">
-              <!--li><a href="#">Eget tempor eget nonummy</a></li-->
             </ul>
-                <!-- End of Flickr Badge -->             
 
           </li>
         </ul>
@@ -101,19 +100,16 @@
     </footer>
   </div> <!-- eo #container -->
 
-
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
-  <script>window.jQuery || document.write("<script src='public/js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
-
+  <script>window.jQuery || document.write("<script src='/public/js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
 
   <!-- scripts concatenated and minified via ant build script-->
-  <script src="public/js/plugins.js"></script>
-  <script src="public/js/script.js"></script>
+  <script src="/public/js/plugins.js"></script>
+  <script src="/public/js/script.js"></script>
   <!-- end scripts-->
 
-
   <!--[if lt IE 7 ]>
-    <script src="js/libs/dd_belatedpng.js"></script>
+    <script src="/js/libs/dd_belatedpng.js"></script>
     <script>DD_belatedPNG.fix("img, .png_bg");</script>
   <![endif]-->
 

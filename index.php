@@ -57,6 +57,7 @@ function configure ()
         'posts_per_page' => 10,
         'date_format' => 'D, d M Y',
         'host' => 'http://' . $_SERVER['HTTP_HOST'] . '/',
+        'base_uri' => '/',
         );
 
     /**

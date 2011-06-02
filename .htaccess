@@ -1,3 +1,10 @@
+Options +FollowSymlinks
+Options -Indexes
+RewriteEngine on
+
+php_value short_open_tag off
+
+
 # test string is a valid files
 RewriteCond %{SCRIPT_FILENAME} !-f
 # test string is a valid directory
