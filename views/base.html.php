@@ -59,10 +59,11 @@
           </li>
           <li id="social">
             <h2>Social</h2>
-            <a href="<?php echo url_for('blog', 'feed'); ?>"><img src="/public/img/social/Rss.png"></a>
-            <a href="mailto:claus@beerta.de"><img src="/public/img/social/Mail.png"></a>
-            <a href="http://www.flickr.com/photos/cbeerta"><img src="/public/img/social/Flickr.png"></a>
-            <a href="http://amg.deviantart.com/"><img src="/public/img/social/deviantart.png"></a>
+            <a href="<?php echo url_for('blog', 'feed'); ?>"><img src="/public/img/social/rss_32.png"></a>
+            <a href="mailto:claus@beerta.de"><img src="/public/img/social/email_32.png"></a>
+            <a href="http://www.flickr.com/photos/cbeerta"><img src="/public/img/social/flickr_32.png"></a>
+            <a href="http://amg.deviantart.com/"><img src="/public/img/social/deviantart_32.png"></a>
+            <a href="https://github.com/CBeerta"><img src="/public/img/social/github_32.png"></a>
           </li>
           <li>
             <?php if (isset($sidebar)): ?>
