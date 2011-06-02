@@ -83,10 +83,7 @@ a:hover { color: #036; }
 
 body {
 	margin: 0px;
-	/*background: #FFFFFF url(../img/img01.jpg) repeat-x left top;*/
 	background: #FFFFFF;
-	text-align: justify;
-	font-family: Arial, Helvetica, sans-serif;
 	color: #231F20;
 }
 
@@ -171,16 +168,6 @@ pre code {
 	padding-top: 30px;
 }
 
-/* ###################### sidebar stuff #################### */
-
-#flickr_badge_uber_wrapper {
-    text-align: left;
-}
-#flickr_badge_wrapper img {
-    border: 1px solid #000;
-    padding: 2px;
-    margin: 5px;
-}
 
 /* ####################### Header ############################# */
 
@@ -294,8 +281,9 @@ header {
 	padding: 4px 35px 4px 15px;
 	background: #000000;
 	text-decoration: none;
-	font-weight: normal;
+	font-weight: bold;
 	color: #FFFFFF;
+	font-size: 123.1%;
 }
 
 .post .entry {
@@ -388,6 +376,24 @@ sidebar a:hover {
 	text-decoration: underline;
 }
 
+#flickr_badge_uber_wrapper {
+    text-align: left;
+}
+#flickr_badge_wrapper img {
+    border: 1px solid #000;
+    padding: 2px;
+    margin: 5px;
+}
+
+sidebar .deviantart img {
+    border: 1px solid #000;
+    padding: 2px;
+    margin: 5px;
+    width: 100px;
+}
+sidebar .deviantart li {
+	border: none;
+}
 
 
 /* ######################### Footer ################### */

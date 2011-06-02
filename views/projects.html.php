@@ -6,7 +6,7 @@
 
 <div class="post">
     <h2 class="title"><a href="<?php echo url_for('projects', $proj['slug']); ?>"><?php echo $proj['title']; ?></a></h2>
-    <p class="byline">Posted by Claus Beerta</p>
+    <p class="byline">Posted by Claus</p>
     <div class="entry">
         <p>
             <?php echo $proj['teaser']; ?>

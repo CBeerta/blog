@@ -34,6 +34,7 @@
 require_once __DIR__.'/vendor/limonade/lib/limonade.php';
 require_once __DIR__.'/vendor/idiorm/idiorm.php';
 require_once __DIR__.'/vendor/markdown/markdown.php';
+require_once __DIR__.'/vendor/simplepie/SimplePieAutoloader.php';
 
 require_once __DIR__.'/lib/helpers.php';
 
@@ -52,6 +53,7 @@ function configure ()
         'dbfile' => './data/planner.db',
         'projects_dir' => './data/projects',
         'upload_url' => 'http://idisk.beerta.net/public/wordpress/',
+        'deviantart_items' => 4,
         );
 
     /**
@@ -94,6 +96,7 @@ dispatch_get('/blog/:slug', 'Blog::detail');
 
 // sidebar content. probably ajax
 dispatch_get('/sidebar/github/:username', 'Sidebar::github');
+dispatch_get('/sidebar/deviantart/:search', 'Sidebar::deviantart');
 
 // contact
 dispatch_get('/contact', 'Contact::index');

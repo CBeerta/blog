@@ -7,3 +7,6 @@
 [submodule "vendor/markdown"]
 	path = vendor/markdown
 	url = http://git.michelf.com/php-markdown
+[submodule "vendor/simplepie"]
+	path = vendor/simplepie
+	url = https://github.com/simplepie/simplepie.git

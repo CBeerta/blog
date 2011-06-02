@@ -49,14 +49,14 @@ class Sidebar
     /**
     * Load github user json, and return project list
     *
-    * @param string $username USername on github to pull
+    * @param string $username Username on github to pull
     *
-    * @return html
+    * @return json
     **/
     public static function github($username = false)
     {
         if ( !$username ) {
-            return json("Nu User Specified");
+            return json("No User Specified");
         }
         
         $cache_file = option('cache_dir') . "/github-{$username}.json";
@@ -73,7 +73,7 @@ class Sidebar
         
         curl_setopt($ch, CURLOPT_URL, "http://github.com/api/v1/json/" . $username);
         curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 
         $ret = curl_exec($ch);
         curl_close($ch);
@@ -85,5 +85,56 @@ class Sidebar
         return json($ret);
     }
 
+
+    /**
+    * Load Devbiantart RSS and extract images
+    *
+    * @param string $q The query to search for on devArt
+    *
+    * @return json
+    **/
+    public static function deviantart($q = false)
+    {
+        if ( !$q ) {
+            return json("No search specified");
+        }
+
+        $rss = new SimplePie();        
+        
+        $rss->set_feed_url(
+            "http://backend.deviantart.com/rss.xml?q={$q}" . 
+            "&type=deviation" . 
+            "&offset=0"
+        );
+        $rss->set_cache_location('/var/tmp');
+        $rss->set_cache_duration(43200);
+        $rss->init();
+        $rss->handle_content_type();
+        
+        // don't sort by pubdate, 
+        // but rather the date i added it to my favs
+        $rss->enable_order_by_date(false); 
+        
+        
+        $items = array();
+        foreach ( $rss->get_items(0, option('deviantart_items')) as $item ) {
+            if ($enclosure = $item->get_enclosure()) {
+
+                list ($big, $small) = $enclosure->get_thumbnails();
+                list ($author, $author_img) = $enclosure->get_credits();
+                
+                $items[] = array(
+                    'link' => $item->get_link(),
+                    'title' => $item->get_title(),
+                    'small' => $small,
+                    'big' => $big,
+                    'author' => $author->get_name(),
+                    'author_img' => $author_img->get_name(),
+                );
+            }
+        }
+        return json(json_encode($items));
+    }
+    
 }
 

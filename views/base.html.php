@@ -64,12 +64,17 @@
             </ul>
             
             <h2>Flickr Fotostream</h2>
-                <!-- Start of Flickr Badge --> 
-                <div id="flickr_badge_uber_wrapper"> 
-                  <div id="flickr_badge_wrapper"> 
-                    <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=t&layout=x&source=user&user=46080991%40N07"></script> 
-                  </div> 
-                </div> 
+            <!-- Start of Flickr Badge --> 
+            <div id="flickr_badge_uber_wrapper"> 
+              <div id="flickr_badge_wrapper"> 
+                <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=t&layout=x&source=user&user=46080991%40N07"></script> 
+              </div> 
+            </div> 
+
+            <h2>DeviantART Favourites</h2>
+            <ul class="deviantart">
+              <!--li><a href="#">Eget tempor eget nonummy</a></li-->
+            </ul>
                 <!-- End of Flickr Badge -->             
 
           </li>
