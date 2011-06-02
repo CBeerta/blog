@@ -87,7 +87,7 @@ body {
 	color: #231F20;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
 }
 
 h1 {
@@ -98,6 +98,12 @@ h2 {
 }
 
 h3 {
+}
+
+h4 {
+	font: normal 300% Georgia, "Times New Roman", Times, serif;
+    text-shadow: 2px 2px 2px rgba(200, 200, 200, 0.5);
+    line-height: 2em;
 }
 
 p, blockquote, ul, ol {
@@ -296,8 +302,10 @@ header {
 	border: 1px solid #ccc;
 	margin: 0 20px 10px 0;
 	padding: 4px;
+	/*
 	width: 100px;
 	height: 100px;
+	*/
 }
 
 .post .meta {
@@ -312,6 +320,17 @@ header {
 	margin-top: -30px;
 	font-weight: bold;
 	color: #5E5E5E;
+}
+
+.archive h2:hover {
+    background-color: #eee;
+}
+.archive h2 a {
+    color: #333;
+    line-height: 30px;
+}
+.archive .date {
+    float: right;
 }
 
 
@@ -353,6 +372,7 @@ sidebar h2 {
 	font-size: 161.6%;
 	font-weight: normal;
 	color: #7EBA25;
+    text-shadow: 2px 2px 2px rgba(126, 186, 37, 0.2);
 }
 
 sidebar h3 {
@@ -400,6 +420,7 @@ sidebar .deviantart li {
 
 footer {
 	margin: 0 auto;
+	margin-top: 100px;
 	padding: 20px 0px;
 	background: #000000;
 	color: #686767;
@@ -420,6 +441,81 @@ footer a:hover {
 	text-decoration: none;
 }
 
+/* Search */
+
+#header-search {
+	width: 940px;
+	height: 51px;
+	margin: 0 auto;
+	padding: 0px 0px 0px 0px;
+}
+
+#header-search form {
+	float: right;
+	width: 300px;
+	margin: 0;
+	padding: 12px 0px 0px 0px;
+}
+
+#header-search fieldset {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#header-search-text {
+	width: 200px;
+	padding: 2px 3px;
+	background: #1E1E1E;
+	border: none;
+	color: #4D4D4D;
+}
+
+#header-search-submit {
+	background: none;
+	border: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #E4E4E4;
+}
+
+#search {
+	height: 51px;
+	margin: 0 auto;
+	padding: 0px 0px 60px 0px;
+}
+
+#search form {
+	margin: 0;
+	padding: 12px 0px 0 0;
+}
+
+#search fieldset {
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#search input {
+	float: left;
+	font: 12px Arial, Helvetica, sans-serif;
+}
+
+#search-text {
+	width: 160px;
+	height: 18px;
+	padding: 3px 0 3px 5px;
+	border: 1px solid #CCCCCC;
+	color: #000000;
+}
+
+#search-submit {
+	margin-left: 10px;
+	padding: 4px 4px;
+	border: none;
+	background: #000000;
+	color: #FFFFFF;
+}
 
 
 

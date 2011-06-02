@@ -46,18 +46,143 @@ if ( ! defined('LIMONADE') ) {
 **/
 class Blog
 {
-
     /**
     * the Blog
     *
-    * @return void
+    * @return html
     **/
     public static function index()
     {
         set('title', 'Blog');
-    
+        set('sidebar', self::sidebar());
+        
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->limit(option('posts_per_page'))
+            ->find_many();
+
+        set('posts', $posts);            
+        
         return html('blog.html.php');
     }
+    
+    /**
+    * Sidebar Additional Navigation
+    *
+    * @return html
+    **/
+    public static function sidebar()
+    {
+
+        return partial("snippets/sidebar.blog.html.php");
+    }
+    /**
+    * Detail on a slug
+    *
+    * @param string $slug Slug of the Post
+    *
+    * @return html
+    **/
+    public static function detail($slug = null)
+    {
+        set('title', 'Blog');
+        set('sidebar', self::sidebar());
+
+        $posts = ORM::for_table('posts')
+            ->where_like('post_slug', $slug)
+            ->order_by_desc('post_date')
+            ->limit(option('posts_per_page'))
+            ->find_many();
+
+        set('posts', $posts); 
+        
+        return html('blog.html.php');
+    }
+
+    /**
+    * Archives
+    *
+    * @return html
+    **/
+    public static function archive()
+    {
+        set('title', 'Blog Archive');
+        set('sidebar', self::sidebar());
+
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->find_many();
+            
+        set('posts', $posts);
+
+        return html('archive.html.php');
+    }
+
+
+    /**
+    * Return a RSS Feed
+    *
+    * @return html
+    **/
+    public static function feed()
+    {
+        set('build_date', date('r'));
+
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->limit(option('posts_per_page'))
+            ->find_many();
+            
+        set('posts', $posts);
+        
+        return xml('blog.xml.php', null);
+    }
+
+
+    /**
+    * Import Projects from Wordpress.
+    *
+    * @FIXME This is extremely HACKISH. Should it even be in here?
+    *           Also assumes my exact posting behavior. which is awesome anyhow.
+    * @return void
+    **/
+    public static function wpImport()
+    {
+        $dbhost = 'aello.local';
+        $dbname = 'claus';
+        $dbuser = $_SERVER['DBUSER'];
+        $dbpass = $_SERVER['DBPASS'];
+        
+        $db = mysql_connect($dbhost, $dbuser, $dbpass);
+        mysql_select_db($dbname, $db);
+        mysql_set_charset('utf8', $db);
+        
+        $res = mysql_query(
+            "
+            SELECT *
+            FROM `wp_posts`
+            WHERE 
+                post_type='post' AND
+                post_status='publish'
+            "
+        );
+        
+        //ORM::for_table('posts')->raw_query('DELETE FROM `posts`;');
+        while ($data = mysql_fetch_assoc($res)) {
+            d($data);
+            $post = ORM::for_table('posts')->create();
+            
+            $post->post_date = $data['post_date'];
+            $post->post_slug = $data['post_name'];
+            $post->post_title = $data['post_title'];
+            $post->post_content = $data['post_content'];
+            $post->guid = $data['guid'];
+            $post->post_status = $data['post_status'];
+            
+            $post->save();
+        }
+    }
+
 
 }
 

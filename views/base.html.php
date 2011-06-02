@@ -31,10 +31,11 @@
     <!-- end div#header -->
     <div id="menu">
     <ul>
-      <li class="active"><a href="<?php echo url_for('projects'); ?>">Projects</a></li>
-      <li><a href="<?php echo url_for('photography'); ?>">Photography</a></li>
-      <li><a href="<?php echo url_for('blog'); ?>">Blog</a></li>
-      <li><a href="<?php echo url_for('contact'); ?>">Contact</a></li>
+    <?php foreach($menu_items as $k => $v): ?>
+        <li <?php echo ($active == $k) ? "class=\"active\"" : ""; ?>>
+            <a href="<?php echo url_for($k); ?>"><?php echo $v; ?></a>
+        </li>
+    <?php endforeach; ?>
     </ul>
     </div>
     <!-- end div#menu -->
@@ -47,17 +48,26 @@
 
     <sidebar>
         <ul>
-          <!--li id="search">
+          <li id="search">
             <h2>Search</h2>
-            <form method="get" action="">
+            <form method="POST" action="<?php echo url_for('sidebar', 'search'); ?>">
               <fieldset>
-                <input type="text" id="search-text" name="s" value="" />
+                <input type="text" id="search-text" name="s" placeholder="<?php echo isset($search) ? $search : 'Search'; ?>"/>
                 <input type="submit" id="search-submit" value="Search" />
               </fieldset>
             </form>
-          </li-->
+          </li>
+          <li id="social">
+            <h2>Social</h2>
+            <a href="<?php echo url_for('blog', 'feed'); ?>"><img src="public/img/social/Rss.png"></a>
+            <a href="mailto:claus@beerta.de"><img src="public/img/social/Mail.png"></a>
+            <a href="http://www.flickr.com/photos/cbeerta"><img src="public/img/social/Flickr.png"></a>
+            <a href="http://amg.deviantart.com/"><img src="public/img/social/deviantart.png"></a>
+          </li>
           <li>
-
+            <?php if (isset($sidebar)): ?>
+            <?php echo $sidebar; ?>
+            <?php endif; ?>
             <h2>Github Projects</h2>
             <ul class="github">
               <!--li><a href="#">Eget tempor eget nonummy</a></li-->

@@ -49,6 +49,27 @@ class Sidebar
     /**
     * Load github user json, and return project list
     *
+    * @return json
+    **/
+    public static function search()
+    {
+        $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
+        set('title', 'Search');
+        
+        $posts = ORM::for_table('posts')
+            ->where_raw("`post_content` LIKE '%{$s}%' OR `post_title` LIKE '%{$s}%'")
+            ->order_by_desc('post_date')
+            ->limit(10)
+            ->find_many();
+
+        set('posts', $posts); 
+        set('search', $s);
+        
+        return html('blog.html.php');
+    }
+    /**
+    * Load github user json, and return project list
+    *
     * @param string $username Username on github to pull
     *
     * @return json

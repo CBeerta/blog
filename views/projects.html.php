@@ -1,3 +1,4 @@
+<?php set('active', 'projects'); ?>
 <?php if (empty($projects)): ?>
     <h2>Project does not exist!</h2>
 <?php endif; ?>

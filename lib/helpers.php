@@ -78,5 +78,22 @@ function randomHeaderImage($image_dir)
     return basename($files[$rand]);
 }
 
+/**
+* Format a DateTime / String for display
+*
+* @param string $date Date to Format
+*
+* @return void
+**/
+function formatDate($date)
+{
+    $date = new DateTime($date);
+    
+    if ( !$date ) {
+        return $date;
+    }
+    
+    return $date->format(option('date_format'));
+}
 
 

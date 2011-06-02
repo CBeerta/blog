@@ -54,6 +54,9 @@ function configure ()
         'projects_dir' => './data/projects',
         'upload_url' => 'http://idisk.beerta.net/public/wordpress/',
         'deviantart_items' => 4,
+        'posts_per_page' => 10,
+        'date_format' => 'D, d M Y',
+        'host' => 'http://' . $_SERVER['HTTP_HOST'] . '/',
         );
 
     /**
@@ -84,7 +87,19 @@ function not_found($errno, $errstr)
     return render("404.html.php", null);
 }
 
+$menu_items = array(
+    'projects' => 'Projects',
+    'blog' => 'Blog',
+    'photography' => 'Photograpy',
+    'contact' => 'Contact',
+);
+
+set('menu_items', $menu_items);
+
 layout('base.html.php');
+
+//dispatch_get('/projects/wpimport', 'Projects::wpImport');
+//dispatch_get('/blog/wpimport', 'Blog::wpImport');
 
 // Projects related
 dispatch_get('/projects', 'Projects::overview');
@@ -92,16 +107,17 @@ dispatch_get('/projects/:slug', 'Projects::detail');
 
 // Blog stuff
 dispatch_get('/blog', 'Blog::index');
+dispatch_get('/blog/archive', 'Blog::archive');
+dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog/:slug', 'Blog::detail');
 
 // sidebar content. probably ajax
 dispatch_get('/sidebar/github/:username', 'Sidebar::github');
 dispatch_get('/sidebar/deviantart/:search', 'Sidebar::deviantart');
+dispatch_post('/sidebar/search', 'Sidebar::search');
 
 // contact
 dispatch_get('/contact', 'Contact::index');
-
-//dispatch_get('/wpimport', 'Projects::wpImport');
 
 dispatch_get('/photography', function() {
     redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
@@ -112,7 +128,5 @@ dispatch_get('/', 'Projects::overview');
 require_once __DIR__.'/vendor/limonade/lib/lemon_server.php';
 
 run();
-
-
 
 
