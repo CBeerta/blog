@@ -108,6 +108,7 @@ dispatch_get('/blog', 'Blog::index');
 dispatch_get('/blog/archive', 'Blog::archive');
 dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog/:slug', 'Blog::detail');
+dispatch_get('/blog/:year/:month/:slug/', 'Blog::detail');
 
 // sidebar content. probably ajax
 dispatch_get('/sidebar/github/:username', 'Sidebar::github');

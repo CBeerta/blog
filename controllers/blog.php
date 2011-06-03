@@ -83,13 +83,15 @@ class Blog
     *
     * @return html
     **/
-    public static function detail($slug = null)
+    public static function detail()
     {
+        $slug = params('slug');
+        
         set('title', 'Blog');
         set('sidebar', self::sidebar());
 
         $posts = ORM::for_table('posts')
-            ->where_like('post_slug', $slug)
+            ->where_like('post_slug', "%{$slug}%")
             ->order_by_desc('post_date')
             ->limit(option('posts_per_page'))
             ->find_many();

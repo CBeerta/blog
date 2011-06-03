@@ -58,6 +58,7 @@ class Importers
             'import-blog-posts' => 'Import Posts From a Wordpress Blog',
             'import-projects' => 'Import Projects From Wordpress',
             'import-rss:' => 'Import External RSS Feed',
+            'check-links:' => 'Check Links in Posts. Need substr for Domaincheck',
             'help' => 'This Help',
         );
         
@@ -86,8 +87,63 @@ class Importers
             case 'import-rss':
                 self::importRSS($v);
                 exit;
+            case 'check-links':
+                self::checkLinks($v);
+                exit;
             }
         }
+    }
+
+    /**
+    * Check Links in articles for validity
+    *
+    * @param string $substr String that needs to be in the url to check
+    *
+    * @return void
+    **/
+    public static function checkLinks($substr)
+    {
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->find_many();
+            
+        foreach ($posts as $post) {
+        
+            $match = preg_match_all(
+                '#(href|src)=["\'](.*?)["\']#i', 
+                $post->post_content,
+                $matches
+            );
+            if (!$match) {
+                continue;
+            }
+            
+            foreach ($matches[2] as $url) {
+                if (stristr($url, $substr) === false) {
+                    d("Skipping: " . $url);
+                    continue;
+                }
+            
+                d("Checking Article: " . $post->post_slug . ' ID: ' . $post->ID);
+                $ch = curl_init();
+                curl_setopt(
+                    $ch, 
+                    CURLOPT_URL, 
+                    $url
+                );
+                curl_setopt($ch, CURLOPT_HEADER, 0);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+                $ret = curl_exec($ch);
+                $info = curl_getinfo($ch);
+                curl_close($ch);
+                
+                if ($info['http_code'] != 200) {
+                    d("Failed for URL: " . $info['url']);
+                }
+            }
+        }
+
 
     }
 
@@ -173,7 +229,7 @@ class Importers
     **/
     public static function importBlogPosts()
     {
-        require_once __DIR__.'/projects.php';
+        include_once __DIR__.'/projects.php';
 
         $dbhost = 'aello.local';
         $dbname = 'claus';
