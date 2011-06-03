@@ -56,16 +56,22 @@ class Blog
         set('title', 'Blog');
         set('sidebar', self::sidebar());
         
+        $ppp = option('posts_per_page');
+        set('ppp', $ppp);
+        $offset = set_or_default('offset', params('offset'), 0);
+        
         if (!isEditor()) {
             $posts = ORM::for_table('posts')
                 ->where('post_status', 'publish')
                 ->order_by_desc('post_date')
-                ->limit(option('posts_per_page'))
+                ->offset($offset)
+                ->limit($ppp)
                 ->find_many();
         } else {
             $posts = ORM::for_table('posts')
                 ->order_by_desc('post_date')
-                ->limit(option('posts_per_page'))
+                ->offset($offset)
+                ->limit($ppp)
                 ->find_many();
         }
 
@@ -96,15 +102,14 @@ class Blog
         set('title', 'Blog');
         set('sidebar', self::sidebar());
 
-        $posts = ORM::for_table('posts')
+        $post = ORM::for_table('posts')
             ->where_like('post_slug', "%{$slug}%")
             ->order_by_desc('post_date')
-            ->limit(option('posts_per_page'))
-            ->find_many();
-
-        set('posts', $posts); 
+            ->find_one();
+            
+        set('post', $post);
         
-        return html('blog.html.php');
+        return html('blog.single.html.php');
     }
 
     /**

@@ -47,23 +47,31 @@ $(document).ready(function()
         }
     });
 
-    $('.editable').editable('?/blog/save',
-    {
-        loadurl     : '?/blog/json_load',
-        loadtype    : 'POST',
-        type        : "autogrow",
-        submit      : "Save",
-        indicator   : '<img src="public/img/indicator.gif">',
-        tooltip     : 'Click to edit.',
-        onblur      : 'cancel',
-        width       : 'auto',
-        style       : "display: inline",
-        autogrow    : {
-           lineHeight : 16 /*,
-           minHeight  : 100*/
+    if (window.jQuery.editable) {
+        $('.editable').editable('?/blog/save',
+        {
+            loadurl     : '?/blog/json_load',
+            loadtype    : 'POST',
+            type        : "autogrow",
+            submit      : "Save",
+            indicator   : '<img src="public/img/indicator.gif">',
+            tooltip     : 'Click to edit.',
+            onblur      : 'cancel',
+            width       : 'auto',
+            style       : "display: inline",
+            autogrow    : {
+               lineHeight : 16 /*,
+               minHeight  : 100*/
+            }
+        });
+    }
+
+    // Just enable fancybox for all img src inside an href for our posts    
+    $('.entry a').each(function() {
+        if ($(this).html().match(/img.*src/i)) {
+            $(this).fancybox();
         }
     });
-
 
 });
 

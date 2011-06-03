@@ -105,13 +105,18 @@ layout('base.html.php');
 dispatch_get('/projects', 'Projects::overview');
 dispatch_get('/projects/:slug', 'Projects::detail');
 
+
 // Blog stuff #############################################
 dispatch_get('/blog', 'Blog::index');
+dispatch_get('/blog/pager/:offset', 'Blog::index');
 dispatch_get('/blog/archive', 'Blog::archive');
-dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog/:slug', 'Blog::detail');
+
+// These are here for compatibility with the previous WP install
+dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog/:year/:month/:slug/', 'Blog::detail');
 
+// The editor stuff #######################################
 dispatch_post('/blog/json_load', 'Blog::loadJSON');
 dispatch_post('/blog/save', 'Blog::save');
 dispatch_post('/blog/trash', 'Blog::trash');
@@ -130,6 +135,7 @@ dispatch_get('/photography', function() {
     redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
 });
 
+// And the root of all evil ###############################
 dispatch_get('/', 'Projects::overview');
 
 if (PHP_SAPI == 'cli') {

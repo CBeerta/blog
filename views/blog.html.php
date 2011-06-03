@@ -12,13 +12,19 @@
     <div class="entry <?php echo isEditor() ? 'editor editable' : ''; ?>" id="<?php echo $post->ID; ?>">
         <p><?php echo $post->post_content; ?></p>
     </div>
-    <?php if (isEditor()): ?>
+<?php if (isEditor()): ?>
     <div class="clearfix"></div>
     <div class="editor">
         <img class="editor trash_post" id="<?php echo $post->ID; ?>" onclick="trash_post(<?php echo $post->ID; ?>);" src="/public/img/trash_stroke_32x32.png">
         <img class="editor toggle_publish" id="<?php echo $post->ID; ?>" onclick="toggle_publish(<?php echo $post->ID; ?>);" src="/public/img/<?php echo ($post->post_status != 'publish') ? 'denied' : 'check_alt'; ?>_32x32.png">
     </div>
-    <?php endif; ?>
+<?php endif; ?>
     <div class="clearfix"></div>
 </div>
 <?php endforeach; ?>
+<div class="pagination">
+    <h2 class="prev">&lt;<a href="<?php echo url_for('blog', 'pager', $offset + $ppp); ?>">Older Entries</a></h2>
+<?php if ($offset > $ppp): ?>
+    <h2 class="next"><a href="<?php echo url_for('blog', 'pager', $offset - $ppp); ?>">Newer Entries</a>&gt;</h2>
+<?php endif; ?>
+</div>

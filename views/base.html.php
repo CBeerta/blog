@@ -15,6 +15,8 @@
   <link rel="shortcut icon" href="/public/favicon.png">
 
   <link rel="stylesheet" href="/public/css/style.css?v=2">
+  <link rel="stylesheet" href="/public/js/libs/fancybox/jquery.fancybox-1.3.4.css">
+
   <script src="/public/js/libs/modernizr-1.7.min.js"></script>
   <link href="/blog/feed" rel="alternate" title="Claus Beerta - Feed" type="application/atom+xml" />
 </head>
@@ -34,23 +36,21 @@
     <!-- end div#header -->
     <div id="menu">
     <ul>
-    <?php foreach($menu_items as $k => $v): ?>
+<?php foreach($menu_items as $k => $v): ?>
         <li <?php echo ($active == $k) ? "class=\"active\"" : ""; ?>>
             <a href="<?php echo url_for($k); ?>"><?php echo $v; ?></a>
         </li>
-    <?php endforeach; ?>
+<?php endforeach; ?>
     </ul>
     </div>
     <!-- end div#menu -->
     <div id="splash">
     <img src="/public/header-images/<?php echo randomHeaderImage('header-images/'); ?>" width="940" height="255" alt="" />
     </div>
-    
     <div id="main" role="main">
         <div id="content">
-            <?php echo $content; ?>
+<?php echo $content; ?>
         </div>
-
     <sidebar>
         <ul>
           <li id="search">
@@ -70,14 +70,11 @@
             <a href="https://github.com/CBeerta"><img title="Github" src="/public/img/social/github_32.png"></a>
           </li>
           <li>
-            <?php if (isset($sidebar)): ?>
-            <?php echo $sidebar; ?>
-            <?php endif; ?>
+<?php if (isset($sidebar)) echo $sidebar; ?>
             <h2>Github Projects</h2>
             <ul class="github">
               <!--li><a href="#">Eget tempor eget nonummy</a></li-->
             </ul>
-            
             <h2>Flickr Fotostream</h2>
             <!-- Start of Flickr Badge --> 
             <div id="flickr_badge_uber_wrapper"> 
@@ -86,30 +83,27 @@
               </div> 
             </div> 
             <!-- End of Flickr Badge -->             
-
             <h2>DeviantART Favourites</h2>
             <ul class="deviantart">
             </ul>
-
           </li>
         </ul>
     </sidebar>
-
     </div>
-
     <div class="clearfix"></div>
-
     <footer>
     <p>Copyright &copy; 2000 - <?php echo date('Y'); ?> Claus Beerta. All Rights Reserved. </p>
-    <!--p id="links"><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p-->
+    <p id="links"><a href="/contact">Impressum</a></p>
     </footer>
   </div> <!-- eo #container -->
-
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='/public/js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
+<?php if (isEditor()): // Only need these for editing purposes?>
   <script src="/public/js/libs/jquery.jeditable.js"></script>
   <script src="/public/js/libs/jquery.jeditable.autogrow.js"></script>
   <script src="/public/js/libs/jquery.autogrow.js"></script>
+<?php endif; ?>
+  <script src="/public/js/libs/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 
   <!-- scripts concatenated and minified via ant build script-->
   <script src="/public/js/plugins.js"></script>

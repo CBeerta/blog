@@ -354,6 +354,16 @@ img.editor {
     background-color: #F0F0D8;
 }
 
+.pagination a, a:visited {
+    text-decoration: none;
+}
+.pagination .prev {
+    float: left;
+}
+.pagination .next {
+    float: right;
+}
+
 /* ################################## Sidebar ###################### */
 
 sidebar {
