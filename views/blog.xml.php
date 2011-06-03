@@ -10,7 +10,7 @@
 
 <channel>
 	<title>Claus Beerta</title>
-	<atom:link href="http://claus.beerta.net/blog/feed/" rel="self" type="application/rss+xml" />
+	<atom:link href="http://claus.beerta.net/blog/feed" rel="self" type="application/rss+xml" />
 	<link>http://claus.beerta.net/blog</link>
 	<description>Stuff i do, don&#039;t and other babble.</description>
 	<lastBuildDate><?php echo $build_date; ?></lastBuildDate>
@@ -27,8 +27,8 @@
 		<pubDate><?php echo $p->post_date->format('r'); ?></pubDate>
 		<dc:creator>Claus Beerta</dc:creator>
 
-		<guid isPermaLink="false"><?php echo option('host') . url_for('blog', $p->post_slug); ?></guid>
-		<description><![CDATA[<?php echo strip_tags($p->post_content); ?>]]></description>
+		<guid isPermaLink="false"><?php echo option('host') . url_for($p->post_type, $p->post_slug); ?></guid>
+		<description><![CDATA[<?php echo substr(strip_tags($p->post_content), 0, 255); ?> ...]]></description>
 		<content:encoded><![CDATA[<?php echo $p->post_content; ?>]]></content:encoded>
 	</item>	
 <?php endforeach; ?>

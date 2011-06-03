@@ -16,7 +16,7 @@
 
   <link rel="stylesheet" href="/public/css/style.css?v=2">
   <script src="/public/js/libs/modernizr-1.7.min.js"></script>
-
+  <link href="/blog/feed" rel="alternate" title="Claus Beerta - Feed" type="application/atom+xml" />
 </head>
 
 <body>
