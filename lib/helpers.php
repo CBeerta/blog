@@ -96,4 +96,22 @@ function formatDate($date)
     return $date->format(option('date_format'));
 }
 
+/**
+* Check if the Client is allowed to edit
+*
+* @TODO This should obviously be a bit fancier
+*
+* @return void
+**/
+function isEditor()
+{
+    if (php_uname('n') === 'phoebe') {
+        // for now only allow editing on phoebe
+        return true;
+    }
+    
+    return false;
+}
+
+
 

@@ -70,6 +70,8 @@ function configure ()
     }
 
     ORM::configure('sqlite:' . option('dbfile'));
+    ORM::configure('id_column', 'ID');
+    ORM::configure('logging', false);
 }
 
 /**
@@ -99,26 +101,31 @@ set('menu_items', $menu_items);
 
 layout('base.html.php');
 
-// Projects related
+// Projects related #######################################
 dispatch_get('/projects', 'Projects::overview');
 dispatch_get('/projects/:slug', 'Projects::detail');
 
-// Blog stuff
+// Blog stuff #############################################
 dispatch_get('/blog', 'Blog::index');
 dispatch_get('/blog/archive', 'Blog::archive');
 dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog/:slug', 'Blog::detail');
 dispatch_get('/blog/:year/:month/:slug/', 'Blog::detail');
 
-// sidebar content. probably ajax
+dispatch_post('/blog/json_load', 'Blog::loadJSON');
+dispatch_post('/blog/save', 'Blog::save');
+dispatch_post('/blog/trash', 'Blog::trash');
+dispatch_post('/blog/toggle_publish', 'Blog::togglePublish');
+
+// sidebar content. probably ajax #########################
 dispatch_get('/sidebar/github/:username', 'Sidebar::github');
 dispatch_get('/sidebar/deviantart/:search', 'Sidebar::deviantart');
 dispatch_post('/sidebar/search', 'Sidebar::search');
 
-// contact
+// contact ################################################
 dispatch_get('/contact', 'Contact::index');
 
-// Redirect photography to fluidr
+// Redirect photography to fluidr #########################
 dispatch_get('/photography', function() {
     redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
 });

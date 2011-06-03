@@ -346,6 +346,13 @@ header {
     float: right;
 }
 
+img.editor {
+    border: 0px;
+    float:right;
+}
+.editor div:hover {
+    background-color: #F0F0D8;
+}
 
 /* ################################## Sidebar ###################### */
 

@@ -47,7 +47,59 @@ $(document).ready(function()
         }
     });
 
+    $('.editable').editable('?/blog/save',
+    {
+        loadurl     : '?/blog/json_load',
+        loadtype    : 'POST',
+        type        : "autogrow",
+        submit      : "Save",
+        indicator   : '<img src="public/img/indicator.gif">',
+        tooltip     : 'Click to edit.',
+        onblur      : 'cancel',
+        width       : 'auto',
+        style       : "display: inline",
+        autogrow    : {
+           lineHeight : 16 /*,
+           minHeight  : 100*/
+        }
+    });
+
 
 });
 
+
+function toggle_publish(id)
+{
+    $.ajax({  
+        type: "POST",
+        url: "/blog/toggle_publish",
+        data: { 'id': id },
+        success: function(data) {
+            var trash = $("#" + id + " img.toggle_publish");
+            if (data == 'publish') {
+                trash.attr('src', '/public/img/check_alt_32x32.png')
+            } else {
+                trash.attr('src', '/public/img/denied_32x32.png')
+            }
+        }
+    });
+}
+
+function trash_post(id)
+{
+    var answer = confirm("You sure you want to Delete it?");
+    
+    if (!answer) {
+        return;
+    }
+    
+    $.ajax({  
+        type: "POST",
+        url: "/blog/trash",
+        data: { 'id': id },
+        success: function(data) {
+            alert(data);
+        }
+    });
+}
 

@@ -56,10 +56,18 @@ class Blog
         set('title', 'Blog');
         set('sidebar', self::sidebar());
         
-        $posts = ORM::for_table('posts')
-            ->order_by_desc('post_date')
-            ->limit(option('posts_per_page'))
-            ->find_many();
+        if (!isEditor()) {
+            $posts = ORM::for_table('posts')
+                ->where('post_status', 'publish')
+                ->order_by_desc('post_date')
+                ->limit(option('posts_per_page'))
+                ->find_many();
+        } else {
+            $posts = ORM::for_table('posts')
+                ->order_by_desc('post_date')
+                ->limit(option('posts_per_page'))
+                ->find_many();
+        }
 
         set('posts', $posts);            
         
@@ -99,6 +107,107 @@ class Blog
         return html('blog.html.php');
     }
 
+    /**
+    * Load a Post, return as json
+    *
+    * @return json
+    **/
+    public static function loadJSON()
+    {
+        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
+            ? $_POST['id'] 
+            : null;
+            
+        $post = ORM::for_table('posts')->find_one($id);
+        return partial($post->post_content);
+    }
+
+    /**
+    * Save a Post, return html
+    *
+    * @return json
+    **/
+    public static function save()
+    {
+        if (isEditor() !== true) {
+            return partial('No Permission to edit!');
+        }
+
+        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
+            ? $_POST['id'] 
+            : null;
+        $value = isset($_POST['value']) 
+            ? $_POST['value'] 
+            : null;
+
+        $post = ORM::for_table('posts')->find_one($id);
+        
+        if ( !$post || is_null($id) || is_null($value) ) {
+            return partial('Will not Save!');
+        }
+        
+        $post->post_content = sqlite_escape_string($value);
+        $post->save();
+        
+        return partial($post->post_content);
+    }
+
+    /**
+    * Trash a Post
+    *
+    * @return partial
+    **/
+    public static function trash()
+    {
+        if (isEditor() !== true) {
+            return partial('No Permission to edit!');
+        }
+
+        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
+            ? $_POST['id'] 
+            : null;
+
+        $post = ORM::for_table('posts')->find_one($id);
+        
+        if ( !$post || is_null($id) ) {
+            return partial('Will not Save!');
+        }
+        
+        $post->delete();
+
+        return partial('Deleted!');
+    }
+
+    /**
+    * Toggle the Publish status
+    *
+    * @return partial
+    **/
+    public static function togglePublish()
+    {
+        if (isEditor() !== true) {
+            return partial('No Permission to edit!');
+        }
+
+        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
+            ? $_POST['id'] 
+            : null;
+
+        $post = ORM::for_table('posts')->find_one($id);
+        
+        if ( !$post || is_null($id) ) {
+            return partial('Will not Save!');
+        }
+        
+        $post->post_status = ($post->post_status == 'publish' )
+            ? 'draft'
+            : 'publish';
+        
+        $post->save();
+        
+        return partial($post->post_status);
+    }
+    
     /**
     * Archives
     *

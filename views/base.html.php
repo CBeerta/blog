@@ -27,9 +27,9 @@
           <h1><a href="<?php echo url_for(); ?>">Claus Beerta</a></h1>
           <h2>Stuff i do, don't and other babble.</h2>
         </div>
-        <!--a href="http://github.com/CBeerta">
+        <a href="http://github.com/CBeerta">
             <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://d3nwyuy0nl342s.cloudfront.net/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub">
-        </a-->
+        </a>
     </header>
     <!-- end div#header -->
     <div id="menu">
@@ -107,6 +107,9 @@
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='/public/js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
+  <script src="/public/js/libs/jquery.jeditable.js"></script>
+  <script src="/public/js/libs/jquery.jeditable.autogrow.js"></script>
+  <script src="/public/js/libs/jquery.autogrow.js"></script>
 
   <!-- scripts concatenated and minified via ant build script-->
   <script src="/public/js/plugins.js"></script>

@@ -185,7 +185,11 @@ class Importers
             
             d("Importing: " . $item->get_title());
             
-            $new = ORM::for_table('posts')->create();
+            if ($force!== false && isset($post->ID)) {
+                $new = ORM::for_table('posts')->find_one($post->ID);
+            } else {
+                $new = ORM::for_table('posts')->create();
+            }
             
             $content  = '<div class="rss-imported">';
             
@@ -206,18 +210,15 @@ class Importers
             $content .= 'Article Source</a>';
             $content .= '</div>';
             
+            $new->post_status = 'draft';
             $new->post_title = $item->get_title();
             $new->post_date = $item->get_date('c');
             $new->post_content = $content;
             $new->post_slug = basename(strtolower($item->get_id()));
             $new->guid = basename(strtolower($item->get_id()));
             
-            if ($force!== false && isset($post->ID)) {
-                $new->ID = $post->ID;
-                $new->update();
-            } else {
-                $new->save();
-            }
+            $new->save();
+            
             d($new->as_array());
         }
     }
