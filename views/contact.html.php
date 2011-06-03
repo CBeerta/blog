@@ -10,4 +10,3 @@ D-65929 Frankfurt am Main<br>
 <p>
 Email: <a href="mailto:claus@beerta.de">claus@beerta.de</a>
 </p>
-

@@ -99,9 +99,6 @@ set('menu_items', $menu_items);
 
 layout('base.html.php');
 
-//dispatch_get('/projects/wpimport', 'Projects::wpImport');
-//dispatch_get('/blog/wpimport', 'Blog::wpImport');
-
 // Projects related
 dispatch_get('/projects', 'Projects::overview');
 dispatch_get('/projects/:slug', 'Projects::detail');
@@ -120,14 +117,20 @@ dispatch_post('/sidebar/search', 'Sidebar::search');
 // contact
 dispatch_get('/contact', 'Contact::index');
 
+// Redirect photography to fluidr
 dispatch_get('/photography', function() {
     redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
 });
 
 dispatch_get('/', 'Projects::overview');
 
-require_once __DIR__.'/vendor/limonade/lib/lemon_server.php';
-
-run();
+if (PHP_SAPI == 'cli') {
+    // Need to manually load here, as we'll skip the run();
+    include_once __DIR__.'/controllers/importers.php';
+    Importers::parseArgs();
+    include_once __DIR__.'/vendor/limonade/lib/lemon_server.php';
+} else {
+    run();
+}
 
 

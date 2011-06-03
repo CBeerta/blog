@@ -27,6 +27,9 @@
           <h1><a href="<?php echo url_for(); ?>">Claus Beerta</a></h1>
           <h2>Stuff i do, don't and other babble.</h2>
         </div>
+        <!--a href="http://github.com/CBeerta">
+            <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://d3nwyuy0nl342s.cloudfront.net/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub">
+        </a-->
     </header>
     <!-- end div#header -->
     <div id="menu">
@@ -39,7 +42,9 @@
     </ul>
     </div>
     <!-- end div#menu -->
-    <div id="splash"><img src="/public/header-images/<?php echo randomHeaderImage('header-images/'); ?>" width="940" height="255" alt="" /></div>
+    <div id="splash">
+    <img src="/public/header-images/<?php echo randomHeaderImage('header-images/'); ?>" width="940" height="255" alt="" />
+    </div>
     
     <div id="main" role="main">
         <div id="content">
@@ -58,12 +63,11 @@
             </form>
           </li>
           <li id="social">
-            <h2>Social</h2>
-            <a href="<?php echo url_for('blog', 'feed'); ?>"><img src="/public/img/social/rss_32.png"></a>
-            <a href="mailto:claus@beerta.de"><img src="/public/img/social/email_32.png"></a>
-            <a href="http://www.flickr.com/photos/cbeerta"><img src="/public/img/social/flickr_32.png"></a>
-            <a href="http://amg.deviantart.com/"><img src="/public/img/social/deviantart_32.png"></a>
-            <a href="https://github.com/CBeerta"><img src="/public/img/social/github_32.png"></a>
+            <a href="<?php echo url_for('blog', 'feed'); ?>"><img title="RSS Feed" src="/public/img/social/rss_32.png"></a>
+            <a href="mailto:claus@beerta.de"><img title="Email Me" src="/public/img/social/email_32.png"></a>
+            <a href="http://www.flickr.com/photos/cbeerta"><img title="Flickr Page" src="/public/img/social/flickr_32.png"></a>
+            <a href="http://amg.deviantart.com/"><img title="DeviantART" src="/public/img/social/deviantart_32.png"></a>
+            <a href="https://github.com/CBeerta"><img title="Github" src="/public/img/social/github_32.png"></a>
           </li>
           <li>
             <?php if (isset($sidebar)): ?>
