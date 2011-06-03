@@ -73,13 +73,11 @@ class Blog
     **/
     public static function sidebar()
     {
-
         return partial("snippets/sidebar.blog.html.php");
     }
+
     /**
     * Detail on a slug
-    *
-    * @param string $slug Slug of the Post
     *
     * @return html
     **/
@@ -141,7 +139,5 @@ class Blog
     }
 
 }
-
-
 
 

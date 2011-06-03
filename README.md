@@ -1,17 +1,19 @@
-# My Personal WebLog
+# My Personal Website
+
+[Look Here](http://claus.beerta.net/)
 
 Decided to roll my own. Just because i can. That's why!
 
-This is my Personal Fun Project. It may act as inspiration. Don't expect it to work for you. (wheter it inspires you, or scare you away is really up to you)
+This is my Personal Fun Project. It may act as inspiration. Don't expect it to work for you.
 
 This ain't Wordpress. It's as bare bones as it gets. It may kill your kittens too.
 
 # Uses
 
-* Limonade : https://github.com/CBeerta/limonade
-* PHP-Markdown : http://michelf.com/projects/php-markdown
-* Idiorm : https://github.com/j4mie/idiorm
-* Simplepie : https://github.com/simplepie/simplepie
+* [Limonade](https://github.com/CBeerta/limonade)
+* [PHP-Markdown](http://michelf.com/projects/php-markdown)
+* [Idiorm](https://github.com/j4mie/idiorm)
+* [Simplepie](https://github.com/simplepie/simplepie)
 
 # Requirements
 
@@ -31,6 +33,8 @@ This ain't Wordpress. It's as bare bones as it gets. It may kill your kittens to
 
 * Photography page. If et all
 * Some way to actually create new Posts would be neat. Nothing like creating new posts with `sqlite3` on the Console though
+* Pagination for the blog
+* Comments?
 
 
 
