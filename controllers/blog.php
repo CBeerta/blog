@@ -132,7 +132,7 @@ class Blog
             ->order_by_desc('post_date')
             ->limit(option('posts_per_page'))
             ->find_many();
-            
+        $posts = Projects::mergeBlogPosts($posts);
         set('posts', $posts);
         
         return xml('blog.xml.php', null);
@@ -153,6 +153,15 @@ class Blog
         $dbuser = $_SERVER['DBUSER'];
         $dbpass = $_SERVER['DBPASS'];
         
+        $slugs = array();
+        $projects = Projects::loadProjects();
+        
+        foreach ($projects as $post) {
+            $slugs[] = $post->post_slug;
+        }
+        d($slugs);
+        
+        
         $db = mysql_connect($dbhost, $dbuser, $dbpass);
         mysql_select_db($dbname, $db);
         mysql_set_charset('utf8', $db);
@@ -167,15 +176,27 @@ class Blog
             "
         );
         
-        //ORM::for_table('posts')->raw_query('DELETE FROM `posts`;');
+        ORM::for_table('posts')->raw_query('DELETE FROM posts')->find_many();
         while ($data = mysql_fetch_assoc($res)) {
-            d($data);
+            if (in_array($data['post_name'], $slugs)) {
+                // Skip projects
+                continue;
+            }
             $post = ORM::for_table('posts')->create();
             
             $post->post_date = $data['post_date'];
             $post->post_slug = $data['post_name'];
             $post->post_title = $data['post_title'];
-            $post->post_content = $data['post_content'];
+            $post->post_content = iconv(
+                'UTF-8', 
+                'ISO-8859-1//TRANSLIT//IGNORE', 
+                $data['post_content']
+            );
+            $post->post_content = str_replace(
+                'claus.beerta.de/blog/wp-content/plugins/wp-o-matic/cache', 
+                'idisk.beerta.net/public/wp-o-matic-cache',
+                $post->post_content
+            );
             $post->guid = $data['guid'];
             $post->post_status = $data['post_status'];
             

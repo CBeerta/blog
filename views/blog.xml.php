@@ -23,8 +23,8 @@
 <?php foreach ($posts as $p): ?>
     <item>
 		<title><?php echo $p->post_title; ?></title>
-		<link><?php echo option('host') . url_for('blog', $p->post_slug); ?></link>
-		<pubDate>Tue, 04 Aug 2009 07:35:22 +0000</pubDate>
+		<link><?php echo option('host') . url_for($p->post_type, $p->post_slug); ?></link>
+		<pubDate><?php echo $p->post_date->format('r'); ?></pubDate>
 		<dc:creator>Claus Beerta</dc:creator>
 
 		<guid isPermaLink="false"><?php echo option('host') . url_for('blog', $p->post_slug); ?></guid>

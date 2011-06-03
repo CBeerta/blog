@@ -53,7 +53,7 @@ class Projects
     *
     * @return array All projects
     **/
-    private static function _loadProjects($slug = null)
+    public static function loadProjects($slug = null)
     {
         $projects = array();
         $projects_dir = option('projects_dir');
@@ -101,20 +101,61 @@ class Projects
             
             $post_date = new DateTime($matches[1]);
             
-            $projects[$post_date->format('U')] = array(
+            $projects[$post_date->format('U')] = (object) array(
                 'filename' => $filename,
-                'slug' => $matches[2],
-                'title' => $title,
+                'post_slug' => $matches[2],
+                'post_title' => $title,
                 'post_date' => $post_date,
                 'teaser' => $teaser,
                 'content' => $post_content,
-                );
+                'post_content' => $teaser . $post_content,
+                'post_type' => 'projects',
+            );
         }
         
         // Sort by timestamp, newest first
         krsort($projects);
-        
         return $projects;
+    }
+
+    /**
+    * Merge blog posts with our projects, ordered by date
+    *
+    * @param object $posts An Idiorm with blog posts to merge
+    *
+    * @return object Merged Object with blog posts and projects
+    **/
+    public static function mergeBlogPosts($posts)
+    {
+        $slugs = array();
+        $merged = self::loadProjects();
+        
+        foreach ($merged as $post) {
+            $slugs[] = $post->post_slug;
+        }
+
+        foreach ($posts as $post) {
+            if (in_array($post->post_slug, $slugs)) {
+                // Skip blog entries that we already have as projects
+                continue;
+            }
+
+            $post_date = new DateTime($post->post_date);
+            
+            $merged[$post_date->format('U')] = (object) array (
+                'ID' => $post->ID,
+                'post_date' => $post_date,
+                'post_title' => $post->post_title,
+                'post_slug' => $post->post_slug,
+                'post_content' => $post->post_content,
+                'guid' => $post->guid,
+                'post_status' => $post->post_status,
+                'post_type' => 'blog',
+            );
+        }
+        krsort($merged);
+        
+        return array_splice($merged, 0, option('posts_per_page'));
     }
     
 
@@ -126,7 +167,7 @@ class Projects
     public static function overview() 
     {
         set('title', 'Projects');
-        set('projects', self::_loadProjects());
+        set('projects', self::loadProjects());
         set('body', false);
         
         return html('projects.html.php');
@@ -140,7 +181,7 @@ class Projects
     public static function detail() 
     {
         set('title', 'Projects');
-        set('projects', self::_loadProjects(params('slug')));
+        set('projects', self::loadProjects(params('slug')));
         set('body', true);
         
         return html('projects.html.php');

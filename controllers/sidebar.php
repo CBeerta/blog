@@ -55,6 +55,7 @@ class Sidebar
     {
         $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
         set('title', 'Search');
+        set('sidebar', Blog::sidebar());
         
         $posts = ORM::for_table('posts')
             ->where_raw("`post_content` LIKE '%{$s}%' OR `post_title` LIKE '%{$s}%'")
