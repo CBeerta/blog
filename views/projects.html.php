@@ -5,7 +5,7 @@
 <?php foreach ($projects as $proj): ?>
 <div class="post">
     <h2 class="title"><a href="<?php echo url_for('projects', $proj->post_slug); ?>"><?php echo $proj->post_title; ?></a></h2>
-    <p class="byline">Posted by Claus</p>
+    <!--p class="byline">Posted by Claus</p-->
     <p class="date">Posted: <?php echo $proj->post_date->format(option('date_format')); ?></p>
     <div class="entry">
         <p>

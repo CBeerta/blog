@@ -224,7 +224,6 @@ header {
 	width: 940px;
 	height: 47px;
 	margin: 0 auto;
-	/*background: url(../img/img02.jpg) repeat-x left top;*/
 }
 
 #menu ul {
@@ -273,12 +272,10 @@ header {
     border-radius: 5px 5px 5px 5px;
 }
 
-
 #content {
 	float: right;
 	width: 640px;
 }
-
 
 
 /* ########################## Posts ############################### */
@@ -295,11 +292,13 @@ header {
 
 .post .title a {
 	padding: 4px 35px 4px 15px;
-	background: #000000;
+	background: #fff;
 	text-decoration: none;
 	font-weight: bold;
-	color: #FFFFFF;
-	font-size: 123.1%;
+	color: #000;
+	font-size: 131%;
+    /*text-shadow: -1px -1px 1px #ddd;*/
+    letter-spacing: -0.1em;
 }
 
 .post .entry {
