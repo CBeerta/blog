@@ -58,7 +58,16 @@ class Sidebar
         set('sidebar', Blog::sidebar());
         
         $posts = ORM::for_table('posts')
-            ->where_raw("`post_content` LIKE '%{$s}%' OR `post_title` LIKE '%{$s}%'")
+            ->where_raw(
+                "
+                (
+                `post_content` LIKE '%{$s}%' OR 
+                `post_title` LIKE '%{$s}%'
+                )
+                AND
+                `post_status` = 'publish'
+                "
+            )
             ->order_by_desc('post_date')
             ->limit(10)
             ->find_many();
@@ -66,7 +75,7 @@ class Sidebar
         set('posts', $posts); 
         set('search', $s);
         
-        return html('blog.html.php');
+        return html('blog/search.html.php');
     }
     /**
     * Load github user json, and return project list

@@ -56,6 +56,7 @@ class Importers
     {
         $commands = array(
             'import-blog-posts' => 'Import Posts From a Wordpress Blog',
+            'import-comments' => 'Import Comments From a Wordpress Blog',
             'import-projects' => 'Import Projects From Wordpress',
             'import-rss:' => 'Import External RSS Feed',
             'check-links:' => 'Check Links in Posts. Need substr for Domaincheck',
@@ -80,6 +81,9 @@ class Importers
                 break;
             case 'import-blog-posts':
                 self::importBlogPosts();
+                exit;
+            case 'import-comments':
+                self::importComments();
                 exit;
             case 'import-projects':
                 self::importProjects();
@@ -222,6 +226,53 @@ class Importers
             d($new->as_array());
         }
     }
+
+    /**
+    * Import Comments from Wordpress.
+    *
+    * @return void
+    **/
+    public static function importComments()
+    {
+        $dbhost = 'aello.local';
+        $dbname = 'claus';
+        $dbuser = $_SERVER['DBUSER'];
+        $dbpass = $_SERVER['DBPASS'];
+        
+        $db = mysql_connect($dbhost, $dbuser, $dbpass);
+        mysql_select_db($dbname, $db);
+        mysql_set_charset('utf8', $db);
+        
+        $res = mysql_query("SELECT * FROM `wp_comments`;");
+        
+        ORM::for_table('comments')->raw_query('DELETE FROM comments')->find_one(27);
+        while ($data = mysql_fetch_assoc($res)) {
+        
+            $comment = ORM::for_table('comments')->create();
+            
+            $comment->ID = $data['comment_ID'];
+            $comment->post_ID = $data['comment_post_ID'];
+            $comment->comment_author = $data['comment_author'];
+            $comment->comment_author_email = $data['comment_author_email'];
+            $comment->comment_author_url = $data['comment_author_url'];
+            $comment->comment_date = $data['comment_date'];
+            $comment->comment_content = iconv(
+                'UTF-8', 
+                'ISO-8859-1//TRANSLIT//IGNORE', 
+                $data['comment_content']
+            );
+            $comment->comment_status = ($data['comment_approved'] == 1) 
+                ? 'visible' 
+                : 'hidden';
+            
+            $comment->save();
+            
+            d($data);
+        }
+        
+        return;
+    }
+        
     
     /**
     * Import Blog Posts from Wordpress.

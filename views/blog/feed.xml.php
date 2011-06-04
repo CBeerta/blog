@@ -7,19 +7,16 @@
 	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
 	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
 	>
-
 <channel>
 	<title>Claus Beerta</title>
 	<atom:link href="http://claus.beerta.net/blog/feed" rel="self" type="application/rss+xml" />
 	<link>http://claus.beerta.net/blog</link>
 	<description>Stuff i do, don&#039;t and other babble.</description>
 	<lastBuildDate><?php echo $build_date; ?></lastBuildDate>
-
 	<language>en</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<generator>http://claus.beerta.net/blog/</generator>
-	
 <?php foreach ($posts as $p): ?>
     <item>
 		<title><?php echo $p->post_title; ?></title>

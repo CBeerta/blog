@@ -83,7 +83,7 @@ function randomHeaderImage($image_dir)
 *
 * @param string $date Date to Format
 *
-* @return void
+* @return formatted date
 **/
 function formatDate($date)
 {
@@ -94,6 +94,28 @@ function formatDate($date)
     }
     
     return $date->format(option('date_format'));
+}
+
+/**
+* Format content
+*
+* @param string $content    The content to format
+* @param string $line_break What Line Break to use
+*
+* @return html
+**/
+function formatContent($content, $line_break='<br />')
+{
+    $patterns = array(    
+        "/(<br>|<br \/>|<br\/>)\s*/i",
+        "/(\r\n|\r|\n)/"
+    );
+    $replacements = array(    
+        PHP_EOL,
+        $line_break
+    );
+    $content = preg_replace($patterns, $replacements, $content);
+    return $content;
 }
 
 /**

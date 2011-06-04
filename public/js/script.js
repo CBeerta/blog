@@ -54,7 +54,7 @@ $(document).ready(function()
             loadtype    : 'POST',
             type        : "autogrow",
             submit      : "Save",
-            indicator   : '<img src="public/img/indicator.gif">',
+            indicator   : '<img src="/public/img/indicator.gif">',
             tooltip     : 'Click to edit.',
             onblur      : 'cancel',
             width       : 'auto',

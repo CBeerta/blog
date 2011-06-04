@@ -77,7 +77,7 @@ class Blog
 
         set('posts', $posts);            
         
-        return html('blog.html.php');
+        return html('blog/index.html.php');
     }
     
     /**
@@ -106,10 +106,19 @@ class Blog
             ->where_like('post_slug', "%{$slug}%")
             ->order_by_desc('post_date')
             ->find_one();
-            
+
+        if ($post) {            
+            $comments = ORM::for_table('comments')
+                ->where('post_ID', $post->ID)
+                ->order_by_desc('comment_date')
+                ->find_many();
+        
+            set('comments', $comments);            
+        }
+        
         set('post', $post);
         
-        return html('blog.single.html.php');
+        return html('blog/single.html.php');
     }
 
     /**
@@ -151,10 +160,10 @@ class Blog
             return partial('Will not Save!');
         }
         
-        $post->post_content = sqlite_escape_string($value);
+        $post->post_content = $value;
         $post->save();
         
-        return partial($post->post_content);
+        return partial(formatContent($post->post_content));
     }
 
     /**
@@ -224,12 +233,13 @@ class Blog
         set('sidebar', self::sidebar());
 
         $posts = ORM::for_table('posts')
+            ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->find_many();
             
         set('posts', $posts);
 
-        return html('archive.html.php');
+        return html('blog/archive.html.php');
     }
 
 
@@ -243,13 +253,14 @@ class Blog
         set('build_date', date('r'));
 
         $posts = ORM::for_table('posts')
+            ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->limit(option('posts_per_page'))
             ->find_many();
         $posts = Projects::mergeBlogPosts($posts);
         set('posts', $posts);
         
-        return xml('blog.xml.php', null);
+        return xml('blog/feed.xml.php', null);
     }
 
 }

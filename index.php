@@ -105,15 +105,14 @@ layout('base.html.php');
 dispatch_get('/projects', 'Projects::overview');
 dispatch_get('/projects/:slug', 'Projects::detail');
 
-
 // Blog stuff #############################################
+dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog', 'Blog::index');
 dispatch_get('/blog/pager/:offset', 'Blog::index');
 dispatch_get('/blog/archive', 'Blog::archive');
 dispatch_get('/blog/:slug', 'Blog::detail');
 
 // These are here for compatibility with the previous WP install
-dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
 dispatch_get('/blog/:year/:month/:slug/', 'Blog::detail');
 
 // The editor stuff #######################################
@@ -131,9 +130,17 @@ dispatch_post('/sidebar/search', 'Sidebar::search');
 dispatch_get('/contact', 'Contact::index');
 
 // Redirect photography to fluidr #########################
-dispatch_get('/photography', function() {
+dispatch_get('/photography', 'photography');
+
+/**
+* Redirect to fluidr
+*
+* @return void
+**/
+function photography() 
+{
     redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
-});
+}
 
 // And the root of all evil ###############################
 dispatch_get('/', 'Projects::overview');
