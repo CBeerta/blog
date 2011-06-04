@@ -42,60 +42,39 @@
         </li>
 <?php endforeach; ?>
     </ul>
+    <div class="search">        
+        <form method="POST" action="<?php echo url_for('sidebar', 'search'); ?>">
+        <fieldset>
+        <input type="text" id="search-text" name="s" placeholder="<?php echo isset($search) ? $search : 'Search'; ?>"/>
+        </fieldset>
+        </form>
+    </div>
     </div>
     <!-- end div#menu -->
-    <div id="splash">
-    <img src="/public/header-images/<?php echo randomHeaderImage('header-images/'); ?>" width="940" height="255" alt="" />
-    </div>
-    <div id="main" role="main">
-        <div id="content">
-<?php echo $content; ?>
-        </div>
-    <sidebar>
-        <ul>
-          <li id="search">
-            <h2>Search</h2>
-            <form method="POST" action="<?php echo url_for('sidebar', 'search'); ?>">
-              <fieldset>
-                <input type="text" id="search-text" name="s" placeholder="<?php echo isset($search) ? $search : 'Search'; ?>"/>
-                <input type="submit" id="search-submit" value="Search" />
-              </fieldset>
-            </form>
-          </li>
-          <li id="social">
+
+    <div id="splash" style="background-image: url(/public/header-images/<?php echo randomHeaderImage('header-images/'); ?>)">
+        <p>        
             <a href="<?php echo url_for('blog', 'feed'); ?>"><img title="RSS Feed" src="/public/img/social/rss_32.png"></a>
             <a href="mailto:claus@beerta.de"><img title="Email Me" src="/public/img/social/email_32.png"></a>
             <a href="http://www.flickr.com/photos/cbeerta"><img title="Flickr Page" src="/public/img/social/flickr_32.png"></a>
             <a href="http://amg.deviantart.com/"><img title="DeviantART" src="/public/img/social/deviantart_32.png"></a>
             <a href="https://github.com/CBeerta"><img title="Github" src="/public/img/social/github_32.png"></a>
-          </li>
-          <li>
-<?php if (isset($sidebar)) echo $sidebar; ?>
-            <h2>Github Projects</h2>
-            <ul class="github">
-              <!--li><a href="#">Eget tempor eget nonummy</a></li-->
-            </ul>
-            <h2>Flickr Fotostream</h2>
-            <!-- Start of Flickr Badge --> 
-            <div id="flickr_badge_uber_wrapper"> 
-              <div id="flickr_badge_wrapper"> 
-                <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=5&display=latest&size=t&layout=x&source=user&user=46080991%40N07"></script> 
-              </div> 
-            </div> 
-            <!-- End of Flickr Badge -->             
-            <h2>DeviantART Favourites</h2>
-            <ul class="deviantart">
-            </ul>
-          </li>
-        </ul>
-    </sidebar>
+        </p>    
     </div>
+
+    <div id="main" role="main">
+        <div id="content">
+<?php echo $content; ?>
+        </div>
     <div class="clearfix"></div>
+    </div>
+
     <footer>
-    <p>Copyright &copy; 2000 - <?php echo date('Y'); ?> Claus Beerta. All Rights Reserved. </p>
-    <p id="links"><a href="/contact">Impressum</a></p>
+        <p>Copyright &copy; 2000 - <?php echo date('Y'); ?> Claus Beerta. All Rights Reserved. </p>
+        <p id="links"><a href="/contact">Impressum</a></p>
     </footer>
   </div> <!-- eo #container -->
+  
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
   <script>window.jQuery || document.write("<script src='/public/js/libs/jquery-1.5.1.min.js'>\x3C/script>")</script>
 <?php if (isEditor()): // Only need these for editing purposes?>

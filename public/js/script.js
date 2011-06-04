@@ -6,47 +6,6 @@
 $(document).ready(function() 
 {
 
-    /**
-    * Load Github projects async, as it might block on the server
-    **/
-    $.get("/sidebar/github/CBeerta", function(data) {
-        json = $.parseJSON(data);
-        var append;
-        for (var repo in json['user']['repositories']) {
-            var r = json['user']['repositories'][repo];
-            
-            if ( r['watchers'] = 0 ) continue;
-            
-            append = '';            
-            append += '<li><a href="' + r['url'] + '">' + r['name'] + '</a>';
-            append += '<p>' + r['description'] + '</p>';
-            append += '</li>';
-            
-            $(".github").append(append);
-        }
-    });
-
-    /**
-    * Load Deviantart Favs
-    **/
-    $.get("/sidebar/deviantart/favby%3Aamg", function(data) {
-        json = $.parseJSON(data);
-        var append;
-        for (var item in json)
-        {
-            var r = json[item];
-
-            append = '';            
-            append += '<li><a href="' + r['link'] + '">';
-            append += '<img src="' + r['small'] + '">';
-            append += '</a>';
-            //append += '<p>' + r['description'] + '</p>';
-            append += '</li>';
-        
-            $(".deviantart").append(append);
-        }
-    });
-
     if (window.jQuery.editable) {
         $('.editable').editable('?/blog/save',
         {
@@ -66,15 +25,32 @@ $(document).ready(function()
         });
     }
 
-    // Just enable fancybox for all img src inside an href for our posts    
+    // go through entry links and set a title if theres none.
+    // Yes, i'm that lazy. Mainly for fancybox to display pretty footer
     $('.entry a').each(function() {
-        if ($(this).html().match(/img.*src/i)) {
-            $(this).fancybox();
+        if ( !$(this).attr('title') ) {
+            $(this).attr('title', basename($(this).attr('href')));
         }
     });
 
+    // Just enable fancybox for all img src inside an href for our posts    
+    $('.entry a').each(function() {
+        if ($(this).html().match(/img.*src/i)) {
+            $(this).fancybox({
+                'titlePosition': 'over',
+                'hideOnContentClick': true,
+                'centerOnScroll': true
+            });
+        }
+    });
+    
+
 });
 
+function basename(path) 
+{
+    return path.replace(/\\/g,'/').replace( /.*\//, '' );
+}
 
 function toggle_publish(id)
 {
