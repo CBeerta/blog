@@ -74,7 +74,7 @@ class Blog
                 ->limit($ppp)
                 ->find_many();
         }
-
+        
         set('posts', $posts);            
         
         return html('blog/index.html.php');
@@ -157,6 +157,7 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) || is_null($value) ) {
+            d($_POST);
             return partial('Will not Save!');
         }
         

@@ -1,6 +1,6 @@
 <?php set('active', 'blog'); ?>
 <?php if (empty($post)): ?>
-    <h2>Post does not exist!</h2>
+<alert>Post does not exist!</alert>
 <?php return; endif; ?>
 <div class="post" id="<?php echo $post->ID; ?>">
     <h2 class="title">

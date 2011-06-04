@@ -107,6 +107,13 @@ h4 {
     line-height: 2em;
 }
 
+alert {
+	font: normal 300% Georgia, "Times New Roman", Times, serif;
+    text-shadow: 2px 2px 2px rgba(200, 200, 200, 0.5);
+    line-height: 2em;
+    color: red;
+}
+
 p, blockquote, ul, ol {
 	margin-bottom: 5px;
 	line-height: 1.5em;
@@ -364,6 +371,9 @@ img.editor {
 }
 .pagination .prev {
     float: left;
+}
+.pagination .archive {
+    text-align: center;
 }
 .pagination .next {
     float: right;

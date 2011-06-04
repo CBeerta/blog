@@ -243,15 +243,29 @@ class Importers
         mysql_select_db($dbname, $db);
         mysql_set_charset('utf8', $db);
         
-        $res = mysql_query("SELECT * FROM `wp_comments`;");
+        $res = mysql_query(
+            "SELECT * 
+             FROM wp_comments,wp_posts 
+             WHERE wp_comments.comment_post_ID=wp_posts.ID"
+         );
         
         ORM::for_table('comments')->raw_query('DELETE FROM comments')->find_one(27);
         while ($data = mysql_fetch_assoc($res)) {
-        
+            
+            // Find a Post with mathing title
+            $post = ORM::for_table('posts')
+                ->where_like('post_title', $data['post_title'])
+                ->find_one();
+                
+            if (!isset($post->ID)) {
+                d("No Matching Post found for {$data['post_title']}");
+                continue;
+            }
+            d("Importing Comments for: " . $post->post_title);
+                
             $comment = ORM::for_table('comments')->create();
             
-            $comment->ID = $data['comment_ID'];
-            $comment->post_ID = $data['comment_post_ID'];
+            $comment->post_ID = $post->ID;
             $comment->comment_author = $data['comment_author'];
             $comment->comment_author_email = $data['comment_author_email'];
             $comment->comment_author_url = $data['comment_author_url'];
@@ -267,7 +281,7 @@ class Importers
             
             $comment->save();
             
-            d($data);
+            //d($comment);
         }
         
         return;

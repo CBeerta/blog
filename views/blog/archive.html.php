@@ -1,6 +1,6 @@
 <?php set('active', 'blog'); ?>
 <?php if (empty($posts)): ?>
-    <h2>Post does not exist!</h2>
+<alert>Not a single Post!</alert>
 <?php endif; ?>
 <h4>Blog Archive</h4>
 <div class="archive">

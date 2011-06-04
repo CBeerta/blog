@@ -1,6 +1,6 @@
 <?php set('active', 'blog'); ?>
 <?php if (empty($posts)): ?>
-    <h2>Post does not exist!</h2>
+<alert>Nothing was Found!</alert>
 <?php return; endif; ?>
 <?php foreach ($posts as $post): ?>
 <div class="post" id="<?php echo $post->ID; ?>">

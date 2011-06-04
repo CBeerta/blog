@@ -1,6 +1,6 @@
 <?php set('active', 'blog'); ?>
 <?php if (empty($posts)): ?>
-    <h2>Post does not exist!</h2>
+<alert>No more Posts!</alert>
 <?php endif; ?>
 <?php foreach ($posts as $post): ?>
 <div class="post" id="<?php echo $post->ID; ?>">
@@ -23,4 +23,5 @@
 <?php if ($offset >= $ppp): ?>
     <h2 class="next"><a href="<?php echo url_for('blog', 'pager', $offset - $ppp); ?>">Newer Entries</a>&gt;</h2>
 <?php endif; ?>
+    <h2 class="archive"><a href="<?php echo url_for('blog', 'archive'); ?>">Archive</a></h2>
 </div>
