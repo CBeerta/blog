@@ -291,14 +291,14 @@ header {
 }
 
 .post .title a {
+    font-family: 'Droid Sans',arial,serif;
 	padding: 4px 35px 4px 15px;
 	background: #fff;
 	text-decoration: none;
 	font-weight: bold;
 	color: #000;
 	font-size: 131%;
-    /*text-shadow: -1px -1px 1px #ddd;*/
-    letter-spacing: -0.1em;
+    letter-spacing: -0.06em;
 }
 
 .post .entry {

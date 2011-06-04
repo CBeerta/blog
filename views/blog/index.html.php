@@ -20,7 +20,7 @@
 <?php endforeach; ?>
 <div class="pagination">
     <h2 class="prev">&lt;<a href="<?php echo url_for('blog', 'pager', $offset + $ppp); ?>">Older Entries</a></h2>
-<?php if ($offset > $ppp): ?>
+<?php if ($offset >= $ppp): ?>
     <h2 class="next"><a href="<?php echo url_for('blog', 'pager', $offset - $ppp); ?>">Newer Entries</a>&gt;</h2>
 <?php endif; ?>
 </div>
