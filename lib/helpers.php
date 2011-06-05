@@ -106,16 +106,57 @@ function formatDate($date)
 **/
 function formatContent($content, $line_break='<br />')
 {
-    $patterns = array(    
-        "/(<br>|<br \/>|<br\/>)\s*/i",
-        "/(\r\n|\r|\n)/"
-    );
-    $replacements = array(    
-        PHP_EOL,
-        $line_break
-    );
-    $content = preg_replace($patterns, $replacements, $content);
+    if (strstr($content, '<') !== false) {
+        /**
+        * This is somewhat specific. I dunno if Wordpress generated these.
+        * It SUCKS. maybe easier to just clean my posts?
+        *
+        * Anyhow: Any line ending that is NOT a html tag followed by 2 linebreaks
+        * will be converted to two '<br>' tags
+        *
+        * This seems to convert my posts best, leaving properly formatted ones intact
+        * and only alter the ones that need it.
+        *
+        * FIXME: This has to DIAF! Fix the goddamn content in the database already!
+        **/
+        $content = preg_replace(
+            '#([\w:;.,!\?\(\)]+?)(\r|\n){2,}#', 
+            '\1<br><br>', 
+            $content
+        );
+    } else {
+        // This is probably Markdown or plaintext
+        $content = Markdown($content);
+    }
+
     return $content;
+}
+
+/**
+* Create a "Slug" from a title
+*
+* @param string $title   The title to create a slug from
+* @param string $sep     A Seperator
+* @param string $charset The Charset to use
+*
+* @return string a slug
+**/
+function buildSlug($title, $sep = "-", $charset = "UTF-8")
+{
+    // Build Slug
+    $slug = strtolower(htmlentities($title, ENT_COMPAT, $charset));
+    $slug = preg_replace(
+        '/&(.)(acute|cedil|circ|lig|grave|ring|tilde|uml);/', "$1", 
+        $slug
+    );
+    $slug = preg_replace(
+        '/([^a-z0-9]+)/', 
+        $sep, 
+        html_entity_decode($slug, ENT_COMPAT, $charset)
+    );
+    $slug = trim($slug, $sep);
+    
+    return $slug;
 }
 
 /**
