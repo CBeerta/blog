@@ -133,7 +133,9 @@ class Blog
             : null;
             
         $post = ORM::for_table('posts')->find_one($id);
-        return partial($post->post_content);
+        
+        $content = '# ' . $post->post_title . "\n\n" . $post->post_content;
+        return partial($content);
     }
 
     /**
@@ -161,10 +163,16 @@ class Blog
             return partial('Will not Save!');
         }
         
+        $title_match = "|^#\s?(.*?)\n|";
+        if (preg_match($title_match, $value, $matches)) {
+            $value = trim(preg_replace($title_match, '', $value));
+            $post->post_title = trim($matches[1]);
+        }
+
         $post->post_content = $value;
         $post->save();
         
-        return partial(formatContent($post->post_content));
+        return partial(formatContent($value));
     }
 
     /**
