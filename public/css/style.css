@@ -115,6 +115,9 @@ alert {
     color: red;
 }
 
+em {
+    font-style: italic;
+}
 p, blockquote, ul, ol {
 	margin-bottom: 5px;
 	line-height: 1.5em;

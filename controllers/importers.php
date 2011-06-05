@@ -174,10 +174,13 @@ class Importers
             $post->post_title = $src->title;
             $post->post_content = $src->body_html;
             $post->guid = $src->slug . '-'. $src->id;
-            $post->post_status = 'draft';
+            $post->original_source = 'http://cbeerta.posterous.com/' . $src->slug;
+            $post->post_status = 'publish';
             
+            //d($post);
             if (!$dryrun) {
                 $post->save();
+                d("Imported: {$post->post_title}");
             }
             
             if (!empty($ret->comments)) {
@@ -444,6 +447,7 @@ class Importers
             $new->post_content = $content;
             $new->post_slug = basename(strtolower($item->get_id()));
             $new->guid = basename(strtolower($item->get_id()));
+            $new->original_source = $item->get_link();
             
             if (!$dryrun) {
                 $new->save();
