@@ -48,6 +48,11 @@ if ( PHP_SAPI != 'cli' ) {
 class Importers
 {
     /**
+    * API Token for posterous api
+    **/
+    private static $_posterous_api_token = false;
+
+    /**
     * Parse CLI Args
     *
     * @return void
@@ -59,8 +64,12 @@ class Importers
             'import-comments' => 'Import Comments From a Wordpress Blog',
             'import-projects' => 'Import Projects From Wordpress',
             'import-rss:' => 'Import External RSS Feed',
+            'import-posterous' => 'Import posts and comments from Posterous',
             'check-links:' => 'Check Links in Posts. Need substr for Domaincheck',
+            'post-email' => 'Post to blog by Email',
             'help' => 'This Help',
+            'dry-run' => 'Don\'t apply',
+            'force' => 'Force Overwrites',
         );
         
         $options = getopt('h', array_keys($commands));
@@ -70,6 +79,11 @@ class Importers
         // Pull user config
         call_if_exists('configure');
         
+        $command = false;
+        $value = null;
+        $dryrun = false;
+        $force = false;
+        
         foreach ($options as $k => $v) {
             switch ($k) {
             case 'h':
@@ -78,34 +92,244 @@ class Importers
                 foreach ($commands as $h => $t) {
                     printf("\t--%-16s\t%s\n", $h, $t);
                 }
+                $command = false;
                 break;
             case 'import-blog-posts':
-                self::importBlogPosts();
-                exit;
+                $command = 'importBlogPosts';
+                break;
             case 'import-comments':
-                self::importComments();
-                exit;
+                $command = 'importComments';
+                break;
             case 'import-projects':
-                self::importProjects();
-                exit;
+                $command = 'importProjects';
+                break;
+            case 'post-email':
+                $command = 'postByMail';
+                break;
+            case 'import-posterous':
+                $command = 'importPosterous';
+                break;
             case 'import-rss':
-                self::importRSS($v);
-                exit;
+                $command = 'importRSS';
+                $value = $v;
+                break;
             case 'check-links':
-                self::checkLinks($v);
-                exit;
+                $command = 'checkLinks';
+                $value = $v;
+                break;
+            case 'dry-run':
+                $dryrun = true;
+                break;
+            case 'force':
+                $force = true;
+                break;
             }
+        }
+        
+        if ($command !== false) {
+            self::$command($value, $dryrun, $force);
+            exit;
         }
     }
 
     /**
-    * Check Links in articles for validity
+    * Import from posterous
     *
-    * @param string $substr String that needs to be in the url to check
+    * @param string $value  Not used here
+    * @param boot   $dryrun Dryrun
+    * @param boot   $force  Force Overwrites
     *
     * @return void
     **/
-    public static function checkLinks($substr)
+    public static function importPosterous($value, $dryrun, $force)
+    {
+        
+        if (!isset($_SERVER['USER']) || !isset($_SERVER['PASSWORD'])) {
+            d("You will have to set the 'USER' and 'PASSWORD' env variables");
+            return;
+        }
+
+        $ret = self::posterousApi('users/me/sites/primary/posts/public', false);
+
+        if ($ret === false) {
+            d("Could not get Posts. Check Auth?");
+            return;
+        }
+        
+        foreach ($ret as $src) {
+        
+            $post = ORM::for_table('posts')
+                ->where('post_slug', $src->slug)
+                ->find_one();
+                
+            if (!$post) {
+                $post = ORM::for_table('posts')->create();
+            } else if (!$force) {
+                d("Skipping already imported: {$src->slug}. Use --force to Update");
+                continue;
+            }
+            
+            $post->post_date = $src->display_date;
+            $post->post_slug = $src->slug;
+            $post->post_title = $src->title;
+            $post->post_content = $src->body_html;
+            $post->guid = $src->slug . '-'. $src->id;
+            $post->post_status = 'draft';
+            
+            if (!$dryrun) {
+                $post->save();
+            }
+            
+            if (!empty($ret->comments)) {
+                d("Holy Shit, COMMENTS! Need to import these.");
+            }
+        }
+
+    }
+
+    /**
+    * Do requests against posterous API
+    *
+    * @param string $url        What Command to query
+    * @param bool   $need_token Does this request require a token?
+    *
+    * @return void
+    **/
+    public static function posterousApi($url, $need_token=true)
+    {
+
+        if ($need_token && !self::$_posterous_api_token) {
+            $token = self::posterousApi('auth/token', false);
+            if (!$token) {
+                return false;
+            }
+            self::$_posterous_api_token = $token->api_token;
+        }
+
+        $ch = curl_init();
+        curl_setopt(
+            $ch, 
+            CURLOPT_URL, 
+            'http://posterous.com/api/2/' . $url
+        );
+
+        if ($need_token) {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt(
+                $ch, 
+                CURLOPT_POSTFIELDS, 
+                "&api_token=" . self::$_posterous_api_token
+            );
+        }
+
+        curl_setopt(
+            $ch, 
+            CURLOPT_USERPWD, 
+            $_SERVER['USER'] . ':' . $_SERVER['PASSWORD']
+        ); 
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+        $ret = curl_exec($ch);
+        $info = curl_getinfo($ch);
+
+        curl_close($ch);
+
+        if ($info['http_code'] != 200) {
+            return false;
+        }        
+
+        return json_decode($ret);
+    }
+    
+
+    /**
+    * Create a new blog post by Email
+    *
+    * @param string $value  Not used here
+    * @param boot   $dryrun Dryrun
+    * @param boot   $force  Force Overwrites
+    *
+    * @return void
+    **/
+    public static function postByMail($value, $dryrun, $force)
+    {
+        if (ftell(STDIN) !== 0) {
+            fwrite(STDERR, "Nothing on STDIN.\n");
+            return;
+        }
+        
+        $content = '';
+        $input = fopen('php://stdin', 'r');
+        
+        $headers = array();
+        $body_opened = false;
+        
+        while ($line = fgets($input)) {
+            
+            if (preg_match("#^(\S+):\s?(.*)\Z#i", $line, $matches)) {
+                // Pull the Headers
+                $headers[strtolower($matches[1])] = $matches[2];
+            } else if (preg_match("#^\Z#", $line) && count($headers) > 0) {
+                // Newline without anything, and some headers seen
+                // this must be the body
+                $body_opened = true;
+            } else if ($body_opened && preg_match("#^--\s\Z#", $line)) {
+                // --\s on a single line marks the signature. close body
+                $body_opened = false;
+            } else if ($body_opened) {
+                $content .= $line;
+            } else {
+                // ignore anything else that is not header or body
+            }
+
+        }
+        
+        if (!isset($headers['subject']) || empty($content)) {
+            d("Can't deal with this mail");
+            return;
+        }
+
+        if ($headers['delivered-to'] !== 'claus@aello.beerta.net'
+            || $headers['return-path'] !== '<claus@beerta.net>'
+        ) {
+            d("Source not verified, not posting");
+            return;
+        }
+        
+        $post = ORM::for_table('posts')
+            ->where('post_title', $headers['subject'])
+            ->find_one();
+            
+        if (!$post) {
+            $post = ORM::for_table('posts')->create();
+        }
+        
+        $post->post_date = date('c');
+        $post->post_slug = buildSlug($headers['subject']);
+        $post->post_title = $headers['subject'];
+        $post->post_content = trim($content);
+        $post->guid = $post->post_slug . '-' . mktime();
+        $post->post_status = 'draft';
+        
+        if (!$dryrun) {
+            $post->save();
+        }
+        
+        d($headers);
+
+        //d($post);
+    }
+    /**
+    * Check Links in articles for validity
+    *
+    * @param string $substr String that needs to be in the url to check
+    * @param boot   $dryrun Dryrun
+    * @param boot   $force  Force Overwrites
+    *
+    * @return void
+    **/
+    public static function checkLinks($substr, $dryrun, $force)
     {
         $posts = ORM::for_table('posts')
             ->order_by_desc('post_date')
@@ -143,23 +367,24 @@ class Importers
                 curl_close($ch);
                 
                 if ($info['http_code'] != 200) {
-                    d("Failed for URL: " . $info['url']);
+                    d("!! Failed for URL: " . $info['url']);
                 }
             }
         }
-
-
     }
 
     /**
     * Import An External RSS into our content
     *
     * @param string $feed_uri Url to the feed to import
-    * @param bool   $force    Update existing posts
+    * @param boot   $dryrun   Dryrun
+    * @param boot   $force    Force Overwrites
     *
     * @return void
+    *
+    * FIXME: Gee, HTML pastery action. I should shoot myself.
     **/
-    public static function importRSS($feed_uri, $force=false)
+    public static function importRSS($feed_uri, $dryrun, $force)
     {
         d("Will import {$feed_uri}");
         
@@ -172,7 +397,6 @@ class Importers
         $rss->handle_content_type();
         
         // don't sort by pubdate, 
-        // but rather the date i added it to my favs
         $rss->enable_order_by_date(false); 
         
         $items = array();
@@ -221,7 +445,9 @@ class Importers
             $new->post_slug = basename(strtolower($item->get_id()));
             $new->guid = basename(strtolower($item->get_id()));
             
-            $new->save();
+            if (!$dryrun) {
+                $new->save();
+            }
             
             d($new->as_array());
         }
@@ -230,9 +456,13 @@ class Importers
     /**
     * Import Comments from Wordpress.
     *
+    * @param boot $value  Not Uses here
+    * @param boot $dryrun Dryrun
+    * @param boot $force  Force Overwrites
+    *
     * @return void
     **/
-    public static function importComments()
+    public static function importComments($value, $dryrun, $force)
     {
         $dbhost = 'aello.local';
         $dbname = 'claus';
@@ -247,7 +477,7 @@ class Importers
             "SELECT * 
              FROM wp_comments,wp_posts 
              WHERE wp_comments.comment_post_ID=wp_posts.ID"
-         );
+        );
         
         ORM::for_table('comments')->raw_query('DELETE FROM comments')->find_one(27);
         while ($data = mysql_fetch_assoc($res)) {
@@ -279,9 +509,11 @@ class Importers
                 ? 'visible' 
                 : 'hidden';
             
-            $comment->save();
+            if (!$dryrun) {
+                $comment->save();
+            }
             
-            //d($comment);
+            d($comment);
         }
         
         return;
@@ -291,9 +523,13 @@ class Importers
     /**
     * Import Blog Posts from Wordpress.
     *
+    * @param boot $value  Not Uses here
+    * @param boot $dryrun Dryrun
+    * @param boot $force  Force Overwrites
+    *
     * @return void
     **/
-    public static function importBlogPosts()
+    public static function importBlogPosts($value, $dryrun, $force)
     {
         include_once __DIR__.'/projects.php';
 
@@ -350,7 +586,10 @@ class Importers
             $post->guid = $data['guid'];
             $post->post_status = $data['post_status'];
             
-            $post->save();
+            if (!$dryrun) {
+                $post->save();
+            }
+            d($post);
         }
     }
 
@@ -358,11 +597,13 @@ class Importers
     /**
     * Import Projects from Wordpress.
     *
-    * @param bool $force Force overwrite of existing files
+    * @param boot $value  Not Uses here
+    * @param boot $dryrun Dryrun
+    * @param boot $force  Force Overwrites
     *
     * @return void
     **/
-    public static function importProjects($force = false)
+    public static function importProjects($value, $dryrun, $force)
     {
         $dbhost = 'aello.local';
         $dbname = 'claus';
@@ -424,11 +665,13 @@ class Importers
                 d("Not overwriting {$filename}");
                 continue;
             }
-                
-            file_put_contents(
-                $filename, 
-                utf8_encode($data['post_title'] . "\n\n" . $content)
-            );
+
+            if (!$dryrun) {
+                file_put_contents(
+                    $filename, 
+                    utf8_encode($data['post_title'] . "\n\n" . $content)
+                );
+            }
         }
     }
 
