@@ -7,9 +7,9 @@ $(document).ready(function()
 {
 
     if (window.jQuery.editable) {
-        $('.editable').editable('?/blog/save',
+        $('.editable').editable('/blog/save',
         {
-            loadurl     : '?/blog/json_load',
+            loadurl     : '/blog/json_load',
             loadtype    : 'POST',
             type        : "autogrow",
             submit      : "Save",

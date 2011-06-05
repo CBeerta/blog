@@ -89,6 +89,7 @@ body {
 }
 
 h1, h2, h3, h4 {
+    margin-bottom: 5px;
 }
 
 h1 {
@@ -122,15 +123,6 @@ p, blockquote, ul, ol {
 p {
 }
 
-blockquote {
-}
-
-ul, ol, li {
-	margin: 0px;
-	padding: 0px;
-	list-style: none;
-}
-
 a, a:visited, a:active {
 	text-decoration: underline;
 	color: #7EBA25;
@@ -140,7 +132,6 @@ a:hover {
 	text-decoration: none;
 	color: #7EBA25;
 }
-
 
 /* Blockquotes */
 blockquote {
@@ -347,6 +338,10 @@ header {
 	color: #5E5E5E;
 }
 
+.post p, blockquote, ul, ol {
+    margin-bottom: 15px;
+}
+
 .archive h2:hover {
     background-color: #eee;
 }
@@ -475,7 +470,6 @@ footer a:hover {
 	border: none;
 	background: none;
 }
-
 
 .ir { display: block; text-indent: -999em; overflow: hidden; background-repeat: no-repeat; text-align: left; direction: ltr; }
 .hidden { display: none; visibility: hidden; }
