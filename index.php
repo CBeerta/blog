@@ -56,9 +56,16 @@ function configure ()
         'deviantart_items' => 4,
         'posts_per_page' => 10,
         'date_format' => 'D, d M Y',
-        'host' => 'http://' . $_SERVER['HTTP_HOST'] . '/',
         'base_uri' => '/',
+        'env' => ENV_PRODUCTION,
         );
+        
+    if (PHP_SAPI == 'cli') {
+        $options['env'] = ENV_DEVELOPMENT;
+        $option['host'] = 'none';
+    } else {
+        $option['host'] = 'http://' . $_SERVER['HTTP_HOST'] . '/';
+    }
 
     /**
     * Load config file and override default options
