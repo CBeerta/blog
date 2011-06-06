@@ -1,7 +1,6 @@
-<?php set('active', 'projects'); ?>
 <?php if (empty($projects)): ?>
     <h2>Project does not exist!</h2>
-<?php endif; ?>
+<?php return; endif; ?>
 <?php foreach ($projects as $proj): ?>
 <div class="post">
     <h2 class="title"><a href="<?php echo url_for('projects', $proj->post_slug); ?>"><?php echo $proj->post_title; ?></a></h2>

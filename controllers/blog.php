@@ -54,42 +54,51 @@ class Blog
     public static function index()
     {
         set('title', 'Blog');
-        set('sidebar', self::sidebar());
+        set('active', 'blog');
         
         $ppp = option('posts_per_page');
         set('ppp', $ppp);
         $offset = set_or_default('offset', params('offset'), 0);
-        
+
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->offset($offset)
+            ->limit($ppp);
+
         if (!isEditor()) {
-            $posts = ORM::for_table('posts')
-                ->where('post_status', 'publish')
-                ->order_by_desc('post_date')
-                ->offset($offset)
-                ->limit($ppp)
-                ->find_many();
-        } else {
-            $posts = ORM::for_table('posts')
-                ->order_by_desc('post_date')
-                ->offset($offset)
-                ->limit($ppp)
-                ->find_many();
+            $posts = $posts->where('post_status', 'publish');
         }
+        $posts = $posts->find_many();
+        
+        set('posts', $posts);            
+        
+        return html('blog/index.html.php');
+    }
+
+    /**
+    * Photography Page
+    *
+    * @return html
+    **/
+    public static function photography()
+    {
+        set('title', 'Photography');
+        set('active', 'photography');
+        
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->where('post_type', 'flickr');
+
+        if (!isEditor()) {
+            $posts = $posts->where('post_status', 'publish');
+        }
+        $posts = $posts->find_many();
         
         set('posts', $posts);            
         
         return html('blog/index.html.php');
     }
     
-    /**
-    * Sidebar Additional Navigation
-    *
-    * @return html
-    **/
-    public static function sidebar()
-    {
-        return partial("snippets/sidebar.blog.html.php");
-    }
-
     /**
     * Detail on a slug
     *
@@ -100,12 +109,16 @@ class Blog
         $slug = params('slug');
         
         set('title', 'Blog');
-        set('sidebar', self::sidebar());
+        set('active', 'blog');
 
         $post = ORM::for_table('posts')
             ->where_like('post_slug', "%{$slug}%")
-            ->order_by_desc('post_date')
-            ->find_one();
+            ->order_by_desc('post_date');
+
+        if (!isEditor()) {
+            $post = $post->where('post_status', 'publish');
+        }
+        $post = $post->find_one();
 
         if ($post) {            
             $comments = ORM::for_table('comments')
@@ -239,7 +252,7 @@ class Blog
     public static function archive()
     {
         set('title', 'Blog Archive');
-        set('sidebar', self::sidebar());
+        set('active', 'blog');
 
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')

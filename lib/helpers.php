@@ -168,7 +168,7 @@ function buildSlug($title, $sep = "-", $charset = "UTF-8")
 **/
 function isEditor()
 {
-    if (php_uname('n') === 'phoebe') {
+    if (php_uname('n') === 'phoebe' && PHP_SAPI == 'cli') {
         // for now only allow editing on phoebe
         return true;
     }

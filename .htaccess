@@ -2,7 +2,10 @@ Options +FollowSymlinks
 Options -Indexes
 RewriteEngine on
 
+<IfModule php5_module>
+php_value session.cookie_httponly true
 php_value short_open_tag off
+</IfModule>
 
 
 # test string is a valid files

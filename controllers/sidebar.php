@@ -55,7 +55,7 @@ class Sidebar
     {
         $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
         set('title', 'Search');
-        set('sidebar', Blog::sidebar());
+        set('active', 'blog');
         
         $posts = ORM::for_table('posts')
             ->where_raw(

@@ -52,7 +52,8 @@ function configure ()
         'cache_dir' => '/var/tmp/',
         'dbfile' => './data/planner.db',
         'projects_dir' => './data/projects',
-        'upload_url' => 'http://idisk.beerta.net/public/wordpress/',
+        'public_url' => 'http://localhost/data/uploads',
+        'public_loc' => './data/uploads',
         'deviantart_items' => 4,
         'posts_per_page' => 10,
         'date_format' => 'D, d M Y',
@@ -129,15 +130,15 @@ dispatch_post('/blog/trash', 'Blog::trash');
 dispatch_post('/blog/toggle_publish', 'Blog::togglePublish');
 
 // sidebar content. probably ajax #########################
-dispatch_get('/sidebar/github/:username', 'Sidebar::github');
-dispatch_get('/sidebar/deviantart/:search', 'Sidebar::deviantart');
+//dispatch_get('/sidebar/github/:username', 'Sidebar::github');
+//dispatch_get('/sidebar/deviantart/:search', 'Sidebar::deviantart');
 dispatch_post('/sidebar/search', 'Sidebar::search');
 
 // contact ################################################
 dispatch_get('/contact', 'Contact::index');
 
 // Redirect photography to fluidr #########################
-dispatch_get('/photography', 'photography');
+dispatch_get('/photography', 'Blog::photography');
 
 /**
 * Redirect to fluidr

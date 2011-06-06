@@ -167,6 +167,7 @@ class Projects
     public static function overview() 
     {
         set('title', 'Projects');
+        set('active', 'projects');
         set('projects', self::loadProjects());
         set('body', false);
         
@@ -181,6 +182,7 @@ class Projects
     public static function detail() 
     {
         set('title', 'Projects');
+        set('active', 'projects');
         set('projects', self::loadProjects(params('slug')));
         set('body', true);
         

@@ -1,4 +1,3 @@
-<?php set('active', 'blog'); ?>
 <?php if (empty($posts)): ?>
 <alert>Nothing was Found!</alert>
 <?php return; endif; ?>
