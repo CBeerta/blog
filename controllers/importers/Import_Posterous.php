@@ -65,7 +65,7 @@ class Import_Posterous extends Importer
 
         $ret = self::posterousApi('users/me/sites/primary/posts/public', false);
 
-        if ($ret === false) {
+        if (!$ret) {
             d("Could not get Posts. Check Auth?");
             return;
         }
@@ -86,10 +86,12 @@ class Import_Posterous extends Importer
             $post->post_date = $src->display_date;
             $post->post_slug = $src->slug;
             $post->post_title = $src->title;
-            $post->post_content = $src->body_html;
+            $post->post_content = $src->body_full;
             $post->guid = $src->slug . '-'. $src->id;
             $post->original_source = 'http://cbeerta.posterous.com/' . $src->slug;
-            $post->post_status = 'publish';
+            $post->post_status = 'draft';
+            
+            d($src);
             
             //d($post);
             if (!$dryrun) {

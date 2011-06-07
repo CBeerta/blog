@@ -161,7 +161,7 @@ class Blog
         if (isEditor() !== true) {
             return partial('No Permission to edit!');
         }
-
+        
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
             ? $_POST['id'] 
             : null;
@@ -172,7 +172,7 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) || is_null($value) ) {
-            d($_POST);
+            //d($_POST);
             return partial('Will not Save!');
         }
         

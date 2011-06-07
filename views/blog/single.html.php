@@ -1,7 +1,7 @@
 <?php if (empty($post)): ?>
 <alert>Post does not exist!</alert>
 <?php return; endif; ?>
-<div class="post" id="<?php echo $post->ID; ?>">
+<div class="post <?php echo isEditor() ? 'editable' : ''; ?>" id="<?php echo $post->ID; ?>">
 <?php include __DIR__ . '/index.' . $post->post_type . '.html.php'; ?>
     <div class="clearfix"></div>
 <?php if (isEditor()): ?>
