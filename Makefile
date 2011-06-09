@@ -12,7 +12,7 @@ csstidy:
 	csstidy public/js/libs/fancybox/jquery.fancybox-1.3.4.css --silent=true | tr -d '\n' > public/js/libs/fancybox/jquery.fancybox.compressed-1.3.4.css
 
 ci:
-	git svn dcommit
+	#git svn dcommit
 	git push playground homebrew
 
 phpcs:

@@ -134,6 +134,19 @@ Slim::get('/blog', 'Blog::index');
 Slim::get('/blog/pager/:offset', 'Blog::index');
 Slim::get('/blog/archive', 'Blog::archive');
 Slim::get('/blog/:slug', 'Blog::detail');
+Slim::get(
+    '/blog/(:year(/:month(/:slug(/))))',  
+    function($year = null, $month = null, $slug = null) 
+    {
+        // This is glue for the old WP style urls
+    if ($slug) {
+        Slim::redirect('/blog/' . $slug);
+    } else {
+        Slim::pass();
+    }
+    
+    }
+);
 
 // The editor stuff #######################################
 Slim::post('/blog/json_load', 'Blog::loadJSON');

@@ -10,7 +10,8 @@ This ain't Wordpress. It's as bare bones as it gets. It may kill your kittens to
 
 # Uses
 
-* [Limonade](https://github.com/CBeerta/limonade)
+* [Slim](https://github.com/codeguy/Slim)
+* [Twig](http://www.twig-project.org/)
 * [PHP-Markdown](http://michelf.com/projects/php-markdown)
 * [Idiorm](https://github.com/j4mie/idiorm)
 * [Simplepie](https://github.com/simplepie/simplepie)
