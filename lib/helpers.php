@@ -64,6 +64,53 @@ class Helpers
     }
 
     /**
+    * not Found Magic
+    *
+    * @return void
+    **/
+    public static function notFound()
+    {
+        $parts = explode('/', Slim::request()->getResourceUri());
+        
+        /**
+        * First look through all projects and see if theres a match
+        **/
+        $slugs = array();
+        $projects = Projects::loadProjects();
+        
+        foreach ($projects as $proj) {
+            $slugs[strtolower($proj->post_slug)] = strtolower($proj->post_slug);
+        }
+        
+        foreach ($parts as $part) {
+            if (in_array(strtolower($part), $slugs)) {
+                Slim::redirect('/projects/' . $slugs[strtolower($part)]);
+            }
+        }
+        
+        /**
+        * Then look at all blog posts for a match
+        **/
+        $posts = ORM::for_table('posts')->find_many();
+        
+        $slugs = array();
+        foreach ($posts as $post) {
+            $slugs[] = $post->post_slug;
+        }
+
+        foreach ($parts as $part) {
+            if (in_array($part, $slugs)) {
+                Slim::redirect('/blog/' . $part);
+            }
+        }
+        
+        /**
+        * Finally, render our 404 because nothing was found
+        **/
+        Slim::render('404.html');
+    }
+
+    /**
     * Return a Random Header Image
     *
     * @param string $image_dir Directory under $public_dir with images

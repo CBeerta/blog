@@ -109,6 +109,9 @@ class Blog
                 ->find_many();
         
             Slim::view()->setData('comments', $comments);
+        } else {
+            Slim::response()->status(404);
+            return Slim::render('404.html');
         }
         
         Slim::view()->setData('post', $post);
