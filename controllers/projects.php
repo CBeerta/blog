@@ -164,11 +164,18 @@ class Projects
     **/
     public static function overview($slug = null) 
     {
+        $project = self::loadProjects($slug);
+        
+        if (empty($project)) {
+            Slim::response()->status(404);
+            return Slim::render('404.html');
+        }
+        
         Slim::view()->appendData(
             array(
             'title' => 'Projects',
             'active' => 'projects',
-            'projects' => self::loadProjects($slug),
+            'projects' => $project,
             'body' => $slug,
             )
         );
