@@ -125,7 +125,7 @@ Slim::view()->setData(
 Slim::get('/projects(/:slug)', 'Projects::overview');
 
 // Blog stuff #############################################
-Slim::get('^/blog/(.*feed.*)', 'Blog::feed');
+Slim::get('^/blog/.*feed.*', 'Blog::feed');
 Slim::get('/blog', 'Blog::index');
 Slim::get('/blog/pager/:offset', 'Blog::index');
 Slim::get('/blog/archive', 'Blog::archive');
