@@ -31,10 +31,6 @@
 * @link     http://claus.beerta.de/
 **/
 
-if ( ! defined('LIMONADE') ) {
-    exit('No direct script access allowed');
-}
-
 /**
 * Sidebar
 *
@@ -54,8 +50,6 @@ class Sidebar
     public static function search()
     {
         $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
-        set('title', 'Search');
-        set('active', 'blog');
         
         $posts = ORM::for_table('posts')
             ->where_raw(
@@ -72,10 +66,15 @@ class Sidebar
             ->limit(10)
             ->find_many();
 
-        set('posts', $posts); 
-        set('search', $s);
-        
-        return html('blog/search.html.php');
+        Slim::view()->appendData(
+            array(
+            'title' => 'Search',
+            'active' => 'blog',
+            'posts' => $posts,
+            'search' => $s,
+            )
+        );
+        return Slim::render('blog/search.html');
     }
     /**
     * Load github user json, and return project list
@@ -126,6 +125,8 @@ class Sidebar
     **/
     public static function deviantart($q = false)
     {
+        include_once __DIR__.'/vendor/simplepie/SimplePieAutoloader.php';
+        
         if ( !$q ) {
             return json("No search specified");
         }

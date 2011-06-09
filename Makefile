@@ -2,6 +2,10 @@ SOURCES=index.php controllers/*.php lib/*.php controllers/*/*.php
 
 all: csstidy phpcs
 
+imports:
+	php index.php --import-rss "http://api.flickr.com/services/feeds/photos_public.gne?id=46080991@N07&lang=en-us&format=rss_200" --dry-run
+	php index.php --import-rss "http://backend.deviantart.com/rss.xml?q=gallery%3Aamg%2F23117831&type=deviation" --dry-run
+	php index.php --import-posterous --dry-run
 
 csstidy:
 	csstidy public/css/style.css --silent=true | tr -d '\n' > public/css/style.compressed.css

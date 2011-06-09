@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{%block content %}
+{% for proj in projects %}
+<div class="post">
+    <h2 class="title"><a href="/projects/{{ proj.post_slug }}">{{ proj.post_title }}</a></h2>
+    <p class="date">Posted: {{ proj.post_date|date(date_format) }}</p>
+    <div class="entry">
+        <p>
+            {{ proj.teaser|raw }}
+        </p>
+{% if body %}
+        <p>
+            {{ proj.content|raw }}
+        </p>
+{% elseif proj.content %}
+    <div class="meta">
+        <p class="links"><a href="/projects/{{ proj.post_slug }}" class="comments">Continue Reading</a></p>
+    </div>
+{% endif %}
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% else %}
+    <alert>No Project Found!</alert>
+{% endfor %}
+{% endblock %}

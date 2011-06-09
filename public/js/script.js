@@ -13,6 +13,7 @@ $(document).ready(function()
             loadtype    : 'POST',
             type        : "autogrow",
             submit      : "Save",
+            submitdata  : { '_METHOD': 'PUT' },
             indicator   : '<img src="/public/img/indicator.gif">',
             tooltip     : 'Click to edit.',
             onblur      : 'cancel',
@@ -59,11 +60,11 @@ function toggle_publish(id)
         url: "/blog/toggle_publish",
         data: { 'id': id },
         success: function(data) {
-            var trash = $("#" + id + " img.toggle_publish");
+            var toggle = $("img.toggle_publish");
             if (data == 'publish') {
-                trash.attr('src', '/public/img/check_alt_32x32.png')
+                toggle.attr('src', '/public/img/check_alt_32x32.png')
             } else {
-                trash.attr('src', '/public/img/denied_32x32.png')
+                toggle.attr('src', '/public/img/denied_32x32.png')
             }
         }
     });
@@ -80,7 +81,7 @@ function trash_post(id)
     $.ajax({  
         type: "POST",
         url: "/blog/trash",
-        data: { 'id': id },
+        data: { 'id': id, '_METHOD': 'DELETE' },
         success: function(data) {
             alert(data);
         }

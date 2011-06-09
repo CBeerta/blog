@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if post %}
+<div class="post{% if editor %} editable{% endif %}" id="{{ post.ID }}">
+{% include 'blog/index.' ~ post.post_type ~ '.html' %}
+    <div class="clearfix"></div>
+</div>
+{% if editor %}
+    <div class="editor">
+        <img class="editor trash_post" id="{{ post.ID }}" onclick="trash_post({{ post.ID }});" src="/public/img/trash_stroke_32x32.png">
+        <img class="editor toggle_publish" id="{{ post.ID }}" onclick="toggle_publish({{ post.ID }});" src="/public/img/{{ post.post_status != 'publish' ? 'denied' : 'check_alt' }}_32x32.png">
+    </div>
+    <div class="clearfix"></div>
+{% endif %}
+{% for c in comments %}
+<div class="comment" id="{{ c.ID }}">
+    <img class="gravatar" src="http://www.gravatar.com/avatar/{{ c.comment_author_email }}?d=retro&s=64" />
+    <div class="comment_content">
+        <div class="title">
+            <a href="{{ c.comment_author_url }}">{{ c.comment_author }}</a>
+            &nbsp;|&nbsp;
+            <small>{{ c.comment_date|date(date_format) }}</small>
+        </div>
+        <p>
+            {{ c.comment_content }}
+        </p>
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% endfor %}
+{% else %}
+<alert>Post does not exist!</alert>
+{% endif %}
+{% endblock %}

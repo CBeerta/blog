@@ -91,12 +91,12 @@ class Import_Posterous extends Importer
             $post->original_source = 'http://cbeerta.posterous.com/' . $src->slug;
             $post->post_status = 'draft';
             
-            d($src);
-            
             //d($post);
             if (!$dryrun) {
                 $post->save();
                 d("Imported: {$post->post_title}");
+            } else {
+                d("Would Import: {$post->post_title}");
             }
             
             if (!empty($ret->comments)) {

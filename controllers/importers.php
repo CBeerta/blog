@@ -36,6 +36,20 @@ if ( PHP_SAPI != 'cli' ) {
     return;
 }
 
+require_once __DIR__ . '/../vendor/simplepie/SimplePieAutoloader.php';
+
+/**
+* Debug Function
+*
+* @param string $message Message to output
+*
+* @return void
+**/
+function d($message)
+{
+    Helpers::d($message);
+}
+
 /**
 * Importer
 *
@@ -108,15 +122,11 @@ class Importers
     * API Token for posterous api
     **/
     private static $_posterous_api_token = false;
-
+    
     /**
-    * Parse CLI Args
-    *
-    * @return void
+    * Commands that we understand
     **/
-    public static function parseArgs()
-    {
-        $commands = array(
+    private static $_commands = array(
             'import-blog-posts' => 'Import Posts From a Wordpress Blog',
             'import-comments' => 'Import Comments From a Wordpress Blog',
             'import-projects' => 'Import Projects From Wordpress',
@@ -127,12 +137,29 @@ class Importers
             'help' => 'This Help',
             'dry-run' => 'Don\'t apply',
             'force' => 'Force Overwrites',
-        );
+    );
         
-        $options = getopt('h', array_keys($commands));
-        
-        // Pull user config
-        call_if_exists('configure');
+    /**
+    * Print help
+    *
+    * @return void
+    **/
+    private static function _help()
+    {
+        print "Usage: {$_SERVER['argv'][0]} [OPTIONS]\n";
+        foreach (self::$_commands as $h => $t) {
+            printf("\t--%-16s\t%s\n", $h, $t);
+        }
+    }
+
+    /**
+    * Parse CLI Args
+    *
+    * @return void
+    **/
+    public static function parseArgs()
+    {
+        $options = getopt('h', array_keys(self::$_commands));
         
         $class = false;
         $value = null;
@@ -143,12 +170,9 @@ class Importers
             switch ($k) {
             case 'h':
             case 'help':
-                print "Usage: {$_SERVER['argv'][0]} [OPTIONS]\n";
-                foreach ($commands as $h => $t) {
-                    printf("\t--%-16s\t%s\n", $h, $t);
-                }
-                $command = false;
-                break;
+            default:
+                self::_help();
+                exit;
             case 'import-blog-posts':
                 $class = 'Wp_Import_Blog_Posts';
                 break;
@@ -184,6 +208,9 @@ class Importers
             include_once __DIR__ . '/importers/' . $class . ".php";
             $ret = new $class();
             $ret->setup($value, $dryrun, $force)->run();
+            exit;
+        } else {
+            self::_help();
             exit;
         }
     }

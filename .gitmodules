@@ -1,12 +1,15 @@
 [submodule "vendor/idiorm"]
 	path = vendor/idiorm
 	url = https://github.com/j4mie/idiorm.git
-[submodule "vendor/limonade"]
-	path = vendor/limonade
-	url = https://github.com/CBeerta/limonade.git
 [submodule "vendor/markdown"]
 	path = vendor/markdown
 	url = http://git.michelf.com/php-markdown
 [submodule "vendor/simplepie"]
 	path = vendor/simplepie
 	url = https://github.com/simplepie/simplepie.git
+[submodule "vendor/Slim"]
+	path = vendor/Slim
+	url = https://github.com/codeguy/Slim.git
+[submodule "vendor/Twig"]
+	path = vendor/Twig
+	url = https://github.com/fabpot/Twig.git

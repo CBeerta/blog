@@ -32,7 +32,7 @@
 **/
 
 /**
-* Projects
+* Photography
 *
 * @category Personal_Website
 * @package  MyWebPage
@@ -40,23 +40,36 @@
 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
 * @link     http://claus.beerta.de/
 **/
-class Contact
+class Photography
 {
 
     /**
-    * Contact Page
+    * Photography Page
     *
-    * @return void
+    * @return html
     **/
     public static function index()
     {
-        Slim::view()->setData('title', 'Contact');
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->where('post_type', 'flickr');
 
-        return Slim::render('contact.html');
+        if (!Helpers::isEditor()) {
+            $posts = $posts->where('post_status', 'publish');
+        }
+        $posts = $posts->find_many();
+        
+        Slim::view()->appendData(
+            array(
+            'title' => 'Photography',
+            'active' => 'photography',
+            'posts' => $posts,
+            )
+        );
+        return Slim::render('blog/index.html');
     }
 
 }
-
 
 
 

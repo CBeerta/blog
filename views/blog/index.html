@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for post in posts %}
+<div class="post" id="{{ post.ID }}">
+{% include 'blog/index.' ~ post.post_type ~ '.html' %}
+    <div class="clearfix"></div>
+</div>
+{% else %}
+<alert>No more Posts!</alert>
+{% endfor %}
+{% if ppp %}
+<div class="pagination">
+    <h2 class="prev">&lt;<a href="/blog/pager/{{ offset + ppp }}">Older Entries</a></h2>
+{% if offset >= ppp %}
+    <h2 class="next"><a href="/blog/pager/{{ offset - ppp}}">Newer Entries</a>&gt;</h2>
+{% endif %}
+    <h2 class="archive"><a href="/blog/archive">Archive</a></h2>
+</div>
+{% endif %}
+{% endblock %}

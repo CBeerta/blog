@@ -31,10 +31,6 @@
 * @link     http://claus.beerta.de/
 **/
 
-if ( ! defined('LIMONADE') ) {
-    exit('No direct script access allowed');
-}
-
 /**
 * Projects
 *
@@ -49,73 +45,59 @@ class Blog
     /**
     * the Blog
     *
+    * @param int $offset Offset for pager
+    *
     * @return html
     **/
-    public static function index()
+    public static function index($offset = 0)
     {
-        set('title', 'Blog');
-        set('active', 'blog');
+        $ppp = Slim::config('posts_per_page');
         
-        $ppp = option('posts_per_page');
-        set('ppp', $ppp);
-        $offset = set_or_default('offset', params('offset'), 0);
-
+        Slim::view()->appendData(
+            array(
+            'title' => 'Blog',
+            'active' => 'blog',
+            'ppp' => $ppp,
+            'offset' => $offset,
+            )
+        );
+        
         $posts = ORM::for_table('posts')
             ->order_by_desc('post_date')
             ->offset($offset)
             ->limit($ppp);
 
-        if (!isEditor()) {
+        if (!Helpers::isEditor()) {
             $posts = $posts->where('post_status', 'publish');
         }
         $posts = $posts->find_many();
         
-        set('posts', $posts);            
+        Slim::view()->setData('posts', $posts);
         
-        return html('blog/index.html.php');
+        return Slim::render('blog/index.html');
     }
 
-    /**
-    * Photography Page
-    *
-    * @return html
-    **/
-    public static function photography()
-    {
-        set('title', 'Photography');
-        set('active', 'photography');
-        
-        $posts = ORM::for_table('posts')
-            ->order_by_desc('post_date')
-            ->where('post_type', 'flickr');
-
-        if (!isEditor()) {
-            $posts = $posts->where('post_status', 'publish');
-        }
-        $posts = $posts->find_many();
-        
-        set('posts', $posts);            
-        
-        return html('blog/index.html.php');
-    }
-    
     /**
     * Detail on a slug
     *
+    * @param string $slug detail on which slug
+    *
     * @return html
     **/
-    public static function detail()
+    public static function detail($slug = null)
     {
-        $slug = params('slug');
-        
-        set('title', 'Blog');
-        set('active', 'blog');
+        Slim::view()->appendData(
+            array(
+            'title' => 'Blog',
+            'active' => 'blog',
+            )
+        );
 
         $post = ORM::for_table('posts')
             ->where_like('post_slug', "%{$slug}%")
             ->order_by_desc('post_date');
 
-        if (!isEditor()) {
+        if (!Helpers::isEditor()) {
             $post = $post->where('post_status', 'publish');
         }
         $post = $post->find_one();
@@ -126,12 +108,13 @@ class Blog
                 ->order_by_desc('comment_date')
                 ->find_many();
         
-            set('comments', $comments);            
+            Slim::view()->setData('comments', $comments);
         }
         
-        set('post', $post);
+        Slim::view()->setData('post', $post);
         
-        return html('blog/single.html.php');
+
+        return Slim::render('blog/single.html');
     }
 
     /**
@@ -148,7 +131,8 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         $content = '# ' . $post->post_title . "\n\n" . $post->post_content;
-        return partial($content);
+
+        return Slim::response()->body($content);
     }
 
     /**
@@ -158,8 +142,8 @@ class Blog
     **/
     public static function save()
     {
-        if (isEditor() !== true) {
-            return partial('No Permission to edit!');
+        if (Helpers::isEditor() !== true) {
+            return Slim::response()->body('No Permission to edit!');
         }
         
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -172,8 +156,7 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) || is_null($value) ) {
-            //d($_POST);
-            return partial('Will not Save!');
+            return Slim::response()->body('Will not Save!');
         }
         
         $title_match = "|^#\s?(.*?)\n|";
@@ -185,7 +168,7 @@ class Blog
         $post->post_content = $value;
         $post->save();
         
-        return partial(formatContent($value));
+        return Slim::response()->body(Helpers::formatContent($value));
     }
 
     /**
@@ -195,8 +178,8 @@ class Blog
     **/
     public static function trash()
     {
-        if (isEditor() !== true) {
-            return partial('No Permission to edit!');
+        if (Helpers::isEditor() !== true) {
+            return Slim::response()->body('No Permission to edit!');
         }
 
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -206,12 +189,12 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) ) {
-            return partial('Will not Save!');
+            return Slim::response()->body('Will not Save!');
         }
         
         $post->delete();
 
-        return partial('Deleted!');
+        return Slim::response()->body('Deleted!');
     }
 
     /**
@@ -221,8 +204,8 @@ class Blog
     **/
     public static function togglePublish()
     {
-        if (isEditor() !== true) {
-            return partial('No Permission to edit!');
+        if (Helpers::isEditor() !== true) {
+            return Slim::response()->body('No Permission to edit!');
         }
 
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -232,7 +215,7 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) ) {
-            return partial('Will not Save!');
+            return Slim::response()->body('Will not Save!');
         }
         
         $post->post_status = ($post->post_status == 'publish' )
@@ -241,7 +224,7 @@ class Blog
         
         $post->save();
         
-        return partial($post->post_status);
+        return Slim::response()->body($post->post_status);
     }
     
     /**
@@ -251,17 +234,20 @@ class Blog
     **/
     public static function archive()
     {
-        set('title', 'Blog Archive');
-        set('active', 'blog');
-
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->find_many();
             
-        set('posts', $posts);
+        Slim::view()->appendData(
+            array(
+            'title' => 'Blog Archive',
+            'active' => 'blog',
+            'posts' => $posts,
+            )
+        );
 
-        return html('blog/archive.html.php');
+        return Slim::render('blog/archive.html');
     }
 
 
@@ -272,17 +258,22 @@ class Blog
     **/
     public static function feed()
     {
-        set('build_date', date('r'));
-
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
-            ->limit(option('posts_per_page'))
+            ->limit(Slim::config('posts_per_page'))
             ->find_many();
+
         $posts = Projects::mergeBlogPosts($posts);
-        set('posts', $posts);
+
+        Slim::view()->appendData(
+            array(
+            'posts' => $posts,
+            )
+        );
         
-        return xml('blog/feed.xml.php', null);
+        Slim::response()->header('Content-Type', 'application/xhtml+xml');        
+        return Slim::render('blog/feed.xml');
     }
 
 }

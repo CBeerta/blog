@@ -31,72 +31,83 @@
 * @link     http://claus.beerta.de/
 **/
 
-require_once __DIR__.'/vendor/limonade/lib/limonade.php';
+require_once __DIR__.'/vendor/Slim/Slim/Slim.php';
+require_once __DIR__.'/lib/TwigView.php';
 require_once __DIR__.'/vendor/idiorm/idiorm.php';
 require_once __DIR__.'/vendor/markdown/markdown.php';
-require_once __DIR__.'/vendor/simplepie/SimplePieAutoloader.php';
-
-require_once __DIR__.'/lib/helpers.php';
 
 /**
-* Limonades Configure Abstract. Configure some Basics
+* Autoloader for helpers and controllers
+*
+* @param string $class A Class file that is needed
 *
 * @return void
 **/
-function configure () 
+function autoloader($class)
 {
-    /**
-    * Options with defaults, overridable in config.ini
-    **/
-    $options = array (
-        'cache_dir' => '/var/tmp/',
-        'dbfile' => './data/planner.db',
-        'projects_dir' => './data/projects',
-        'public_url' => 'http://localhost/data/uploads',
-        'public_loc' => './data/uploads',
-        'deviantart_items' => 4,
-        'posts_per_page' => 10,
-        'date_format' => 'D, d M Y',
-        'base_uri' => '/',
-        'env' => ENV_PRODUCTION,
+    $directories = array('/controllers/', '/lib/');
+    
+    foreach ($directories as $dir) {
+        if (file_exists(__DIR__ . $dir . strtolower($class) . '.php')) {
+            include_once __DIR__ . $dir . strtolower($class) . '.php';
+        }
+    }
+}
+
+spl_autoload_register("autoloader");
+
+Slim::init(
+    array(
+    'view' => 'TwigView',
+    'templates.path' => __DIR__ . '/views/',
+    )
+);
+
+Slim::configureMode(
+    'production', function() {
+        Slim::config(
+            array(
+            'log.enable' => false,
+            'debug' => false
+            )
         );
-        
-    if (PHP_SAPI == 'cli') {
-        $options['env'] = ENV_DEVELOPMENT;
-        $option['host'] = 'none';
-    } else {
-        $option['host'] = 'http://' . $_SERVER['HTTP_HOST'] . '/';
     }
+);
 
-    /**
-    * Load config file and override default options
-    **/    
-    $config = parse_ini_file(__DIR__."/config.ini");
-    foreach ( $options as $k => $v ) {
-        $v = isset($config[$k]) ? $config[$k] : $options[$k];
-        option($k, $v);
+Slim::notFound(
+    function () {
+        Slim::render('404.html');
     }
-
-    ORM::configure('sqlite:' . option('dbfile'));
-    ORM::configure('id_column', 'ID');
-    ORM::configure('logging', false);
-}
+);
 
 /**
-* Not Found Handler
-*
-* @param int    $errno  Error Number
-* @param string $errstr Error string
-*
-* @return void
+* Options with defaults, overridable in config.ini
 **/
-function not_found($errno, $errstr) 
-{
-    // FIXME: This should redirect to a search and stuff
-    set('errno', $errno);
-    set('errstr', $errstr);
-    return render("404.html.php", null);
+$options = array (
+    'cache_dir' => '/var/tmp/',
+    'dbfile' => './data/planner.db',
+    'projects_dir' => './data/projects',
+    'public_url' => 'http://localhost/data/uploads',
+    'public_loc' => './data/uploads',
+    'deviantart_items' => 4,
+    'posts_per_page' => 10,
+    'date_format' => 'D, d M Y',
+    'base_uri' => '/',
+    'public_dir' => __DIR__ . '/public/',
+);
+
+/**
+* Load config file and override default options
+**/    
+$config = parse_ini_file(__DIR__."/config.ini");
+foreach ( $options as $k => $v ) {
+    $v = isset($config[$k]) ? $config[$k] : $options[$k];
+    Slim::config($k, $v);
 }
+
+ORM::configure('sqlite:' . Slim::config('dbfile'));
+ORM::configure('id_column', 'ID');
+ORM::configure('logging', false);
 
 $menu_items = array(
     'projects' => 'Projects',
@@ -105,61 +116,49 @@ $menu_items = array(
     'contact' => 'Contact',
 );
 
-set('menu_items', $menu_items);
-
-layout('base.html.php');
+Slim::view()->setData(
+    array(
+    'menu_items' => $menu_items,
+    'header_image'=> Helpers::randomHeaderImage('header-images/'),
+    'date_format' => Slim::config('date_format'),
+    'editor' => Helpers::isEditor(),
+    )
+);
 
 // Projects related #######################################
-dispatch_get('/projects', 'Projects::overview');
-dispatch_get('/projects/:slug', 'Projects::detail');
+Slim::get('/projects(/:slug)', 'Projects::overview');
 
 // Blog stuff #############################################
-dispatch_get('^/blog/(.*feed.*)', 'Blog::feed');
-dispatch_get('/blog', 'Blog::index');
-dispatch_get('/blog/pager/:offset', 'Blog::index');
-dispatch_get('/blog/archive', 'Blog::archive');
-dispatch_get('/blog/:slug', 'Blog::detail');
-
-// These are here for compatibility with the previous WP install
-dispatch_get('/blog/:year/:month/:slug/', 'Blog::detail');
+Slim::get('^/blog/(.*feed.*)', 'Blog::feed');
+Slim::get('/blog', 'Blog::index');
+Slim::get('/blog/pager/:offset', 'Blog::index');
+Slim::get('/blog/archive', 'Blog::archive');
+Slim::get('/blog/:slug', 'Blog::detail');
 
 // The editor stuff #######################################
-dispatch_post('/blog/json_load', 'Blog::loadJSON');
-dispatch_post('/blog/save', 'Blog::save');
-dispatch_post('/blog/trash', 'Blog::trash');
-dispatch_post('/blog/toggle_publish', 'Blog::togglePublish');
+Slim::post('/blog/json_load', 'Blog::loadJSON');
+Slim::put('/blog/save', 'Blog::save');
+Slim::delete('/blog/trash', 'Blog::trash');
+Slim::post('/blog/toggle_publish', 'Blog::togglePublish');
 
 // sidebar content. probably ajax #########################
-//dispatch_get('/sidebar/github/:username', 'Sidebar::github');
-//dispatch_get('/sidebar/deviantart/:search', 'Sidebar::deviantart');
-dispatch_post('/sidebar/search', 'Sidebar::search');
+Slim::post('/sidebar/search', 'Sidebar::search');
 
 // contact ################################################
-dispatch_get('/contact', 'Contact::index');
+Slim::get('/contact', 'Contact::index');
 
 // Redirect photography to fluidr #########################
-dispatch_get('/photography', 'Blog::photography');
-
-/**
-* Redirect to fluidr
-*
-* @return void
-**/
-function photography() 
-{
-    redirect_to('http://www.fluidr.com/photos/cbeerta/only-photos');
-}
+Slim::get('/photography', 'Photography::index');
 
 // And the root of all evil ###############################
-dispatch_get('/', 'Projects::overview');
+Slim::get('/', 'Projects::overview');
 
 if (PHP_SAPI == 'cli') {
     // Need to manually load here, as we'll skip the run();
     include_once __DIR__.'/controllers/importers.php';
     Importers::parseArgs();
-    include_once __DIR__.'/vendor/limonade/lib/lemon_server.php';
 } else {
-    run();
+    Slim::run();
 }
 
 

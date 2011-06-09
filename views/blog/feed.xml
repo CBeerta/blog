@@ -12,22 +12,22 @@
 	<atom:link href="http://claus.beerta.net/blog/feed" rel="self" type="application/rss+xml" />
 	<link>http://claus.beerta.net/blog</link>
 	<description>Stuff i do, don&#039;t and other babble.</description>
-	<lastBuildDate><?php echo $build_date; ?></lastBuildDate>
+	<lastBuildDate>{{ "now"|date('r') }}</lastBuildDate>
 	<language>en</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
 	<generator>http://claus.beerta.net/blog/</generator>
-<?php foreach ($posts as $p): ?>
+{% for p in posts %}
     <item>
-		<title><?php echo $p->post_title; ?></title>
-		<link><?php echo option('host') . url_for($p->post_type, $p->post_slug); ?></link>
-		<pubDate><?php echo $p->post_date->format('r'); ?></pubDate>
+		<title>{{ p.post_title }}</title>
+		<link>/{{ p.post_type }}/{{ p.post_slug }}</link>
+		<pubDate>{{ p.post_date|date('r') }}</pubDate>
 		<dc:creator>Claus Beerta</dc:creator>
 
-		<guid isPermaLink="false"><?php echo option('host') . url_for($p->post_type, $p->post_slug); ?></guid>
-		<description><![CDATA[<?php echo substr(strip_tags($p->post_content), 0, 255); ?> ...]]></description>
-		<content:encoded><![CDATA[<?php echo $p->post_content; ?>]]></content:encoded>
+		<guid isPermaLink="false">/{{ p.post_type }}/{{ p.post_slug }}</guid>
+		<description><![CDATA[{{ p.post_content|striptags }}]]></description>
+		<content:encoded><![CDATA[{{ p.post_content|raw }}]]></content:encoded>
 	</item>	
-<?php endforeach; ?>
+{% endfor %}
 </channel>
 </rss>

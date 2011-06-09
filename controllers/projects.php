@@ -31,10 +31,6 @@
 * @link     http://claus.beerta.de/
 **/
 
-if ( ! defined('LIMONADE') ) {
-    exit('No direct script access allowed');
-}
-
 /**
 * Projects
 *
@@ -56,7 +52,7 @@ class Projects
     public static function loadProjects($slug = null)
     {
         $projects = array();
-        $projects_dir = option('projects_dir');
+        $projects_dir = Slim::config('projects_dir');
         
         $glob = "{{$projects_dir}/*.html,{$projects_dir}/*.md}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {
@@ -155,38 +151,29 @@ class Projects
         }
         krsort($merged);
         
-        return array_splice($merged, 0, option('posts_per_page'));
+        return array_splice($merged, 0, Slim::config('posts_per_page'));
     }
     
 
     /**
     * Overview of the projectes.
     *
-    * @return html
-    **/
-    public static function overview() 
-    {
-        set('title', 'Projects');
-        set('active', 'projects');
-        set('projects', self::loadProjects());
-        set('body', false);
-        
-        return html('projects.html.php');
-    }
-
-    /**
-    * Detail on a Project
+    * @param string $slug A Specific post to pull
     *
     * @return html
     **/
-    public static function detail() 
+    public static function overview($slug = null) 
     {
-        set('title', 'Projects');
-        set('active', 'projects');
-        set('projects', self::loadProjects(params('slug')));
-        set('body', true);
+        Slim::view()->appendData(
+            array(
+            'title' => 'Projects',
+            'active' => 'projects',
+            'projects' => self::loadProjects($slug),
+            'body' => $slug,
+            )
+        );
         
-        return html('projects.html.php');
+        return Slim::render('projects.html');
     }
     
 }
