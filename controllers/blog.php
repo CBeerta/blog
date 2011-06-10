@@ -238,10 +238,15 @@ class Blog
     public static function archive()
     {
         $posts = ORM::for_table('posts')
-            ->where('post_status', 'publish')
-            ->order_by_desc('post_date')
-            ->find_many();
-            
+            ->order_by_desc('post_date');
+
+
+        if (!Helpers::isEditor()) {
+            $posts = $posts->where('post_status', 'publish');
+        }
+        
+        $posts = $posts->find_many();
+        
         Slim::view()->appendData(
             array(
             'title' => 'Blog Archive',

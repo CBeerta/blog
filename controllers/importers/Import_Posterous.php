@@ -73,7 +73,7 @@ class Import_Posterous extends Importer
         foreach ($ret as $src) {
         
             $post = ORM::for_table('posts')
-                ->where('post_slug', $src->slug)
+                ->where('post_title', $src->title)
                 ->find_one();
                 
             if (!$post) {

@@ -486,16 +486,38 @@ footer a:hover {
 
 
 @media all and (orientation:portrait) {
-
+    #splash, .search, .fork_me {
+        display: none;
+    }
+    .post_type_flickr img {
+        width: 480px;
+        height: 130px;
+    }
+    #main, #menu, header {
+        width: 480px;
+    }
+    #menu a:hover, #menu .active a {
+        border-radius: 10px 10px 10px 10px;
+    }
 }
 
 @media all and (orientation:landscape) {
-
 }
 
 @media screen and (max-device-width: 480px) {
-  
-  /* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
+    #splash, .search, .fork_me {
+        display: none;
+    }
+    .post_type_flickr img {
+        width: 480px;
+        height: 130px;
+    }
+    #main, #menu, header {
+        width: 480px;
+    }
+    #menu a:hover, #menu .active a {
+        border-radius: 10px 10px 10px 10px;
+    }
 }
 
 

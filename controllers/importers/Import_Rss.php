@@ -147,10 +147,10 @@ class Import_Rss extends Importer
         }
         $orig_img = $item->get_enclosure()->link;
         
-        $dest_thumb_file = option('public_loc') . 
+        $dest_thumb_file = Slim::config('public_loc') . 
             'flickrthumb_' . 
             basename($orig_img);
-        $dest_file = option('public_loc') . basename($orig_img);
+        $dest_file = Slim::config('public_loc') . basename($orig_img);
 
         if (file_exists($dest_file) && $this->force === false ) {
             d("Not regeneration thumb");
@@ -173,10 +173,10 @@ class Import_Rss extends Importer
         }
         
         $content  = '<a href="';
-        $content .= option('public_url') . basename($dest_file);
+        $content .= Slim::config('public_url') . basename($dest_file);
         $content .= '" title="' . $post->post_title . '">';
         $content .= '<img src="';
-        $content .= option('public_url') . basename($dest_thumb_file);
+        $content .= Slim::config('public_url') . basename($dest_thumb_file);
         $content .= '" width="940" height="255"></a>';
 
         $post->post_type = 'flickr';
@@ -237,7 +237,7 @@ class Import_Rss extends Importer
             $new->post_status = 'draft';
             $new->post_title = $item->get_title();
             $new->post_date = $item->get_date('c');
-            $new->post_slug = buildSlug($item->get_title()) . '-' 
+            $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
                 . basename(strtolower($item->get_id()));
             $new->guid = $new->post_slug;
             $new->original_source = $item->get_link();
