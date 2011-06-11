@@ -7,7 +7,8 @@
     <p class="date">Posted: {{ post.post_date|date(date_format) }}</p>
     <div class="entry" id="{{ post.ID }}">
         <p>{{ post.post_content|format_content|raw }}</p>
-{% if post.original_source %}
-        <a class="meta" href="{{ post.original_source }}">Article Source</a>        
-{% endif %}
     </div>
+{% if post.original_source %}
+    <a class="meta" href="{{ post.original_source }}">Article Source</a>        
+{% endif %}
+    

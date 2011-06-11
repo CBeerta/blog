@@ -12,9 +12,9 @@
 {% endfor %}
 {% if ppp %}
 <div class="pagination">
-    <h2 class="prev">&lt;<a href="/blog/pager/{{ offset + ppp }}">Older Entries</a></h2>
+    <h2 class="prev"><a href="/blog/pager/{{ offset + ppp }}">Older Entries</a></h2>
 {% if offset >= ppp %}
-    <h2 class="next"><a href="/blog/pager/{{ offset - ppp}}">Newer Entries</a>&gt;</h2>
+    <h2 class="next"><a href="/blog/pager/{{ offset - ppp}}">Newer Entries</a></h2>
 {% endif %}
     <h2 class="archive"><a href="/blog/archive">Archive</a></h2>
 </div>

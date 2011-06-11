@@ -83,9 +83,9 @@ a:hover { color: #036; }
 
 body {
 	margin: 0px;
-	background: #FFFFFF;
-	color: #231F20;
+	background: #fff;
 	height: 100%;
+	color: #555;
 }
 
 h1, h2, h3, h4 {
@@ -103,13 +103,13 @@ h3 {
 }
 
 h4 {
-	font: normal 300% Georgia, "Times New Roman", Times, serif;
+	font: normal 300% Lato;
     text-shadow: 2px 2px 2px rgba(200, 200, 200, 0.5);
     line-height: 2em;
 }
 
 alert {
-	font: normal 300% Georgia, "Times New Roman", Times, serif;
+	font: normal 300% Lato;
     text-shadow: 2px 2px 2px rgba(200, 200, 200, 0.5);
     line-height: 2em;
     color: red;
@@ -127,13 +127,18 @@ p {
 }
 
 a, a:visited, a:active {
-	text-decoration: underline;
-	color: #7EBA25;
+	text-decoration: none;
+	color: #111;
 }
 
 a:hover {
 	text-decoration: none;
-	color: #7EBA25;
+	color: #999;
+    transition: all .2s ease-in-out;
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    -ms-transition: all .2s ease-in-out;
 }
 
 /* Blockquotes */
@@ -191,15 +196,13 @@ header {
 /* Logo */
 
 #logo {
-	float: left;
-	width: 270px;
 	height: 105px;
 	margin: 0px;
 }
 #logo h1 {
 	margin: 0;
 	padding: 0;
-	font: normal 400% Georgia, "Times New Roman", Times, serif;
+	font: normal 400% Lato;
 	letter-spacing: -3px;
     text-shadow: 2px 2px 2px rgba(150, 180, 150, 0.5);
 }
@@ -207,8 +210,8 @@ header {
 	color: #444;
 }
 #logo h2 {
-    font-family: Monospace, serif;
-	margin: -2px 0 0 0;
+    font-family: Amaranth, serif;
+	margin: -4px 0 0 0;
 	padding: 0;
 	text-transform: uppercase;
 	font-size: 77%;
@@ -217,7 +220,7 @@ header {
 
 #logo a {
 	text-decoration: none;
-	color: #FFFFFF;
+	color: #fff;
 }
 
 /* Menu */
@@ -251,13 +254,18 @@ header {
 	text-align: center;
 	text-transform: uppercase;
 	font-weight: bold;
-	color: #7EBA25;
+	color: #333;
 }
 
 #menu a:hover, #menu .active a {
-	background: #000000;
-	color: #FFFFFF;
+	background: #222;
+	color: #eee;
     border-radius: 10px 10px 0px 0px;
+    transition: background .2s ease-in-out;
+    -webkit-transition: background .2s ease-in-out;
+    -moz-transition: background .2s ease-in-out;
+    -o-transition: background .2s ease-in-out;
+    -ms-transition: background .2s ease-in-out;
 }
 
 #splash {
@@ -266,6 +274,7 @@ header {
 	margin: 0 auto;
 	position: relative;
     border-radius: 5px 5px 5px 5px;
+    border: 1px solid #222;
 }
 #splash p {
     position: absolute;
@@ -296,8 +305,7 @@ header {
 }
 
 .post .title a {
-    /*font-family: 'Droid Sans',arial,serif;*/
-    font-family: Vegur, sans-serif;
+    font-family: Lato;
 	padding: 4px 15px 4px 15px;
 	background: #fff;
 	text-decoration: none;
@@ -364,16 +372,26 @@ img.editor {
     background-color: #F0F0D8;
 }
 
+.pagination {
+    border-bottom: 1px solid #eee;
+}
 .pagination a, a:visited {
     text-decoration: none;
 }
 .pagination .prev {
+    background: url(/public/img/arrow_left_12x12.png) left no-repeat;
+    padding-left: 16px;
+    padding-top: 2px;
     float: left;
 }
 .pagination .archive {
+    padding-top: 2px;
     text-align: center;
 }
 .pagination .next {
+    background: url(/public/img/arrow_right_12x12.png) right no-repeat;
+    padding-top: 2px;
+    padding-right: 16px;
     float: right;
 }
 
@@ -395,7 +413,7 @@ div.comment {
 }
 .comment .title a {
     font-size: 116%;
-    color: #7EBA25;
+    color: #333;
     text-decoration: none;
 }
 
@@ -499,6 +517,13 @@ footer a:hover {
     #menu a:hover, #menu .active a {
         border-radius: 10px 10px 10px 10px;
     }
+    #menu ul {
+        margin-left: 0px;
+    }
+    .post .date {
+	    display: none;
+    }
+
 }
 
 @media all and (orientation:landscape) {
