@@ -42,17 +42,37 @@
 **/
 class Blog
 {
+
+    /**
+    * Select Expression for Posts for Idiorm
+    **/
+    const _POSTS_SELECT_EXPR = "
+            *,
+            (
+                SELECT GROUP_CONCAT(name) 
+                FROM post_terms,term_relations 
+                WHERE 
+                    term_relations.post_terms_id=post_terms.ID AND
+                    term_relations.posts_ID=posts.ID
+            ) AS tags                
+            ";
     /**
     * the Blog
     *
-    * @param int $offset Offset for pager
+    * @param strign $tag_or_offset Offset for pager, or a tag to select
+    * @param int    $offset        Offset when there is a tag selected
     *
     * @return html
     **/
-    public static function index($offset = 0)
+    public static function index($tag_or_offset = 0, $offset = 0)
     {
         $ppp = Slim::config('posts_per_page');
-        
+
+        if (is_numeric($tag_or_offset)) {
+            $offset = $tag_or_offset;
+            $tag_or_offset = null;
+        }
+            
         Slim::view()->appendData(
             array(
             'title' => 'Blog',
@@ -61,8 +81,9 @@ class Blog
             'offset' => $offset,
             )
         );
-        
+
         $posts = ORM::for_table('posts')
+            ->select_expr(self::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
             ->offset($offset)
             ->limit($ppp);
@@ -70,13 +91,20 @@ class Blog
         if (!Helpers::isEditor()) {
             $posts = $posts->where('post_status', 'publish');
         }
+        
+        if ($tag_or_offset) {
+            $posts = $posts->where_like('tags', "%{$tag_or_offset}%");
+            Slim::view()->setData('base_url', "/blog/tag/{$tag_or_offset}");
+        } else {
+            Slim::view()->setData('base_url', "/blog/pager");
+        }
+         
         $posts = $posts->find_many();
 
         if (!$posts) {
             Slim::response()->status(404);
             return Slim::render('404.html');
         }
-
         
         Slim::view()->setData('posts', $posts);
         
@@ -100,6 +128,7 @@ class Blog
         );
 
         $post = ORM::for_table('posts')
+            ->select_expr(self::_POSTS_SELECT_EXPR)
             ->where_like('post_slug', "%{$slug}%")
             ->order_by_desc('post_date');
 
@@ -122,7 +151,6 @@ class Blog
         
         Slim::view()->setData('post', $post);
         
-
         return Slim::render('blog/single.html');
     }
 
@@ -246,18 +274,33 @@ class Blog
         $posts = ORM::for_table('posts')
             ->order_by_desc('post_date');
 
-
         if (!Helpers::isEditor()) {
             $posts = $posts->where('post_status', 'publish');
         }
         
         $posts = $posts->find_many();
-        
+
+        $tags = ORM::for_table('post_terms')
+            ->select_expr(
+                '
+                *,
+                (
+                    SELECT COUNT(ID) FROM `posts`, `term_relations`
+                    WHERE 
+                        term_relations.post_terms_ID=post_terms.ID AND
+                        term_relations.posts_ID=posts.ID
+                ) AS posts_with_tag
+                '
+            )
+            ->order_by_asc('slug')
+            ->find_many();
+
         Slim::view()->appendData(
             array(
             'title' => 'Blog Archive',
             'active' => 'blog',
             'posts' => $posts,
+            'tags' => $tags,
             )
         );
 

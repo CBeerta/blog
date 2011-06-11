@@ -10,4 +10,7 @@
 {% if post.original_source %}
     <a class="meta" href="{{ post.original_source }}">Article Source</a>        
 {% endif %}
+{% if post.tags %}
+    <p class="tags">Filed under <em>||</em> <b>{{ post.tags|format_tags|raw }}</b></p>
+{% endif %}
     

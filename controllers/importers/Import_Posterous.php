@@ -79,8 +79,43 @@ class Import_Posterous extends Importer
             if (!$post) {
                 $post = ORM::for_table('posts')->create();
             } else if (!$force) {
-                d("Skipping already imported: {$src->slug}. Use --force to Update");
+                d("Skipping already imported: {$src->slug}.");
                 continue;
+            }
+            
+            if (!empty($src->tags)) {
+
+                foreach ($src->tags as $tag) {
+            
+                    $name = ucfirst(strtolower($tag->name));
+                    $slug = Helpers::buildSlug($tag->name);
+                    
+                    $term = ORM::for_table('post_terms')
+                        ->raw_query(
+                            "
+                            INSERT OR IGNORE INTO `post_terms`
+                            (`name`,`slug`) 
+                            VALUES
+                            ('{$name}', '{$slug}');
+                            ", array()
+                        )->count();
+                        
+                    $term = ORM::for_table('post_terms')
+                        ->where('slug', $slug)
+                        ->find_one();                        
+
+                    $term = ORM::for_table('term_relations')
+                        ->raw_query(
+                            "
+                            INSERT OR IGNORE INTO `term_relations`
+                            (`posts_ID`,`post_terms_ID`) 
+                            VALUES
+                            ({$post->ID}, {$term->ID});
+                            ", array()
+                        )->count();
+
+                }
+
             }
             
             $post->post_date = $src->display_date;

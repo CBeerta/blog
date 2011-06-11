@@ -72,7 +72,6 @@ class Wp_Import_Blog_Posts extends Importer
         foreach ($projects as $post) {
             $slugs[] = $post->post_slug;
         }
-        d($slugs);
         
         $db = mysql_connect($dbhost, $dbuser, $dbpass);
         mysql_select_db($dbname, $db);
@@ -80,7 +79,14 @@ class Wp_Import_Blog_Posts extends Importer
         
         $res = mysql_query(
             "
-            SELECT *
+            SELECT *,
+            (
+                SELECT GROUP_CONCAT(wp_terms.name)
+                FROM wp_terms, wp_term_relationships 
+                WHERE 
+                    wp_term_relationships.object_id=wp_posts.ID AND
+                    wp_terms.term_id=wp_term_relationships.term_taxonomy_id
+            ) AS tags
             FROM `wp_posts`
             WHERE 
                 post_type='post' AND
@@ -88,13 +94,53 @@ class Wp_Import_Blog_Posts extends Importer
             "
         );
         
-        //ORM::for_table('posts')->raw_query('DELETE FROM posts')->find_one(27);
         while ($data = mysql_fetch_assoc($res)) {
             if (in_array($data['post_name'], $slugs)) {
                 // Skip projects
                 continue;
             }
-            $post = ORM::for_table('posts')->create();
+            
+            $post = ORM::for_table('posts')
+                ->where('post_title', $data['post_title'])
+                ->find_one();
+                
+            if (!$post) {
+                $post = ORM::for_table('posts')->create();
+            } else if (!$force) {
+                d("Skipping already imported: {$data['post_title']}.");
+                continue;
+            } else {
+
+                foreach (explode(',', $data['tags']) as $name) {
+                    if (empty($name)) {
+                        continue;
+                    }
+                    $slug = Helpers::buildSlug($name);
+                    $term = ORM::for_table('post_terms')
+                        ->raw_query(
+                            "
+                            INSERT OR IGNORE INTO `post_terms`
+                            (`name`,`slug`) 
+                            VALUES
+                            ('{$name}', '{$slug}');
+                            ", array()
+                        )->count();
+
+                    $term = ORM::for_table('post_terms')
+                        ->where('slug', $slug)
+                        ->find_one();                        
+
+                    $term = ORM::for_table('term_relations')
+                        ->raw_query(
+                            "
+                            INSERT OR IGNORE INTO `term_relations`
+                            (`posts_ID`,`post_terms_ID`) 
+                            VALUES
+                            ({$post->ID}, {$term->ID});
+                            ", array()
+                        )->count();
+                }
+            }
             
             $post->post_date = $data['post_date'];
             $post->post_slug = $data['post_name'];
@@ -112,10 +158,12 @@ class Wp_Import_Blog_Posts extends Importer
             $post->guid = $data['guid'];
             $post->post_status = $data['post_status'];
             
-            d("Importing: " . $post->post_title);
             if (!$dryrun) {
+                d("Importing: " . $post->post_title);
                 $post->save();
-            }
+            } else {
+                d("Not importing (dry-run): " . $post->post_title);
+            }     
         }
     }
 

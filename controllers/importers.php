@@ -38,17 +38,27 @@ if ( PHP_SAPI != 'cli' ) {
 
 require_once __DIR__ . '/../vendor/simplepie/SimplePieAutoloader.php';
 
+
 /**
-* Debug Function
+* Debugging shortcut function
 *
-* @param string $message Message to output
-*
+* @param string $message Message to log
+* 
 * @return void
 **/
 function d($message)
 {
-    Helpers::d($message);
+    if (!is_string($message)) {
+        $message = print_r($message, true);
+    }
+    
+    if ( class_exists("WebServer", false) ) {
+        WebServer::log($message);
+    } else {
+        error_log($message);
+    }
 }
+
 
 /**
 * Importer

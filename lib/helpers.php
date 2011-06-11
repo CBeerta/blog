@@ -44,26 +44,6 @@
 class Helpers
 {
     /**
-    * Debugging shortcut function
-    *
-    * @param string $message Message to log
-    * 
-    * @return void
-    **/
-    public static function d($message)
-    {
-        if (!is_string($message)) {
-            $message = print_r($message, true);
-        }
-        
-        if ( class_exists("WebServer", false) ) {
-            WebServer::log($message);
-        } else {
-            error_log($message);
-        }
-    }
-
-    /**
     * not Found Magic
     *
     * @return void
@@ -131,6 +111,27 @@ class Helpers
         $rand = mt_rand(0, count($files) - 1); // $i was incremented as we went along
 
         return basename($files[$rand]);
+    }
+
+    /**
+    * Format a list of Tags
+    *
+    * @param string $tags String with comma seperated tags
+    *
+    * @return formatted date
+    **/
+    public static function formatTags($tags)
+    {
+        $tags = explode(',', $tags);
+        $ret = '';
+
+        foreach ($tags as $tag) {
+            $ret .= '<a href="/blog/tag/' . self::buildSlug($tag) . '">';
+            $ret .= $tag;
+            $ret .= '</a>&nbsp;&nbsp;';
+        }
+    
+        return $ret;
     }
 
     /**

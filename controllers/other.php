@@ -78,6 +78,7 @@ class Other
         $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
         
         $posts = ORM::for_table('posts')
+            ->select_expr(Blog::_POSTS_SELECT_EXPR)
             ->where_raw(
                 "
                 (

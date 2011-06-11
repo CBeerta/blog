@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 {% for post in posts %}
 <div class="post post_type_{{ post.post_type }}" id="{{ post.ID }}">
 {% if post.post_status == 'draft' %}<b>Draft: </b>{% endif %}
@@ -13,9 +12,11 @@
 {% endfor %}
 {% if ppp %}
 <div class="pagination">
-    <h2 class="prev"><a href="/blog/pager/{{ offset + ppp }}">Older Entries</a></h2>
+{% if posts|length == ppp %}
+    <h2 class="prev"><a href="{{ base_url}}/{{ offset + ppp }}">Older Entries</a></h2>
+{% endif %}
 {% if offset >= ppp %}
-    <h2 class="next"><a href="/blog/pager/{{ offset - ppp}}">Newer Entries</a></h2>
+    <h2 class="next"><a href="{{ base_url}}/{{ offset - ppp}}">Newer Entries</a></h2>
 {% endif %}
     <h2 class="archive"><a href="/blog/archive">Archive</a></h2>
 </div>

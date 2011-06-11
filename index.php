@@ -128,14 +128,17 @@ Slim::get('/projects(/:slug)', 'Projects::overview');
 Slim::get('^/blog/.*feed.*', 'Blog::feed');
 Slim::get('/blog', 'Blog::index');
 Slim::get('/blog/pager/:offset', 'Blog::index');
+Slim::get('/blog/tag/:tag(/:offset)', 'Blog::index');
 Slim::get('/blog/archive', 'Blog::archive');
 Slim::get('/blog/:slug', 'Blog::detail');
 
 // The editor stuff #######################################
-Slim::post('/blog/json_load', 'Blog::loadJSON');
-Slim::put('/blog/save', 'Blog::save');
-Slim::delete('/blog/trash', 'Blog::trash');
-Slim::post('/blog/toggle_publish', 'Blog::togglePublish');
+if (Helpers::isEditor()) {
+    Slim::post('/blog/json_load', 'Blog::loadJSON');
+    Slim::put('/blog/save', 'Blog::save');
+    Slim::delete('/blog/trash', 'Blog::trash');
+    Slim::post('/blog/toggle_publish', 'Blog::togglePublish');
+}
 
 // sidebar content. probably ajax #########################
 Slim::post('/sidebar/search', 'Other::search');

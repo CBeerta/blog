@@ -96,6 +96,10 @@ class TwigView extends Slim_View
                 'md5',
                 new Twig_Filter_Function('md5')
             );
+            $this->_twigEnvironment->addFilter(
+                'format_tags',
+                new Twig_Filter_Function('Helpers::formatTags')
+            );
         }
         return $this->_twigEnvironment;
     }
