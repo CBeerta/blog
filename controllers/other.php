@@ -42,7 +42,6 @@
 **/
 class Other
 {
-
     /**
     * Return a Sitemap
     *
