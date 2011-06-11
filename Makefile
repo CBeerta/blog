@@ -14,7 +14,7 @@ csstidy:
 
 ci:
 	#git svn dcommit
-	git push playground homebrew
+	git push
 
 phpcs:
 	phpcs $(SOURCES)

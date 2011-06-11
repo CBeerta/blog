@@ -40,8 +40,35 @@
 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
 * @link     http://claus.beerta.de/
 **/
-class Sidebar
+class Other
 {
+
+    /**
+    * Return a Sitemap
+    *
+    * @return xml
+    **/
+    public static function sitemap()
+    {
+        $posts = ORM::for_table('posts')
+            ->where('post_status', 'publish')
+            ->order_by_desc('post_date')
+            ->find_many();
+
+        $posts = Projects::mergeBlogPosts($posts);
+        reset($posts);
+        
+        Slim::view()->appendData(
+            array(
+            'lastmod' => current($posts)->post_date->format('Y-m-d'),
+            'posts' => $posts,
+            )
+        );
+        
+        Slim::response()->header('Content-Type', 'application/xml');        
+        return Slim::render('sitemap.xml');
+    }
+
     /**
     * Load github user json, and return project list
     *

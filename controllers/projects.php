@@ -150,8 +150,7 @@ class Projects
             );
         }
         krsort($merged);
-        
-        return array_splice($merged, 0, Slim::config('posts_per_page'));
+        return $merged;
     }
     
 

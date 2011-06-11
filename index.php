@@ -138,13 +138,16 @@ Slim::delete('/blog/trash', 'Blog::trash');
 Slim::post('/blog/toggle_publish', 'Blog::togglePublish');
 
 // sidebar content. probably ajax #########################
-Slim::post('/sidebar/search', 'Sidebar::search');
+Slim::post('/sidebar/search', 'Other::search');
 
 // contact ################################################
 Slim::get('/contact', 'Contact::index');
 
 // Redirect photography to fluidr #########################
 Slim::get('/photography', 'Photography::index');
+
+// Sitemap ################################################
+Slim::get('/sitemap.xml', 'Other::sitemap');
 
 // And the root of all evil ###############################
 Slim::get('/', 'Projects::overview');

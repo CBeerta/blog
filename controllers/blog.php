@@ -71,6 +71,12 @@ class Blog
             $posts = $posts->where('post_status', 'publish');
         }
         $posts = $posts->find_many();
+
+        if (!$posts) {
+            Slim::response()->status(404);
+            return Slim::render('404.html');
+        }
+
         
         Slim::view()->setData('posts', $posts);
         
@@ -258,11 +264,10 @@ class Blog
         return Slim::render('blog/archive.html');
     }
 
-
     /**
     * Return a RSS Feed
     *
-    * @return html
+    * @return xml
     **/
     public static function feed()
     {
@@ -273,6 +278,7 @@ class Blog
             ->find_many();
 
         $posts = Projects::mergeBlogPosts($posts);
+        $posts = array_splice($posts, 0, Slim::config('posts_per_page'));
 
         Slim::view()->appendData(
             array(
