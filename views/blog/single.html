@@ -15,7 +15,7 @@
 {% endif %}
 {% for c in comments %}
 <div class="comment" id="{{ c.ID }}">
-    <img class="gravatar" src="http://www.gravatar.com/avatar/{{ c.comment_author_email }}?d=retro&s=64" />
+    <img class="gravatar" src="http://www.gravatar.com/avatar/{{ c.comment_author_email|md5 }}?d=retro&s=64" />
     <div class="comment_content">
         <div class="title">
             <a href="{{ c.comment_author_url }}">{{ c.comment_author }}</a>

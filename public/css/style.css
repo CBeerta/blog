@@ -337,6 +337,10 @@ header {
 	margin: 20px 0 20px 0;
 	color: #202020;
 }
+.post a[href^="http"].meta {
+    background: url(/public/img/emblem-symbolic-link.png) left no-repeat;  
+    padding-left: 18px;
+} 
 
 .post .byline {
 	float: right;
@@ -389,6 +393,7 @@ img.editor {
 }
 .pagination a, a:visited {
     text-decoration: none;
+    color: #444;
 }
 .pagination .prev {
     background: url(/public/img/arrow_left_12x12.png) left no-repeat;
