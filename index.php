@@ -135,6 +135,7 @@ Slim::get('/blog/:slug', 'Blog::detail');
 // The editor stuff #######################################
 if (Helpers::isEditor()) {
     Slim::post('/blog/json_load', 'Blog::loadJSON');
+    Slim::put('/blog/save/tags', 'Blog::saveTags');
     Slim::put('/blog/save', 'Blog::save');
     Slim::delete('/blog/trash', 'Blog::trash');
     Slim::post('/blog/toggle_publish', 'Blog::togglePublish');

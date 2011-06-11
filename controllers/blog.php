@@ -209,6 +209,53 @@ class Blog
     }
 
     /**
+    * Save Tags
+    *
+    * @return json
+    **/
+    public static function saveTags()
+    {
+        if (Helpers::isEditor() !== true) {
+            return Slim::response()->body('No Permission to edit!');
+        }
+        
+        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
+            ? $_POST['id'] 
+            : null;
+        $value = isset($_POST['value']) 
+            ? $_POST['value'] 
+            : null;
+        
+        foreach (preg_split('#[\s,]#', $value) as $t) {
+        
+            $tag = ORM::for_table('post_terms')
+                ->where('slug', Helpers::buildSlug($t))
+                ->find_one();
+                
+            if (!$tag) {
+                $tag = ORM::for_table('post_terms')->create();
+                $tag->name = $t;
+                $tag->slug = Helpers::buildSlug($t);
+                $tag->save();
+            }
+            
+            $rel = ORM::for_table('term_relations')
+                ->where('posts_ID', $id)
+                ->where('post_terms_ID', $tag->ID)
+                ->count();
+                
+            if ($rel != 0) {
+                continue;
+            }
+            $rel = ORM::for_table('term_relations')->create();
+            $rel->posts_ID = $id;
+            $rel->post_terms_ID = $tag->ID;
+            $rel->save();
+        }
+        
+        return Slim::response()->body($value);
+    }
+    /**
     * Trash a Post
     *
     * @return partial

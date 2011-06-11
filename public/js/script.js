@@ -45,6 +45,21 @@ $(document).ready(function()
         }
     });
     
+    $("form#post_tags").submit(function() {
+        var tags = $('input#post_tags').attr('value'); 
+        var postID = $('input#post_ID').attr('value'); 
+        $.ajax({  
+            type: "POST",
+            url: "/blog/save/tags",
+            data: { 'value': tags, 'id': postID,'_METHOD': 'PUT' },
+            success: function(tags)
+            {
+                $("input#post_tags").attr('value', tags);
+            }
+        });                  
+        return false;
+    });
+    
 
 });
 

@@ -10,6 +10,10 @@
     <div class="editor">
         <img class="editor trash_post" id="{{ post.ID }}" onclick="trash_post({{ post.ID }});" src="/public/img/trash_stroke_32x32.png">
         <img class="editor toggle_publish" id="{{ post.ID }}" onclick="toggle_publish({{ post.ID }});" src="/public/img/{{ post.post_status != 'publish' ? 'denied' : 'check_alt' }}_32x32.png">
+        <form id="post_tags" method="POST">
+            Tags: <input id="post_tags" type="text" value="{{ post.tags }}" size="100">
+            <input type="hidden" id="post_ID" type="text" value="{{ post.ID }}" size="100">
+        </form>
     </div>
     <div class="clearfix"></div>
 {% endif %}
