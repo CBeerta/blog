@@ -1,11 +1,10 @@
     <h2 class="title">
-        <!--?php if ($post->post_status != 'publish') echo 'Draft: '; ?-->
         <a href="/blog/{{ post.post_slug }}">
             {{ post.post_title }}
         </a>
     </h2>
     <p class="date">Posted: {{ post.post_date|date(date_format) }}</p>
-    <div class="entry" id="{{ post.ID }}">
+    <div class="entry blog" id="{{ post.ID }}">
         <p>{{ post.post_content|format_content|raw }}</p>
     </div>
 {% if post.original_source %}

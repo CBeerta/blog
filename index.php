@@ -109,7 +109,7 @@ $menu_items = array(
     'projects' => 'Projects',
     'blog' => 'Blog',
     'photography' => 'Photograpy',
-    'contact' => 'Contact',
+    /*'contact' => 'Contact',*/
 );
 
 Slim::view()->setData(

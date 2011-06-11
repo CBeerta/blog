@@ -132,7 +132,7 @@ a, a:visited, a:active {
 }
 
 a:hover {
-	text-decoration: none;
+	text-decoration: underline;
 	color: #999;
     transition: all .2s ease-in-out;
     -webkit-transition: all .2s ease-in-out;
@@ -296,15 +296,11 @@ header {
 .post {
 	margin: 0px 0px 30px 0px;
 	border-bottom: 1px solid #CCCCCC;
-}
-
-.post .title {
-	margin: 0px;
-	padding: 0px 0px 5px 0px;
-	color: #515151;
+	font-family: Maven Pro, serif;
 }
 
 .post .title a {
+	margin: 0px;
     font-family: Lato;
 	padding: 4px 15px 4px 15px;
 	background: #fff;
@@ -312,6 +308,7 @@ header {
 	font-weight: normal;
 	color: #444;
 	font-size: 161.6%;
+	line-height: 30px;
 	text-transform: uppercase;
 }
 
@@ -319,7 +316,7 @@ header {
 	padding: 10px 0px;
 }
 
-.post img{
+.post img {
 	float: left;
 	padding: 2px 2px;
 	border: 1px solid #ccc;
@@ -337,8 +334,7 @@ header {
 .post .meta {
     float: right;
 	text-align: right;
-	padding: 20px 0 20px 0;
-	font-weight: bold;
+	margin: 20px 0 20px 0;
 	color: #202020;
 }
 
@@ -353,15 +349,31 @@ header {
     margin-bottom: 15px;
 }
 
+.post a, a:visited, a:active {
+	text-decoration: none;
+	color: #a33;
+}
+
+
+.archive {
+    font-style: Lato, serif;
+    line-height: 30px;
+}
 .archive h2:hover {
     background-color: #eee;
 }
-.archive h2 a {
-    color: #333;
-    line-height: 30px;
+.archive a {
+    color: #444;
+    margin: 5px;
 }
 .archive .date {
+    margin-right: 5px;
     float: right;
+    font-weight: normal;
+}
+.archive b {
+    color: red;
+    margin-left: -40px;
 }
 
 img.editor {
@@ -444,9 +456,9 @@ sidebar .deviantart li {
 footer {
 	margin: 0 auto;
 	padding: 15px 0px;
-	background: #000000;
 	color: #686767;
 	height: 15px;
+	margin: 10px;
 }
 footer p {
 	margin: 0;
