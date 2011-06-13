@@ -85,6 +85,7 @@ class Blog
         $posts = ORM::for_table('posts')
             ->select_expr(self::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
+            ->where_not_equal('post_type', 'flickr')
             ->offset($offset)
             ->limit($ppp);
 
@@ -189,7 +190,7 @@ class Blog
         $value = isset($_POST['value']) 
             ? $_POST['value'] 
             : null;
-
+            
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) || is_null($value) ) {
@@ -225,28 +226,32 @@ class Blog
         $value = isset($_POST['value']) 
             ? $_POST['value'] 
             : null;
+
+        if (is_null($id) || is_null($value)) {
+            return Slim::response()->body('POST Data incomplete!');
+        }        
         
+        /* Remove all existing relations for this Post */
+        $relations = ORM::for_table('term_relations')
+            ->where_equal('posts_ID', $id)
+            ->delete_many();
+
         foreach (preg_split('#[\s,]#', $value) as $t) {
         
+            /* Find if tag exists */
             $tag = ORM::for_table('post_terms')
                 ->where('slug', Helpers::buildSlug($t))
                 ->find_one();
                 
             if (!$tag) {
+                /* If not, create it */
                 $tag = ORM::for_table('post_terms')->create();
                 $tag->name = $t;
                 $tag->slug = Helpers::buildSlug($t);
                 $tag->save();
             }
             
-            $rel = ORM::for_table('term_relations')
-                ->where('posts_ID', $id)
-                ->where('post_terms_ID', $tag->ID)
-                ->count();
-                
-            if ($rel != 0) {
-                continue;
-            }
+            /* And insert new relations back to db */            
             $rel = ORM::for_table('term_relations')->create();
             $rel->posts_ID = $id;
             $rel->post_terms_ID = $tag->ID;
@@ -376,7 +381,7 @@ class Blog
             )
         );
         
-        Slim::response()->header('Content-Type', 'application/xhtml+xml');        
+        Slim::response()->header('Content-Type', 'application/rss+xml');        
         return Slim::render('blog/feed.xml');
     }
 

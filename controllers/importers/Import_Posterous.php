@@ -83,40 +83,6 @@ class Import_Posterous extends Importer
                 continue;
             }
             
-            if (!empty($src->tags)) {
-
-                foreach ($src->tags as $tag) {
-            
-                    $name = ucfirst(strtolower($tag->name));
-                    $slug = Helpers::buildSlug($tag->name);
-                    
-                    $term = ORM::for_table('post_terms')
-                        ->raw_query(
-                            "
-                            INSERT OR IGNORE INTO `post_terms`
-                            (`name`,`slug`) 
-                            VALUES
-                            ('{$name}', '{$slug}');
-                            ", array()
-                        )->count();
-                        
-                    $term = ORM::for_table('post_terms')
-                        ->where('slug', $slug)
-                        ->find_one();                        
-
-                    $term = ORM::for_table('term_relations')
-                        ->raw_query(
-                            "
-                            INSERT OR IGNORE INTO `term_relations`
-                            (`posts_ID`,`post_terms_ID`) 
-                            VALUES
-                            ({$post->ID}, {$term->ID});
-                            ", array()
-                        )->count();
-
-                }
-
-            }
             
             $post->post_date = $src->display_date;
             $post->post_slug = $src->slug;
@@ -132,6 +98,37 @@ class Import_Posterous extends Importer
                 d("Imported: {$post->post_title}");
             } else {
                 d("Would Import: {$post->post_title}");
+            }
+            
+            if (!empty($src->tags)) {
+                foreach ($src->tags as $tag) {
+                    $name = ucfirst(strtolower($tag->name));
+                    $slug = Helpers::buildSlug($tag->name);
+                    
+                    $term = ORM::for_table('post_terms')
+                        ->raw_query(
+                            "
+                            INSERT OR IGNORE INTO `post_terms`
+                            (`name`,`slug`) 
+                            VALUES
+                            ('{$name}', '{$slug}');
+                            ", array()
+                        )->count();
+                        
+                    $term = ORM::for_table('post_terms')
+                        ->where('slug', $slug)
+                        ->find_one();                       
+
+                    $term = ORM::for_table('term_relations')
+                        ->raw_query(
+                            "
+                            INSERT OR IGNORE INTO `term_relations`
+                            (`posts_ID`,`post_terms_ID`) 
+                            VALUES
+                            ({$post->ID}, {$term->ID});
+                            ", array()
+                        )->count();
+                }
             }
             
             if (!empty($ret->comments)) {
