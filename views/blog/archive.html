@@ -4,7 +4,9 @@
 <h4>Tags</h4>
 <ul class="archive">
 {% for tag in tags %}
+{% if tag.posts_with_tag > 0 %}
 <li><a href="/blog/tag/{{ tag.slug }}">{{ tag.name }}</a>({{ tag.posts_with_tag }})</li>
+{% endif %}
 {% else %}
 <p>No Tags Whatsoever</p>
 {% endfor %}

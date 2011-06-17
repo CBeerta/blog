@@ -8,6 +8,9 @@ php_value short_open_tag off
 </IfModule>
 
 
+# Rewerite trailing slash to not trailing slash
+RewriteRule ^(.+[^/])/$ http://%{HTTP_HOST}/$1 [R=301,L]
+
 # test string is a valid files
 RewriteCond %{SCRIPT_FILENAME} !-f
 # test string is a valid directory

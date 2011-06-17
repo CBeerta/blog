@@ -90,7 +90,7 @@ class Import_Posterous extends Importer
             $post->post_content = $src->body_full;
             $post->guid = $src->slug . '-'. $src->id;
             $post->original_source = 'http://cbeerta.posterous.com/' . $src->slug;
-            $post->post_status = 'draft';
+            $post->post_status = 'publish';
             
             //d($post);
             if (!$dryrun) {
