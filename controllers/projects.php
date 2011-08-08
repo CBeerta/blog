@@ -54,7 +54,7 @@ class Projects
         $projects = array();
         $projects_dir = Slim::config('projects_dir');
         
-        $glob = "{{$projects_dir}/*.html,{$projects_dir}/*.md}";
+        $glob = "{{$projects_dir}/*.html,{$projects_dir}/*.mkd}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {
             preg_match('#/(\d+-\d+-\d+) (.*)\.(\w+)$#', $filename, $matches);
             
