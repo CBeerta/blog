@@ -42,7 +42,6 @@
 **/
 class Contact
 {
-
     /**
     * Contact Page
     *
@@ -54,6 +53,19 @@ class Contact
 
         return Slim::render('contact.html');
     }
+    
+    /**
+    * About
+    *
+    * @return void
+    **/
+    public static function about()
+    {
+        Slim::view()->setData('title', 'About');
+
+        return Slim::render('about.html');
+    }
+    
 
 }
 

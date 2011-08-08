@@ -83,6 +83,7 @@ $options = array (
     'cache_dir' => '/var/tmp/',
     'dbfile' => './data/planner.db',
     'projects_dir' => './data/projects',
+    'docs_dir' => './data/docs',
     'public_url' => 'http://localhost/data/uploads',
     'public_loc' => './data/uploads',
     'deviantart_items' => 4,
@@ -109,6 +110,8 @@ $menu_items = array(
     'projects' => 'Projects',
     'blog' => 'Blog',
     'photography' => 'Photograpy',
+    'docs' => 'Brain Dump',
+    /* 'about' => 'About', */
     /*'contact' => 'Contact',*/
 );
 
@@ -146,9 +149,14 @@ Slim::post('/sidebar/search', 'Other::search');
 
 // contact ################################################
 Slim::get('/contact', 'Contact::index');
+//Slim::get('/about', 'Contact::about');
 
-// Redirect photography to fluidr #########################
+// Photography page #######################################
 Slim::get('/photography', 'Photography::index');
+
+// Documentation page #####################################
+Slim::get('/docs', 'Docs::index');
+Slim::get('/docs/:slug', 'Docs::index');
 
 // Sitemap ################################################
 Slim::get('/sitemap.xml', 'Other::sitemap');

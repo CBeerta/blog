@@ -178,6 +178,7 @@ pre {
 	border: 1px solid #ddd;
 	font-size: 85%;
     font-family: Monospace, serif;
+	border-radius: 5px;
 }
 pre code {
 	padding: 0;
@@ -478,6 +479,66 @@ sidebar .deviantart img {
 }
 sidebar .deviantart li {
 	border: none;
+}
+
+/* ######################### Documentation ############ */
+
+.index {
+    padding: 5px;
+    text-align: left;
+    min-width: 200px;
+    float: right;
+    display: block;
+    border: 1px solid #444;
+    background-color: #fafafa;
+    border-radius: 5px 5px 5px 5px;
+}
+.index ul { 
+    margin: 0;
+    padding: 2px;
+}
+.index li {
+    list-style: none;
+}
+
+/* ######################### About #################### */
+#deckblatt p {
+    display: block;
+    white-space: pre;    
+}
+#deckblatt b {
+    font-weight: bold;
+}
+#deckblatt img {
+    max-width: 400px;
+    max-height: 400px;
+    padding: 2px;
+    border: 2px solid #ddd;
+    float: right;
+}
+div#deckblatt {
+}
+#deckblatt h1 {
+}
+div#lebenslauf {
+    clear: right;
+}
+#lebenslauf .first li {
+    margin-left: 150px;
+    list-style: none;
+    line-height: 2em;
+}
+#lebenslauf .second li {
+    margin-left: 50px;
+    list-style: square;
+    line-height: 2em;
+}
+
+#lebenslauf h2 {
+    float: left;
+    line-height: 2em;
+}
+div#lebenslauf {
 }
 
 

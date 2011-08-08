@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{%block content %}
+<div class="index">
+<ul>
+<h2>Topics</h2>
+{% for topic in topics %}
+<li><a href="{{ base_url}}/docs/{{ topic }}">{{ topic }}</a>
+<!--
+<ul>
+{% for sub in sub_topics[topic] %}
+<li><a href="{{ base_url}}/docs/{{ topic }}#{{ sub }}">{{ sub }}</a>
+{% endfor %}
+</ul>
+-->
+{% endfor %}
+</ul>
+</div>
+
+<p id="intro">This is my Collection of random Bits'n'Pieces. Code, Documentation and whatever
+else i might want to keep around. I made this public as there might be Information
+here that other people find Interesting.</p>
+
+<hr>
+
+{{ content|raw }}
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{%block content %}
+    <div id="deckblatt">
+
+        <div>
+            <img class="portrait" src="public/img/portrait.jpg" name="Portrait" title="Claus Beerta">
+        </div>
+
+        <h1>Profile</h1>
+    
+    
+        <h1>Contact Info</h1>
+        
+        <p><b>Claus Beerta</b>
+Sossenheimer Weg 20
+65929 Frankfurt am Main
+<a href="mailto: claus@beerta.de">claus@beerta.de</a></p>
+        
+    </div>
+    
+    <div id="lebenslauf">
+    
+        <h1>Work Experience</h1>
+        
+        <ul class="first">
+            <h2>since 2005</h2>
+            <li>Systems Administrator, Interactive Data Managed Solutions AG (previous IS.Teledata AG) in Frankfurt
+            <ul class="second">
+                <li>IPVS and Nginx Loadbalancing
+                <li>Implement Virtualization based on XEN with later migration to KVM
+                <li>Support with the implementation and rollout of PHP5
+                <li>Support Tomcat setups 
+                <li>ITIL and SOx
+            </ul>
+        </ul>
+
+        <ul class="first">
+            <h2>2003 – 2005</h2>
+            <li>Systems Administrator, IS.Teledata AG (Fusion of Onvista Technologies and Innovative Software AG) in Frankfurt
+            <ul class="second">
+                <li>Assumption of the Apache, PHP4 environment from Frontend Developers
+                <li>Operation and Development of DNS Services and their High Availability
+                <li>Capacity planning for Webserver infrastructure
+                <li>Rollout and Support of MySQL. Backup and HA Strategies
+            </ul>
+        </ul>
+        
+        <ul class="first">
+            <h2>2000 - 2003</h2>
+            <li>Systems Administrator, Innovative Software AG in Frankfurt
+            <ul class="second">
+                <li>Support of inhouse developed Infrastructure such as Databases, Webservers and a "Ticketplant"
+                <li>Build an eFinance Plattform in NYC, and training of the on-site Systems Administrators
+                <li>Emplement and Operation of various statistic services and traffic accounting for billing purposes
+                <li>Primary Maintainer of the inhouse and datacenter mailservices based on Postfix, Qmail and Cyrus
+            </ul>
+        </ul>
+
+        <ul class="first">
+            <h2>1997 – 2000</h2>
+            <li>Systems Administrator, Selos Informatiossysteme GmbH in Wilhelmshaven
+            <ul class="second">
+                <li>Administration of Windows and Novell Networks
+                <li>Support of User Desktops running on Dos, Windows and OS/2
+                <li>Planning and Implementation of Network infrastructure
+            </ul>
+        </ul>
+        <h1>Education</h1>
+        <ul class="first">
+            <h2>1995 – 1997</h2>
+            <li>Full-time vocational school: Technical Assistant for Information Technology
+        </ul>
+        <ul class="first">
+            <h2>1991 – 1995</h2>
+            <li>Erweiterten Sekundarabschluß 1, Alexander von Humboldt Schule in Wittmund
+        </ul>
+    
+    </div>
+{% endblock %}
