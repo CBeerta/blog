@@ -110,7 +110,7 @@ $menu_items = array(
     'projects' => 'Projects',
     'blog' => 'Blog',
     'photography' => 'Photograpy',
-    'docs' => 'Brain Dump',
+    /* 'docs' => 'Brain Dump', */
     /* 'about' => 'About', */
     /*'contact' => 'Contact',*/
 );
