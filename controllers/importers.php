@@ -143,6 +143,7 @@ class Importers
             'import-rss:' => 'Import External RSS Feed',
             'import-posterous' => 'Import posts and comments from Posterous',
             'check-links:' => 'Check Links in Posts. Need substr for Domaincheck',
+            'fix-postdates' => 'Fix the post_date field in sqlite',
             'post-email' => 'Post to blog by Email',
             'help' => 'This Help',
             'dry-run' => 'Don\'t apply',
@@ -205,6 +206,9 @@ class Importers
             case 'check-links':
                 self::checkLinks($v);
                 exit;
+            case 'fix-postdates':
+                self::fixPostDates();
+                exit;
             case 'dry-run':
                 $dryrun = true;
                 break;
@@ -225,6 +229,41 @@ class Importers
         }
     }
 
+
+    /**
+    * Fix Post Dates in sqlite
+    *
+    * @return void
+    **/
+    public static function fixPostDates()
+    {
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date')
+            ->find_many();
+            
+        foreach ($posts as $post) {
+
+            print $post->post_date . " -> ";
+            
+            $parsed = strtotime($post->post_date);
+            
+            if ($parsed === false) {
+                print "Can't Parse!\n";
+                continue;
+            }
+            
+            print date('c', $parsed) . "\n";
+            
+            if ($post->post_date == date('c', $parsed)) {
+                continue;
+            }
+            
+            $post->post_date = date('c', $parsed);
+            
+            $post->save();
+        }
+
+    }
 
     /**
     * Check Links in articles for validity

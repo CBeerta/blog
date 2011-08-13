@@ -83,8 +83,13 @@ class Import_Posterous extends Importer
                 continue;
             }
             
-            
-            $post->post_date = $src->display_date;
+            $parsed_date = strtotime($src->display_date);
+            if ($parsed_date === false) {
+                d("Can't Parse Date: {$src->display_date}.");
+                continue;
+            }
+
+            $post->post_date = date('c', $parsed_date);
             $post->post_slug = $src->slug;
             $post->post_title = $src->title;
             $post->post_content = $src->body_full;
