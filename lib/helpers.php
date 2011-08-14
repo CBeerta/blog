@@ -31,7 +31,6 @@
 * @link     http://claus.beerta.de/
 **/
 
-
 /**
 * Helpers
 *
@@ -185,8 +184,70 @@ class Helpers
             // This is probably Markdown or plaintext
             $content = Markdown($content);
         }
+        
+        $pattern = '#\s*\<pre\s(.*?)\>(.*?)\</pre\>\s*#si';
+        $content = preg_replace_callback(
+            $pattern, 
+            'self::geshiHighlight',
+            $content
+        );
+        
 
         return $content;
+    }
+
+    /**
+    * Format <pre> tags with Geshi
+    *
+    * @param string $content The content to format
+    *
+    * @return html
+    **/
+    public static function geshiHighlight($content)
+    {
+        $line = null;
+        $lang = null;
+        
+        $code = $content[2];
+
+        preg_match_all("#\s*(.*?)=\"(.*?)\"#", $content[1], $matches);
+
+        foreach ($matches[1] as $k=>$v) {
+            switch ($v)
+            {
+            case 'lang':
+                $lang = $matches[2][$k];
+                break;
+            case 'lineno':
+                $line = $matches[2][$k];
+                break;
+            default:    
+                break;
+            }
+        }
+        
+        if ($lang !== null) {
+
+            include_once "/usr/share/php-geshi/geshi.php";
+        
+            $geshi = new GeSHi($code, $lang);
+            
+            $geshi->set_tab_width(2);
+            $geshi->set_overall_class("vibrant {$lang} codecolorer");
+            $geshi->set_header_type(GESHI_HEADER_DIV);
+            $geshi->enable_classes();
+            $geshi->enable_keyword_links(false);
+            $geshi->set_overall_style('white-space:nowrap');
+
+            if ($line !== null) {
+                $geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+                $geshi->start_line_numbers_at($line); 
+            }
+
+            return $geshi->parse_code();
+        }
+    
+        return $code;
     }
 
     /**
