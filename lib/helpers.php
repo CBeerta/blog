@@ -134,6 +134,48 @@ class Helpers
     }
 
     /**
+    * Add Tags to a Post
+    *
+    * @param array $tags   Array with  tags
+    * @param int   $postID postid to add tags to
+    *
+    * @return void
+    **/
+    public static function addTags($tags, $postID)
+    {
+        foreach ($tags as $tag) {
+            $tag = trim($tag);
+
+            $name = ucfirst(strtolower($tag));
+            $slug = Helpers::buildSlug($tag);
+            
+            $term = ORM::for_table('post_terms')
+                ->raw_query(
+                    "
+                    INSERT OR IGNORE INTO `post_terms`
+                    (`name`,`slug`) 
+                    VALUES
+                    ('{$name}', '{$slug}');
+                    ", array()
+                )->count();
+                
+            $term = ORM::for_table('post_terms')
+                ->where('slug', $slug)
+                ->find_one();                       
+
+            $term = ORM::for_table('term_relations')
+                ->raw_query(
+                    "
+                    INSERT OR IGNORE INTO `term_relations`
+                    (`posts_ID`,`post_terms_ID`) 
+                    VALUES
+                    ({$postID}, {$term->ID});
+                    ", array()
+                )->count();
+        }
+    }
+
+    /**
     * Format a DateTime / String for display
     *
     * @param string $date Date to Format

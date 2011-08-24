@@ -110,7 +110,7 @@ class Post_By_Mail extends Importer
         }
         
         $post->post_date = date('c');
-        $post->post_slug = buildSlug($headers['subject']);
+        $post->post_slug = Helpers::buildSlug($headers['subject']);
         $post->post_title = $headers['subject'];
         $post->post_content = trim($content);
         $post->guid = $post->post_slug . '-' . mktime();

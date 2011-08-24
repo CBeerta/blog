@@ -84,6 +84,7 @@ $options = array (
     'dbfile' => './data/planner.db',
     'projects_dir' => './data/projects',
     'docs_dir' => './data/docs',
+    'posts_dir' => './data/posts',
     'public_url' => 'http://localhost/data/uploads',
     'public_loc' => './data/uploads',
     'deviantart_items' => 4,
