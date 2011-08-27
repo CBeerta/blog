@@ -67,12 +67,13 @@ class Import_File extends Importer
                 // FIXME: should output a warning of some sort
                 continue;
             }
-
+            
             print "# Importing: {$filename}\n";
 
             $content = file($filename);
             
-            $title = null;
+            $post_date = strtotime($matches[1]);
+            $title = $matches[2];
             $tags = array();
             
             foreach ($content as $k => $line) {
@@ -101,12 +102,12 @@ class Import_File extends Importer
             
             print $title . "\n";
             
-            $post->post_date = date('c');
+            $post->post_date = date('c', $post_date);
             $post->post_slug = Helpers::buildSlug($title);
             $post->post_title = $title;
             $post->post_content = implode("", $content);
             $post->guid = $post->post_slug . '-' . time();
-            
+            $post->original_source = null;
             
             if (!$dryrun) {
                 $post->save();
