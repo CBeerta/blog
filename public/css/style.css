@@ -167,7 +167,7 @@ input, textarea {
 code {
 	padding: 0 3px;
 	background: #f4f4f4;
-	font-size: 85%;
+	/*font-size: 85%;*/
     font-family: Monospace, serif;
 }
 pre {
