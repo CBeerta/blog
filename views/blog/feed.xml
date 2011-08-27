@@ -25,8 +25,8 @@
 		<dc:creator>Claus Beerta</dc:creator>
 
 		<guid isPermaLink="false">/{{ p.post_type }}/{{ p.post_slug }}</guid>
-		<description><![CDATA[{{ p.post_content|raw|striptags }}]]></description>
-		<content:encoded><![CDATA[{{ p.post_content|raw }}]]></content:encoded>
+		<description><![CDATA[{{ p.post_content|format_content|raw }}]]></description>
+		<content:encoded><![CDATA[{{ p.post_content|format_content|raw }}]]></content:encoded>
 	</item>	
 {% endfor %}
 </channel>
