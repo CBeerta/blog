@@ -154,6 +154,7 @@ Slim::get('/contact', 'Contact::index');
 
 // Photography page #######################################
 Slim::get('/photography', 'Photography::index');
+Slim::get('/picasa', 'Photography::picasa');
 
 // Documentation page #####################################
 Slim::get('/docs', 'Docs::index');

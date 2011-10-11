@@ -147,13 +147,15 @@ class Import_Rss extends Importer
         }
         $orig_img = $item->get_enclosure()->link;
         
+        $dst_name = str_replace('%', '_', basename($orig_img));
+        
         $dest_thumb_file = Slim::config('public_loc') . 
             'flickrthumb_' . 
-            basename($orig_img);
-        $dest_file = Slim::config('public_loc') . basename($orig_img);
+            $dst_name;
+        $dest_file = Slim::config('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && $this->force === false ) {
-            d("Not regeneration thumb");
+            d("Not regenerating thumb");
         } else {
             d("Loading image: " . $orig_img);
             
@@ -246,6 +248,7 @@ class Import_Rss extends Importer
             switch ($parsed_url['host'])
             {
             case 'api.flickr.com':
+            case 'picasaweb.google.com':
                 $new = $this->_flickr($item, $new);
                 break;
             case 'backend.deviantart.com':

@@ -69,6 +69,17 @@ class Photography
         return Slim::render('blog/index.html');
     }
 
+    /**
+    * Picasa Page
+    *
+    * @return html
+    **/
+    public static function picasa()
+    {
+        $userID = 106832871642761506709;
+        $albumID = 5656649800328939665;
+    }
+
 }
 
 
