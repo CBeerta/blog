@@ -143,6 +143,7 @@ class Importers
             'import-rss:' => 'Import External RSS Feed',
             'import-posterous' => 'Import posts and comments from Posterous',
             'import-files' => 'Import posts from Files',
+            'import-google' => 'Import posts and comments from Google+',
             'check-links:' => 'Check Links in Posts. Need substr for Domaincheck',
             'fix-postdates' => 'Fix the post_date field in sqlite',
             'post-email' => 'Post to blog by Email',
@@ -199,6 +200,9 @@ class Importers
                 break;
             case 'import-posterous':
                 $class = 'Import_Posterous';
+                break;
+            case 'import-google':
+                $class = 'Import_Google';
                 break;
             case 'import-files':
                 $class = 'Import_File';

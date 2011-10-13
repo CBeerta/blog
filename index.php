@@ -92,6 +92,8 @@ $options = array (
     'date_format' => 'D, d M Y',
     'base_uri' => '/',
     'public_dir' => __DIR__ . '/public/',
+    'google_id' => null,
+    'google_api_key' => null,
 );
 
 /**
