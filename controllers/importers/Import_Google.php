@@ -100,18 +100,11 @@ class Import_Google extends Importer
                     continue;
                 }
 
-                # Strip title and one '<br />' from content
+                // Strip title and one '<br />' from content
                 $content = substr($content, $pos + 6);
                 
-                foreach ($item->object->attachments as $attachment) {
-                    print_r($attachment);
-                    switch ($attachment->objectType) {
-                    case 'photo':
-                        break;
-                    default:
-                        break;
-                    }
-                }
+                // Handle Attachments
+                $content = self::handleAttachments($content, $item);
                 
                 $post = ORM::for_table('posts')
                     ->where('post_title', $title)
@@ -120,13 +113,22 @@ class Import_Google extends Importer
                 if (!$post) {
                     print "## Creating: {$title}\n";
                     $post = ORM::for_table('posts')->create();
-                    $post->post_status = 'draft';
+                    $post->post_status = 'publish';
                 } else {
+                    
+                    // Import Comments for existing posts.
                     if (isset($item->object->replies)) {
                         self::importComments($post->ID, $item->object->replies);
                     }
-                    print "## Post '{$title}' already exists, skipping\n";
-                    continue;
+                    
+                    // If a post is from somewhere but google+,
+                    // don't update it. 
+                    // This is usually stuff pulled via picasa, then shared on G+
+                    if ($post->post_type != 'blog') {
+                        print "Skipping: {$title}.\n";
+                        continue;
+                    }
+                    
                 }
 
                 $parsed_date = strtotime($item->published);
@@ -135,25 +137,55 @@ class Import_Google extends Importer
                     continue;
                 }
                 
-                $post->post_date = $parsed_date;
+                $post->post_date = date('c', $parsed_date);
                 $post->post_slug = Helpers::buildSlug($title);
                 $post->post_title = $title;
-                $post->post_content = $title;
+                $post->post_content = $content;
                 $post->guid = $post->post_slug . '-' . time();
                 $post->original_source = $item->url;
-                
+                $post->post_type = 'blog';
+
                 if (!$dryrun) {
                     $post->save();
-                    //Helpers::addTags($tags, $post->ID);
+                    // FIXME: Should parse '#' tags in posts and add them aswell
+                    Helpers::addTags(array('Google+'), $post->ID);
                 } else {
                     print "Dry Run, not saving\n";
                 }
-                //self::importComments($post->ID, $item->
-                //print_r($post);
             }
         
         } while ($page_token !== null);
  
+    }
+
+    /**
+    * Handle Attachments
+    * FIXME: This needs more work to handle all possible attachments
+    *
+    * @param string $content String with current content
+    * @param object $item    The items 'object'
+    *
+    * @return string
+    **/
+    public function handleAttachments($content, $item)
+    {
+        if (!isset($item->object->attachments)) {
+            return $content;
+        }
+    
+        foreach ($item->object->attachments as $attachment) {
+            switch ($attachment->objectType) {
+            case 'photo':
+                $content .= '<a href="' . $attachment->url;
+                $content .= '"><img src="' . $attachment->image->url;
+                $content .= '"></a>';
+                break;
+            default:
+                break;
+            }
+        }
+        
+        return $content;
     }
 
     /**
@@ -162,7 +194,7 @@ class Import_Google extends Importer
     * @param int    $ID      postID to add comments to
     * @param object $replies Object with the Url to the comments
     *
-    * @return void
+    * @return bool
     **/
     public function importComments($ID, $replies)
     {
@@ -173,6 +205,48 @@ class Import_Google extends Importer
         $url = $replies->selfLink . '?key=' . $api_key;
 
         print "### Comments: {$url}\n";
+        
+        $res = file_get_contents($url);
+        $json = json_decode($res);
+        
+        if (!$json) {
+            print "Unable to parse json. Aborting.\n";
+            return false;
+        }
+        
+        if (!isset($json->items)) {
+            return false;
+        }
+       
+        foreach ($json->items as $item) {
+
+            $comment = ORM::for_table('comments')
+                ->where('original_source', $item->selfLink)
+                ->find_one();
+                
+            if (!$comment) {
+                $comment = ORM::for_table('comments')->create();
+                $comment->post_ID = $ID;
+                $comment->comment_status = 'visible';
+            } else {
+                print "Comment from '{$item->actor->displayName}' Already Exists.\n";
+            }
+
+            $parsed_date = strtotime($item->published);
+            if ($parsed_date === false) {
+                d("Can't Parse Date: {$item->published}.");
+                continue;
+            }
+            
+            $comment->comment_author = $item->actor->displayName;
+            $comment->comment_author_url = $item->actor->url;
+            $comment->comment_author_email = $item->actor->image->url;
+            $comment->comment_date = date('c', $parsed_date);
+            $comment->comment_content = $item->object->content;
+            $comment->original_source = $item->selfLink;
+
+            $comment->save();
+        }
 
     }
     

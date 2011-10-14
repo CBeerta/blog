@@ -176,6 +176,32 @@ class Helpers
     }
 
     /**
+    * Comment Image Url Formatter for Twig
+    *
+    * @param string $uri URl or EMAIL for the image
+    *
+    * @return string 
+    **/
+    public static function commentImage($uri)
+    {
+        $ret = '';
+        
+        if (strpos($uri, '@') !== false) {
+            // email, use gravatar
+            $ret = 'http://www.gravatar.com/avatar/';
+            $ret .= md5($uri);
+            $ret .= '?d=retro&s=64';
+        } else if (strpos($uri, 'google') !== false) {
+            // google url, probably from G+ comments
+            $ret = $uri;
+            $ret .= '?sz=64';
+        } 
+        
+        return $ret;
+    }
+     
+    
+    /**
     * Format a DateTime / String for display
     *
     * @param string $date Date to Format
