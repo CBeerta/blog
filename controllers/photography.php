@@ -4,7 +4,7 @@
 *
 * PHP Version 5.3
 *
-* Copyright (C) <year> by <copyright holders>
+* Copyright (C) 2011 by Claus Beerta
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,7 @@ class Photography
     public static function index()
     {
         $posts = ORM::for_table('posts')
+            ->select_expr(Blog::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
             ->where('post_type', 'flickr');
 

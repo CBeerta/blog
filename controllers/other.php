@@ -4,7 +4,7 @@
 *
 * PHP Version 5.3
 *
-* Copyright (C) <year> by <copyright holders>
+* Copyright (C) 2011 by Claus Beerta
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal

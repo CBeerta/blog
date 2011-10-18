@@ -4,7 +4,7 @@
 *
 * PHP Version 5.3
 *
-* Copyright (C) <year> by <copyright holders>
+* Copyright (C) 2011 by Claus Beerta
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -48,6 +48,12 @@ class Blog
     **/
     const _POSTS_SELECT_EXPR = "
             *,
+            (
+                SELECT COUNT(ID)
+                FROM comments
+                WHERE
+                    comments.post_ID=posts.ID
+            ) AS comment_count,
             (
                 SELECT GROUP_CONCAT(name) 
                 FROM post_terms,term_relations 

@@ -11,6 +11,12 @@
     <a class="meta" href="{{ post.original_source }}">Article Source</a>        
 {% endif %}
 {% if post.tags %}
-    <p class="tags">Filed under <em>||</em> <b>{{ post.tags|format_tags|raw }}</b></p>
+    <p class="tags">
+        {% if post.comment_count > 0 %}
+        {{ post.comment_count }} Comments
+        <em>||</em> 
+        {% endif %}
+        Filed under: <b>{{ post.tags|format_tags|raw }}</b>
+    </p>
 {% endif %}
     

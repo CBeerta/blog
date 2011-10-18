@@ -1,3 +1,8 @@
+    <h2 class="title">
+        <a href="/blog/{{ post.post_slug }}">
+            {{ post.post_title }}
+        </a>
+    </h2>
     <div class="entry flickr" id="{{ post.ID }}">
         {{ post.post_content|raw }}
     </div>

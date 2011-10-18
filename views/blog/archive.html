@@ -2,15 +2,15 @@
 
 {%block content %}
 <h4>Tags</h4>
-<ul class="archive">
+<p class="archive">
 {% for tag in tags %}
 {% if tag.posts_with_tag > 0 %}
-<li><a href="/blog/tag/{{ tag.slug }}">{{ tag.name }}</a>({{ tag.posts_with_tag }})</li>
+<a href="/blog/tag/{{ tag.slug }}">{{ tag.name }}</a> ({{ tag.posts_with_tag }}), 
 {% endif %}
 {% else %}
 <p>No Tags Whatsoever</p>
 {% endfor %}
-</ul>
+</p>
 <h4>Blog Archive</h4>
 {% for post in posts %}
 <div class="archive">

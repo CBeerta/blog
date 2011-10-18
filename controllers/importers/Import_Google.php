@@ -4,7 +4,7 @@
 *
 * PHP Version 5.3
 *
-* Copyright (C) <year> by <copyright holders>
+* Copyright (C) 2011 by Claus Beerta
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -95,16 +95,17 @@ class Import_Google extends Importer
                 $pos = strpos($content, '<br />');
                 $title = strip_tags(substr($content, 0, $pos));
 
+                // Handle Attachments
+                $content = self::handleAttachments($content, $item);
+
                 if (empty($title)) {
                     print "Invalid Post: {$content}\n";
+                    //print_r($item);
                     continue;
                 }
 
                 // Strip title and one '<br />' from content
                 $content = substr($content, $pos + 6);
-                
-                // Handle Attachments
-                $content = self::handleAttachments($content, $item);
                 
                 $post = ORM::for_table('posts')
                     ->where('post_title', $title)
@@ -161,6 +162,7 @@ class Import_Google extends Importer
     /**
     * Handle Attachments
     * FIXME: This needs more work to handle all possible attachments
+    * FIXME: Handling comments in here is a bit "wonkers" maybe?
     *
     * @param string $content String with current content
     * @param object $item    The items 'object'
@@ -172,14 +174,31 @@ class Import_Google extends Importer
         if (!isset($item->object->attachments)) {
             return $content;
         }
-    
+        
         foreach ($item->object->attachments as $attachment) {
+
+            // This is probably a 'Note' that has a Photo attached
+            // Search for matching Post
+            if (isset($attachment->displayName)) {
+                $post = ORM::for_table('posts')
+                    ->where('post_title', $attachment->displayName)
+                    ->find_one();
+            }
+                            
             switch ($attachment->objectType) {
             case 'photo':
+
                 $content .= '<a href="' . $attachment->url;
                 $content .= '"><img src="' . $attachment->image->url;
                 $content .= '"></a>';
+                
+                if (isset($post->ID)) {
+                    // There is a Matching Post, thus try to import 
+                    // The Comments associated with i.
+                    self::importComments($post->ID, $item->object->replies);
+                }
                 break;
+
             default:
                 break;
             }
@@ -187,7 +206,7 @@ class Import_Google extends Importer
         
         return $content;
     }
-
+    
     /**
     * Import Comments to a G+ Post
     *
@@ -208,7 +227,7 @@ class Import_Google extends Importer
         
         $res = file_get_contents($url);
         $json = json_decode($res);
-        
+
         if (!$json) {
             print "Unable to parse json. Aborting.\n";
             return false;
@@ -225,6 +244,7 @@ class Import_Google extends Importer
                 ->find_one();
                 
             if (!$comment) {
+                print "New Comment from '{$item->actor->displayName}', Importing.\n";
                 $comment = ORM::for_table('comments')->create();
                 $comment->post_ID = $ID;
                 $comment->comment_status = 'visible';
@@ -244,7 +264,7 @@ class Import_Google extends Importer
             $comment->comment_date = date('c', $parsed_date);
             $comment->comment_content = $item->object->content;
             $comment->original_source = $item->selfLink;
-
+            
             $comment->save();
         }
 

@@ -27,7 +27,7 @@
             <small>{{ c.comment_date|date(date_format) }}</small>
         </div>
         <p>
-            {{ c.comment_content }}
+            {{ c.comment_content|raw }}
         </p>
     </div>
     <div class="clearfix"></div>

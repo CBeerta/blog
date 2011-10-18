@@ -4,7 +4,7 @@
 *
 * PHP Version 5.3
 *
-* Copyright (C) <year> by <copyright holders>
+* Copyright (C) 2011 by Claus Beerta
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -206,7 +206,7 @@ class Import_Rss extends Importer
         
         $rss->set_feed_url($feed_uri);
         $rss->set_cache_location('/var/tmp');
-        $rss->set_cache_duration(43200);
+        $rss->set_cache_duration(60);
         $rss->init();
         $rss->handle_content_type();
         
@@ -236,7 +236,7 @@ class Import_Rss extends Importer
             /**
             * Basic style if there is no custom one
             **/
-            $new->post_status = 'draft';
+            $new->post_status = 'publish';
             $new->post_title = $item->get_title();
             $new->post_date = $item->get_date('c');
             $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
