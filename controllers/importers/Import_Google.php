@@ -151,6 +151,7 @@ class Import_Google extends Importer
                     // FIXME: Should parse '#' tags in posts and add them aswell
                     Helpers::addTags(array('Google+'), $post->ID);
                 } else {
+                    //print_r($post);
                     print "Dry Run, not saving\n";
                 }
             }
@@ -163,6 +164,7 @@ class Import_Google extends Importer
     * Handle Attachments
     * FIXME: This needs more work to handle all possible attachments
     * FIXME: Handling comments in here is a bit "wonkers" maybe?
+    * FIXME: HTML TERROR. This has to DIAF, and needs to be moved to a template
     *
     * @param string $content String with current content
     * @param object $item    The items 'object'
@@ -198,8 +200,24 @@ class Import_Google extends Importer
                     self::importComments($post->ID, $item->object->replies);
                 }
                 break;
+                
+            case 'photo-album':
+                break;
 
+            case 'article':
+                $content .= '<br /><br />';
+                $content .= '<a href="' . $attachment->url;
+                $content .= '">';
+                // https://s2.googleusercontent.com/s2/favicons?domain=owncloud.net
+                $content .=  $attachment->displayName;
+                $content .= '</a>';
+                $content .= '<br /><blockquote>' . $attachment->content;
+                $content .= '</blockquote>';
+                break;
+                
             default:
+                print_r($item);
+            
                 break;
             }
         }
