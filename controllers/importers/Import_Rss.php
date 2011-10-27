@@ -149,10 +149,10 @@ class Import_Rss extends Importer
         
         $dst_name = str_replace('%', '_', basename($orig_img));
         
-        $dest_thumb_file = Slim::config('public_loc') . 
+        $dest_thumb_file = Helpers::option('public_loc') . 
             'flickrthumb_' . 
             $dst_name;
-        $dest_file = Slim::config('public_loc') . basename($dst_name);
+        $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && $this->force === false ) {
             d("Not regenerating thumb");
@@ -175,10 +175,10 @@ class Import_Rss extends Importer
         }
         
         $content  = '<a href="';
-        $content .= Slim::config('public_url') . basename($dest_file);
+        $content .= Helpers::option('public_url') . basename($dest_file);
         $content .= '" title="' . $post->post_title . '">';
         $content .= '<img src="';
-        $content .= Slim::config('public_url') . basename($dest_thumb_file);
+        $content .= Helpers::option('public_url') . basename($dest_thumb_file);
         $content .= '" width="940" height="255"></a>';
 
         $post->post_type = 'flickr';

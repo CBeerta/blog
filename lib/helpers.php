@@ -42,6 +42,27 @@
 **/
 class Helpers
 {
+
+    /**
+    * Options with defaults, overridable in config.ini
+    **/
+    protected static $options = array (
+        'cache_dir' => '/var/tmp/',
+        'dbfile' => './data/planner.db',
+        'projects_dir' => './data/projects',
+        'docs_dir' => './data/docs',
+        'posts_dir' => './data/posts',
+        'public_url' => 'http://localhost/data/uploads',
+        'public_loc' => './data/uploads',
+        'deviantart_items' => 4,
+        'posts_per_page' => 10,
+        'date_format' => 'D, d M Y',
+        'base_uri' => '/',
+        'public_dir' => './public/',
+        'google_id' => null,
+        'google_api_key' => null,
+    );
+    
     /**
     * not Found Magic
     *
@@ -90,6 +111,23 @@ class Helpers
     }
 
     /**
+    * Options Store
+    *
+    * @param string $key   Key
+    * @param mixed  $value Value
+    *
+    * @return void
+    **/
+    public static function option($key, $value = null)
+    {
+        if ($value == null) {
+            return self::$options[$key];
+        }
+        
+        self::$options[$key] = $value;
+    }
+
+    /**
     * Return a Random Header Image
     *
     * @param string $image_dir Directory under $public_dir with images
@@ -98,7 +136,7 @@ class Helpers
     **/
     public static function randomHeaderImage($image_dir)
     {
-        $dir = Slim::config('public_dir') . '/' .  $image_dir;
+        $dir = Helpers::option('public_dir') . '/' .  $image_dir;
         $glob = "{{$dir}*.jpg, {$dir}*.png}";
         
         $files = array();

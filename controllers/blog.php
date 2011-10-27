@@ -72,7 +72,7 @@ class Blog
     **/
     public static function index($tag_or_offset = 0, $offset = 0)
     {
-        $ppp = Slim::config('posts_per_page');
+        $ppp = Helpers::option('posts_per_page');
 
         if (is_numeric($tag_or_offset)) {
             $offset = $tag_or_offset;
@@ -375,11 +375,11 @@ class Blog
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
-            ->limit(Slim::config('posts_per_page'))
+            ->limit(Helpers::option('posts_per_page'))
             ->find_many();
 
         $posts = Projects::mergeBlogPosts($posts);
-        $posts = array_splice($posts, 0, Slim::config('posts_per_page'));
+        $posts = array_splice($posts, 0, Helpers::option('posts_per_page'));
 
         Slim::view()->appendData(
             array(

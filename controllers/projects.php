@@ -52,7 +52,7 @@ class Projects
     public static function loadProjects($slug = null)
     {
         $projects = array();
-        $projects_dir = Slim::config('projects_dir');
+        $projects_dir = Helpers::option('projects_dir');
         
         $glob = "{{$projects_dir}/*.html,{$projects_dir}/*.mkd}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {

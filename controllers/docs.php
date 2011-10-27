@@ -57,7 +57,7 @@ class Docs
         $docs = array();
         $file_timestamps = array();
  
-        $docs_dir = Slim::config('docs_dir');
+        $docs_dir = Helpers::option('docs_dir');
         
         $glob = "{{$docs_dir}/*.html,{$docs_dir}/*.mkd}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {

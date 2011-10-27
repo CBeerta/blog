@@ -57,7 +57,7 @@ class Import_File extends Importer
     {
         $dryrun = $this->dryrun;
     
-        $posts_dir = Slim::config('posts_dir');
+        $posts_dir = Helpers::option('posts_dir');
         
         $glob = "{{$posts_dir}/*.html,{$posts_dir}/*.mkd}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {

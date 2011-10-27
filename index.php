@@ -77,35 +77,14 @@ Slim::configureMode(
 Slim::notFound('Helpers::notFound');
 
 /**
-* Options with defaults, overridable in config.ini
-**/
-$options = array (
-    'cache_dir' => '/var/tmp/',
-    'dbfile' => './data/planner.db',
-    'projects_dir' => './data/projects',
-    'docs_dir' => './data/docs',
-    'posts_dir' => './data/posts',
-    'public_url' => 'http://localhost/data/uploads',
-    'public_loc' => './data/uploads',
-    'deviantart_items' => 4,
-    'posts_per_page' => 10,
-    'date_format' => 'D, d M Y',
-    'base_uri' => '/',
-    'public_dir' => __DIR__ . '/public/',
-    'google_id' => null,
-    'google_api_key' => null,
-);
-
-/**
 * Load config file and override default options
 **/    
 $config = parse_ini_file(__DIR__."/config.ini");
-foreach ( $options as $k => $v ) {
-    $v = isset($config[$k]) ? $config[$k] : $options[$k];
-    Slim::config($k, $v);
+foreach ( $config as $k => $v ) {
+    Helpers::option($k, $v);
 }
 
-ORM::configure('sqlite:' . Slim::config('dbfile'));
+ORM::configure('sqlite:' . Helpers::option('dbfile'));
 ORM::configure('id_column', 'ID');
 ORM::configure('logging', false);
 
@@ -122,7 +101,7 @@ Slim::view()->setData(
     array(
     'menu_items' => $menu_items,
     'header_image'=> Helpers::randomHeaderImage('header-images/'),
-    'date_format' => Slim::config('date_format'),
+    'date_format' => Helpers::option('date_format'),
     'editor' => Helpers::isEditor(),
     )
 );

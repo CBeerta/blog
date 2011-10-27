@@ -55,10 +55,11 @@ class Import_Google extends Importer
     public function run()
     {
         $dryrun = $this->dryrun;
+        $force = $this->force;
         $page_token = null;
         
-        $google_id = Slim::config('google_id');
-        $api_key = Slim::config('google_api_key');
+        $google_id = Helpers::option('google_id');
+        $api_key = Helpers::option('google_api_key');
 
         do {
 
@@ -71,12 +72,12 @@ class Import_Google extends Importer
             
             $page_token = null;
             
-            print "## Loading: {$url}\n";
+            //d("## Loading: {$url}.");
             $res = file_get_contents($url);
             $json = json_decode($res);
             
             if (!$json) {
-                print "Unable to parse json. Aborting.\n";
+                d("Unable to parse json. Aborting.");
                 break;
             }
             
@@ -85,7 +86,7 @@ class Import_Google extends Importer
             }
             
             if (!isset($json->items)) {
-                print "No More Items. Aborting.\n";
+                d("No More Items. Aborting.");
                 break;
             }
             
@@ -99,8 +100,7 @@ class Import_Google extends Importer
                 $content = self::handleAttachments($content, $item);
 
                 if (empty($title)) {
-                    print "Invalid Post: {$content}\n";
-                    //print_r($item);
+                    d("Invalid Post: {$content}");
                     continue;
                 }
 
@@ -112,7 +112,7 @@ class Import_Google extends Importer
                     ->find_one();
                     
                 if (!$post) {
-                    print "## Creating: {$title}\n";
+                    d("## Creating: {$title}");
                     $post = ORM::for_table('posts')->create();
                     $post->post_status = 'publish';
                 } else {
@@ -121,12 +121,17 @@ class Import_Google extends Importer
                     if (isset($item->object->replies)) {
                         self::importComments($post->ID, $item->object->replies);
                     }
+
+                    if (!$force) {
+                        d("Skipping: {$title}. Already Exists. Force to Update.");
+                        continue;
+                    }
                     
                     // If a post is from somewhere but google+,
                     // don't update it. 
                     // This is usually stuff pulled via picasa, then shared on G+
                     if ($post->post_type != 'blog') {
-                        print "Skipping: {$title}.\n";
+                        d("Skipping: {$title}. Not of type 'blog'");
                         continue;
                     }
                     
@@ -147,12 +152,13 @@ class Import_Google extends Importer
                 $post->post_type = 'blog';
 
                 if (!$dryrun) {
+                    d("Saving '{$post->post_title}'.");
                     $post->save();
                     // FIXME: Should parse '#' tags in posts and add them aswell
                     Helpers::addTags(array('Google+'), $post->ID);
                 } else {
                     //print_r($post);
-                    print "Dry Run, not saving\n";
+                    d("Dry Run, not saving.");
                 }
             }
         
@@ -236,18 +242,18 @@ class Import_Google extends Importer
     public function importComments($ID, $replies)
     {
         $dryrun = $this->dryrun;
-        $google_id = Slim::config('google_id');
-        $api_key = Slim::config('google_api_key');
+        $google_id = Helpers::option('google_id');
+        $api_key = Helpers::option('google_api_key');
 
         $url = $replies->selfLink . '?key=' . $api_key;
 
-        print "### Comments: {$url}\n";
+        //d("### Comments: {$url}");
         
         $res = file_get_contents($url);
         $json = json_decode($res);
 
         if (!$json) {
-            print "Unable to parse json. Aborting.\n";
+            d("Unable to parse json. Aborting.");
             return false;
         }
         
@@ -262,12 +268,12 @@ class Import_Google extends Importer
                 ->find_one();
                 
             if (!$comment) {
-                print "New Comment from '{$item->actor->displayName}', Importing.\n";
+                d("New Comment from '{$item->actor->displayName}', Importing.");
                 $comment = ORM::for_table('comments')->create();
                 $comment->post_ID = $ID;
                 $comment->comment_status = 'visible';
             } else {
-                print "Comment from '{$item->actor->displayName}' Already Exists.\n";
+                d("Comment from '{$item->actor->displayName}' Already Exists.");
             }
 
             $parsed_date = strtotime($item->published);
