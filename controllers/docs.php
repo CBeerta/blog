@@ -130,6 +130,8 @@ class Docs
     **/
     public static function index($slug = null)
     {
+        $app = Slim::getInstance();
+        
         $docs = self::loadDocs();
         
         if ($slug === null) {
@@ -138,14 +140,14 @@ class Docs
             $content = $docs[$slug];
         }
         
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
                 'docs' => $docs, 
                 'display' => self::loadContent($content),
             )
         );
         
-        return Slim::render('docs.html');
+        return $app->render('docs.html');
     }
 
 }

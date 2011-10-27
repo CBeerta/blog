@@ -70,7 +70,9 @@ class Helpers
     **/
     public static function notFound()
     {
-        $parts = explode('/', Slim::request()->getResourceUri());
+        $app = Slim::getInstance();
+        
+        $parts = explode('/', $app->request()->getResourceUri());
         
         /**
         * First look through all projects and see if theres a match
@@ -84,7 +86,7 @@ class Helpers
         
         foreach ($parts as $part) {
             if (in_array(strtolower($part), $slugs)) {
-                Slim::redirect('/projects/' . $slugs[strtolower($part)]);
+                $app->redirect('/projects/' . $slugs[strtolower($part)]);
             }
         }
         
@@ -100,14 +102,14 @@ class Helpers
 
         foreach ($parts as $part) {
             if (in_array($part, $slugs)) {
-                Slim::redirect('/blog/' . $part);
+                $app->redirect('/blog/' . $part);
             }
         }
         
         /**
         * Finally, render our 404 because nothing was found
         **/
-        Slim::render('404.html');
+        $app->render('404.html');
     }
 
     /**

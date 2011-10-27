@@ -49,9 +49,11 @@ class Contact
     **/
     public static function index()
     {
-        Slim::view()->setData('title', 'Contact');
+        $app = Slim::getInstance();
+        
+        $app->view()->setData('title', 'Contact');
 
-        return Slim::render('contact.html');
+        return $app->render('contact.html');
     }
     
     /**
@@ -61,9 +63,11 @@ class Contact
     **/
     public static function about()
     {
-        Slim::view()->setData('title', 'About');
+        $app = Slim::getInstance();
+        
+        $app->view()->setData('title', 'About');
 
-        return Slim::render('about.html');
+        return $app->render('about.html');
     }
     
 

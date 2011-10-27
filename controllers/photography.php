@@ -50,6 +50,8 @@ class Photography
     **/
     public static function index()
     {
+        $app = Slim::getInstance();
+        
         $posts = ORM::for_table('posts')
             ->select_expr(Blog::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
@@ -60,14 +62,14 @@ class Photography
         }
         $posts = $posts->find_many();
         
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'title' => 'Photography',
             'active' => 'photography',
             'posts' => $posts,
             )
         );
-        return Slim::render('blog/index.html');
+        return $app->render('blog/index.html');
     }
 
     /**

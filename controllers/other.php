@@ -49,6 +49,8 @@ class Other
     **/
     public static function sitemap()
     {
+        $app = Slim::getInstance();
+        
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
@@ -57,15 +59,15 @@ class Other
         $posts = Projects::mergeBlogPosts($posts);
         reset($posts);
         
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'lastmod' => current($posts)->post_date->format('Y-m-d'),
             'posts' => $posts,
             )
         );
         
-        Slim::response()->header('Content-Type', 'application/xml');        
-        return Slim::render('sitemap.xml');
+        $app->response()->header('Content-Type', 'application/xml');        
+        return $app->render('sitemap.xml');
     }
 
     /**
@@ -75,6 +77,8 @@ class Other
     **/
     public static function search()
     {
+        $app = Slim::getInstance();
+        
         $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
         
         $posts = ORM::for_table('posts')
@@ -93,7 +97,7 @@ class Other
             ->limit(10)
             ->find_many();
 
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'title' => 'Search',
             'active' => 'blog',
@@ -101,7 +105,7 @@ class Other
             'search' => $s,
             )
         );
-        return Slim::render('blog/search.html');
+        return $app->render('blog/search.html');
     }
     /**
     * Load github user json, and return project list

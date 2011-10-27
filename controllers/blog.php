@@ -72,6 +72,7 @@ class Blog
     **/
     public static function index($tag_or_offset = 0, $offset = 0)
     {
+        $app = Slim::getInstance();
         $ppp = Helpers::option('posts_per_page');
 
         if (is_numeric($tag_or_offset)) {
@@ -79,7 +80,7 @@ class Blog
             $tag_or_offset = null;
         }
             
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'title' => 'Blog',
             'active' => 'blog',
@@ -101,21 +102,21 @@ class Blog
         
         if ($tag_or_offset) {
             $posts = $posts->where_like('tags', "%{$tag_or_offset}%");
-            Slim::view()->setData('base_url', "/blog/tag/{$tag_or_offset}");
+            $app->view()->setData('base_url', "/blog/tag/{$tag_or_offset}");
         } else {
-            Slim::view()->setData('base_url', "/blog/pager");
+            $app->view()->setData('base_url', "/blog/pager");
         }
          
         $posts = $posts->find_many();
 
         if (!$posts) {
-            Slim::response()->status(404);
-            return Slim::render('404.html');
+            $app->response()->status(404);
+            return $app->render('404.html');
         }
         
-        Slim::view()->setData('posts', $posts);
+        $app->view()->setData('posts', $posts);
         
-        return Slim::render('blog/index.html');
+        return $app->render('blog/index.html');
     }
 
     /**
@@ -127,7 +128,9 @@ class Blog
     **/
     public static function detail($slug = null)
     {
-        Slim::view()->appendData(
+        $app = Slim::getInstance();
+        
+        $app->view()->appendData(
             array(
             'title' => 'Blog',
             'active' => 'blog',
@@ -150,15 +153,15 @@ class Blog
                 ->order_by_desc('comment_date')
                 ->find_many();
         
-            Slim::view()->setData('comments', $comments);
+            $app->view()->setData('comments', $comments);
         } else {
-            Slim::response()->status(404);
-            return Slim::render('404.html');
+            $app->response()->status(404);
+            return $app->render('404.html');
         }
         
-        Slim::view()->setData('post', $post);
+        $app->view()->setData('post', $post);
         
-        return Slim::render('blog/single.html');
+        return $app->render('blog/single.html');
     }
 
     /**
@@ -168,6 +171,8 @@ class Blog
     **/
     public static function loadJSON()
     {
+        $app = Slim::getInstance();
+        
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
             ? $_POST['id'] 
             : null;
@@ -176,7 +181,7 @@ class Blog
         
         $content = '# ' . $post->post_title . "\n\n" . $post->post_content;
 
-        return Slim::response()->body($content);
+        return $app->response()->body($content);
     }
 
     /**
@@ -186,8 +191,10 @@ class Blog
     **/
     public static function save()
     {
+        $app = Slim::getInstance();
+        
         if (Helpers::isEditor() !== true) {
-            return Slim::response()->body('No Permission to edit!');
+            return $app->response()->body('No Permission to edit!');
         }
         
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -200,7 +207,7 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) || is_null($value) ) {
-            return Slim::response()->body('Will not Save!');
+            return $app->response()->body('Will not Save!');
         }
         
         $title_match = "|^#\s?(.*?)\n|";
@@ -212,7 +219,7 @@ class Blog
         $post->post_content = $value;
         $post->save();
         
-        return Slim::response()->body(Helpers::formatContent($value));
+        return $app->response()->body(Helpers::formatContent($value));
     }
 
     /**
@@ -222,8 +229,10 @@ class Blog
     **/
     public static function saveTags()
     {
+        $app = Slim::getInstance();
+        
         if (Helpers::isEditor() !== true) {
-            return Slim::response()->body('No Permission to edit!');
+            return $app->response()->body('No Permission to edit!');
         }
         
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -234,7 +243,7 @@ class Blog
             : null;
 
         if (is_null($id) || is_null($value)) {
-            return Slim::response()->body('POST Data incomplete!');
+            return $app->response()->body('POST Data incomplete!');
         }        
         
         /* Remove all existing relations for this Post */
@@ -264,7 +273,7 @@ class Blog
             $rel->save();
         }
         
-        return Slim::response()->body($value);
+        return $app->response()->body($value);
     }
     /**
     * Trash a Post
@@ -273,8 +282,10 @@ class Blog
     **/
     public static function trash()
     {
+        $app = Slim::getInstance();
+        
         if (Helpers::isEditor() !== true) {
-            return Slim::response()->body('No Permission to edit!');
+            return $app->response()->body('No Permission to edit!');
         }
 
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -284,12 +295,12 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) ) {
-            return Slim::response()->body('Will not Save!');
+            return $app->response()->body('Will not Save!');
         }
         
         $post->delete();
 
-        return Slim::response()->body('Deleted!');
+        return $app->response()->body('Deleted!');
     }
 
     /**
@@ -299,8 +310,10 @@ class Blog
     **/
     public static function togglePublish()
     {
+        $app = Slim::getInstance();
+        
         if (Helpers::isEditor() !== true) {
-            return Slim::response()->body('No Permission to edit!');
+            return $app->response()->body('No Permission to edit!');
         }
 
         $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
@@ -310,7 +323,7 @@ class Blog
         $post = ORM::for_table('posts')->find_one($id);
         
         if ( !$post || is_null($id) ) {
-            return Slim::response()->body('Will not Save!');
+            return $app->response()->body('Will not Save!');
         }
         
         $post->post_status = ($post->post_status == 'publish' )
@@ -319,7 +332,7 @@ class Blog
         
         $post->save();
         
-        return Slim::response()->body($post->post_status);
+        return $app->response()->body($post->post_status);
     }
     
     /**
@@ -329,6 +342,8 @@ class Blog
     **/
     public static function archive()
     {
+        $app = Slim::getInstance();
+        
         $posts = ORM::for_table('posts')
             ->order_by_desc('post_date');
 
@@ -353,7 +368,7 @@ class Blog
             ->order_by_asc('slug')
             ->find_many();
 
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'title' => 'Blog Archive',
             'active' => 'blog',
@@ -362,7 +377,7 @@ class Blog
             )
         );
 
-        return Slim::render('blog/archive.html');
+        return $app->render('blog/archive.html');
     }
 
     /**
@@ -372,6 +387,8 @@ class Blog
     **/
     public static function feed()
     {
+        $app = Slim::getInstance();
+        
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
@@ -381,14 +398,14 @@ class Blog
         $posts = Projects::mergeBlogPosts($posts);
         $posts = array_splice($posts, 0, Helpers::option('posts_per_page'));
 
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'posts' => $posts,
             )
         );
         
-        Slim::response()->header('Content-Type', 'application/rss+xml');        
-        return Slim::render('blog/feed.xml');
+        $app->response()->header('Content-Type', 'application/rss+xml');        
+        return $app->render('blog/feed.xml');
     }
 
 }

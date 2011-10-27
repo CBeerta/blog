@@ -56,16 +56,17 @@ function autoloader($class)
 
 spl_autoload_register("autoloader");
 
-Slim::init(
+$app = new Slim(
     array(
-    'view' => 'TwigView',
-    'templates.path' => __DIR__ . '/views/',
+        'view' => 'TwigView',
+        'templates.path' => __DIR__ . '/views/',
+        'mode' => 'production',
     )
 );
 
-Slim::configureMode(
-    'production', function() {
-        Slim::config(
+$app->configureMode(
+    'production', function() use ($app) {
+        $app->config(
             array(
             'log.enable' => false,
             'debug' => false
@@ -74,7 +75,7 @@ Slim::configureMode(
     }
 );
 
-Slim::notFound('Helpers::notFound');
+$app->notFound('Helpers::notFound');
 
 /**
 * Load config file and override default options
@@ -94,10 +95,10 @@ $menu_items = array(
     'photography' => 'Photograpy',
     /* 'docs' => 'Brain Dump', */
     /* 'about' => 'About', */
-    /*'contact' => 'Contact',*/
+    /* 'contact' => 'Contact',*/
 );
 
-Slim::view()->setData(
+$app->view()->appendData(
     array(
     'menu_items' => $menu_items,
     'header_image'=> Helpers::randomHeaderImage('header-images/'),
@@ -107,52 +108,51 @@ Slim::view()->setData(
 );
 
 // Projects related #######################################
-Slim::get('/projects(/:slug)', 'Projects::overview');
+$app->get('/projects(/:slug)', 'Projects::overview');
 
 // Blog stuff #############################################
-Slim::get('^/blog/.*feed.*', 'Blog::feed');
-Slim::get('/blog', 'Blog::index');
-Slim::get('/blog/pager/:offset', 'Blog::index');
-Slim::get('/blog/tag/:tag(/:offset)', 'Blog::index');
-Slim::get('/blog/archive', 'Blog::archive');
-Slim::get('/blog/:slug', 'Blog::detail');
+$app->get('^/blog/.*feed.*', 'Blog::feed');
+$app->get('/blog', 'Blog::index');
+$app->get('/blog/pager/:offset', 'Blog::index');
+$app->get('/blog/tag/:tag(/:offset)', 'Blog::index');
+$app->get('/blog/archive', 'Blog::archive');
+$app->get('/blog/:slug', 'Blog::detail');
 
 // The editor stuff #######################################
 if (Helpers::isEditor()) {
-    Slim::post('/blog/json_load', 'Blog::loadJSON');
-    Slim::put('/blog/save/tags', 'Blog::saveTags');
-    Slim::put('/blog/save', 'Blog::save');
-    Slim::delete('/blog/trash', 'Blog::trash');
-    Slim::post('/blog/toggle_publish', 'Blog::togglePublish');
+    $app->post('/blog/json_load', 'Blog::loadJSON');
+    $app->put('/blog/save/tags', 'Blog::saveTags');
+    $app->put('/blog/save', 'Blog::save');
+    $app->delete('/blog/trash', 'Blog::trash');
+    $app->post('/blog/toggle_publish', 'Blog::togglePublish');
 }
 
 // sidebar content. probably ajax #########################
-Slim::post('/sidebar/search', 'Other::search');
+$app->post('/sidebar/search', 'Other::search');
 
 // contact ################################################
-Slim::get('/contact', 'Contact::index');
-//Slim::get('/about', 'Contact::about');
+$app->get('/contact', 'Contact::index');
+//$app->get('/about', 'Contact::about');
 
 // Photography page #######################################
-Slim::get('/photography', 'Photography::index');
-Slim::get('/picasa', 'Photography::picasa');
+$app->get('/photography', 'Photography::index');
+$app->get('/picasa', 'Photography::picasa');
 
 // Documentation page #####################################
-Slim::get('/docs', 'Docs::index');
-Slim::get('/docs/:slug', 'Docs::index');
+$app->get('/docs', 'Docs::index');
+$app->get('/docs/:slug', 'Docs::index');
 
 // Sitemap ################################################
-Slim::get('/sitemap.xml', 'Other::sitemap');
+$app->get('/sitemap.xml', 'Other::sitemap');
 
 // And the root of all evil ###############################
-Slim::get('/', 'Projects::overview');
+$app->get('/', 'Projects::overview');
 
 if (PHP_SAPI == 'cli') {
     // Need to manually load here, as we'll skip the run();
     include_once __DIR__.'/controllers/importers.php';
     Importers::parseArgs();
 } else {
-    Slim::run();
+    $app->run();
 }
-
 

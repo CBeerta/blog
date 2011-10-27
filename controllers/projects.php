@@ -163,14 +163,15 @@ class Projects
     **/
     public static function overview($slug = null) 
     {
+        $app = Slim::getInstance();
         $project = self::loadProjects($slug);
         
         if (empty($project)) {
-            Slim::response()->status(404);
-            return Slim::render('404.html');
+            $app->response()->status(404);
+            return $app->render('404.html');
         }
         
-        Slim::view()->appendData(
+        $app->view()->appendData(
             array(
             'title' => 'Projects',
             'active' => 'projects',
@@ -179,7 +180,7 @@ class Projects
             )
         );
         
-        return Slim::render('projects.html');
+        return $app->render('projects.html');
     }
     
 }
