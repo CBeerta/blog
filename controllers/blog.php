@@ -150,7 +150,7 @@ class Blog
         if ($post) {            
             $comments = ORM::for_table('comments')
                 ->where('post_ID', $post->ID)
-                ->order_by_desc('comment_date')
+                ->order_by_asc('comment_date')
                 ->find_many();
         
             $app->view()->setData('comments', $comments);
