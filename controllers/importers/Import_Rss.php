@@ -144,6 +144,7 @@ class Import_Rss extends Importer
             d("Requires GD to be installed");
             die;
         }
+        
         $orig_img = $item->get_enclosure()->link;
         
         $dst_name = str_replace('%', '_', basename($orig_img));
@@ -153,7 +154,7 @@ class Import_Rss extends Importer
             $dst_name;
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
-        if (file_exists($dest_file) /*&& $this->force === false*/ ) {
+        if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
             d("Not regenerating thumb");
         } else {
             d("Loading image: " . $orig_img);
@@ -167,7 +168,7 @@ class Import_Rss extends Importer
             $bg = imagecolorallocatealpha($thumb, 0, 0, 0, 40);
             $white = imagecolorallocatealpha($thumb, 255, 255, 255, 10);
             imagefilledrectangle($thumb, 0, 230, 940, 255, $bg);
-            $font = '/usr/share/fonts/truetype/ttf-bitstream-vera/VeraSe.ttf';
+            $font = __DIR__ . '/public/VeraSe.ttf';
             imagettftext($thumb, 13, 0, 10, 248, $white, $font, $item->get_title());
                         
             imagejpeg($thumb, $dest_thumb_file);
@@ -219,23 +220,18 @@ class Import_Rss extends Importer
                 ->order_by_desc('post_date')
                 ->find_one();
 
-            if (isset($post->ID) && $force === false) {
-                d("Skipping: " . $post->post_title);
-                continue;
-            }
-            
             d("Importing: " . $item->get_title());
             
             if (isset($post->ID)) {
                 $new = ORM::for_table('posts')->find_one($post->ID);
             } else {
                 $new = ORM::for_table('posts')->create();
+                $new->post_status = 'publish';
             }
 
             /**
             * Basic style if there is no custom one
             **/
-            $new->post_status = 'publish';
             $new->post_title = $item->get_title();
             $new->post_date = $item->get_date('c');
             $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
@@ -264,7 +260,7 @@ class Import_Rss extends Importer
                 $new->save();
             }
             
-            d($new->as_array());
+            //d($new->as_array());
         }
     }
 
