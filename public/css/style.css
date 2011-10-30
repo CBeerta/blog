@@ -324,14 +324,7 @@ header {
 	padding: 10px 0px;
 }
 
-.post .project img {
-	float: left;
-	border: 1px solid #ccc;
-	margin: 0 20px 10px 0;
-	padding: 4px;
-}
-
-.post_type_blog img {
+.post img {
 	float: left;
 	border: 1px solid #ccc;
 	margin: 0 20px 10px 0;

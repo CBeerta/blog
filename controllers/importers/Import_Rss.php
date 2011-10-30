@@ -150,7 +150,7 @@ class Import_Rss extends Importer
         $dst_name = str_replace('%', '_', basename($orig_img));
         
         $dest_thumb_file = Helpers::option('public_loc') . 
-            'flickrthumb_' . 
+            'thumb_' . 
             $dst_name;
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
@@ -220,14 +220,14 @@ class Import_Rss extends Importer
                 $new = ORM::for_table('posts')->find_one($post->ID);
             } else {
                 $new = ORM::for_table('posts')->create();
+                $new->post_date = $item->get_date('c');
                 $new->post_status = 'publish';
+                $new->post_title = $item->get_title();
             }
 
             /**
             * Basic style if there is no custom one
             **/
-            $new->post_title = $item->get_title();
-            $new->post_date = $item->get_date('c');
             $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
                 . basename(strtolower($item->get_id()));
             $new->guid = $new->post_slug;
@@ -246,12 +246,12 @@ class Import_Rss extends Importer
                 break;
             case 'backend.deviantart.com':
                 $new = $this->_deviantArt($item, $new);
-                $new->post_type = 'blog';
+                $new->post_type = 'deviantart';
                 break;
             }
 
             if (!$dryrun) {
-                //d($new->as_array());
+                d($new->as_array());
                 $new->save();
             }
             
