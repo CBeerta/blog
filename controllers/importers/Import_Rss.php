@@ -159,19 +159,13 @@ class Import_Rss extends Importer
         } else {
             d("Loading image: " . $orig_img);
             
-            $src = imagecreatefromjpeg($orig_img);
+            $img = new Resize($orig_img);
+            $img->resizeImage(1900, 1200);
+            $img->saveImage($dest_file);
             
-            imagejpeg($this->_imgResize($src, 1900, 1200, false), $dest_file);
-
-            $thumb = $this->_imgResize($src, 940, 255, true);
-
-            $bg = imagecolorallocatealpha($thumb, 0, 0, 0, 40);
-            $white = imagecolorallocatealpha($thumb, 255, 255, 255, 10);
-            imagefilledrectangle($thumb, 0, 230, 940, 255, $bg);
-            $font = __DIR__ . '/public/VeraSe.ttf';
-            imagettftext($thumb, 13, 0, 10, 248, $white, $font, $item->get_title());
-                        
-            imagejpeg($thumb, $dest_thumb_file);
+            $img->resizeImage(940, 255, 'crop');
+            $img->addText($item->get_title());
+            $img->saveImage($dest_thumb_file);
         }
         
         $content  = '<a href="';
@@ -257,7 +251,7 @@ class Import_Rss extends Importer
             }
 
             if (!$dryrun) {
-                d($new->as_array());
+                //d($new->as_array());
                 $new->save();
             }
             
