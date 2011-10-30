@@ -68,7 +68,7 @@ class Import_File extends Importer
                 continue;
             }
             
-            print "# Importing: {$filename}\n";
+            d("# Importing: {$filename}");
 
             $content = file($filename);
             
@@ -95,7 +95,7 @@ class Import_File extends Importer
             if (!$post) {
                 print "## Creating: ";
                 $post = ORM::for_table('posts')->create();
-                $post->post_status = 'draft';
+                $post->post_status = 'publish';
             } else {
                 print "## Updating: ";
             }
@@ -115,10 +115,7 @@ class Import_File extends Importer
             } else {
                 print "Dry Run, not saving\n";
             }
-
         }
-    
     }
-
 }
 

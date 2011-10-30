@@ -76,7 +76,6 @@ class Import_Rss extends Importer
         
         $content .= '</div><br/>';
         
-        $post->post_type = 'deviantart';
         $post->post_content = $content;
 
         return $post;
@@ -132,14 +131,14 @@ class Import_Rss extends Importer
     }
     
     /**
-    * Manipulate content for flickr pull
+    * Manipulate content for image pull
     *
     * @param object $item simplepies item
     * @param object $post an idiorm object with the post
     *
     * @return object $post modified post 
     **/
-    private function _flickr($item, $post)
+    private function _photography($item, $post)
     {
         if (!function_exists("imagecreatefromjpeg")) {
             d("Requires GD to be installed");
@@ -154,7 +153,7 @@ class Import_Rss extends Importer
             $dst_name;
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
-        if (file_exists($dest_file) && $this->force === false ) {
+        if (file_exists($dest_file) /*&& $this->force === false*/ ) {
             d("Not regenerating thumb");
         } else {
             d("Loading image: " . $orig_img);
@@ -181,8 +180,7 @@ class Import_Rss extends Importer
         $content .= Helpers::option('public_url') . basename($dest_thumb_file);
         $content .= '" width="940" height="255"></a>';
 
-        $post->post_type = 'flickr';
-        $post->post_content  = $content;
+        $post->post_content = $content;
 
         return $post;
     }
@@ -215,6 +213,7 @@ class Import_Rss extends Importer
         
         $items = array();
         foreach ( $rss->get_items() as $item ) {
+        
             $post = ORM::for_table('posts')
                 ->where_like('post_title', $item->get_title())
                 ->order_by_desc('post_date')
@@ -248,11 +247,16 @@ class Import_Rss extends Importer
             switch ($parsed_url['host'])
             {
             case 'api.flickr.com':
+                $new = $this->_photography($item, $new);
+                $new->post_type = 'photo';
+                break;
             case 'picasaweb.google.com':
-                $new = $this->_flickr($item, $new);
+                $new = $this->_photography($item, $new);
+                $new->post_type = 'photo';
                 break;
             case 'backend.deviantart.com':
                 $new = $this->_deviantArt($item, $new);
+                $post->post_type = 'blog';
                 break;
             }
 

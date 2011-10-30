@@ -55,7 +55,7 @@ class Photography
         $posts = ORM::for_table('posts')
             ->select_expr(Blog::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
-            ->where('post_type', 'flickr');
+            ->where_equal('post_type', 'photo');
 
         if (!Helpers::isEditor()) {
             $posts = $posts->where('post_status', 'publish');
