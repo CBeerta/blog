@@ -214,13 +214,13 @@ class Import_Rss extends Importer
         
         $items = array();
         foreach ( $rss->get_items() as $item ) {
+
+            d("Importing: " . $item->get_title());
         
             $post = ORM::for_table('posts')
                 ->where_like('post_title', $item->get_title())
                 ->order_by_desc('post_date')
                 ->find_one();
-
-            d("Importing: " . $item->get_title());
             
             if (isset($post->ID)) {
                 $new = ORM::for_table('posts')->find_one($post->ID);
@@ -252,15 +252,15 @@ class Import_Rss extends Importer
                 break;
             case 'backend.deviantart.com':
                 $new = $this->_deviantArt($item, $new);
-                $post->post_type = 'blog';
+                $new->post_type = 'blog';
                 break;
             }
 
             if (!$dryrun) {
+                d($new->as_array());
                 $new->save();
             }
             
-            //d($new->as_array());
         }
     }
 
