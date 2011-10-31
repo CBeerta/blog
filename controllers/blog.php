@@ -92,7 +92,7 @@ class Blog
         $posts = ORM::for_table('posts')
             ->select_expr(self::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
-            ->where_not_equal('post_type', 'flickr')
+            ->where_not_equal('post_type', 'photo')
             ->offset($offset)
             ->limit($ppp);
 
@@ -393,6 +393,7 @@ class Blog
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->limit(Helpers::option('posts_per_page'))
+            ->where_not_equal('post_type', 'photo')
             ->find_many();
 
         $posts = Projects::mergeBlogPosts($posts);

@@ -76,7 +76,6 @@ class Import_Rss extends Importer
         
         $content .= '</div><br/>';
         
-        $post->post_type = 'deviantart';
         $post->post_content = $content;
 
         return $post;
@@ -132,46 +131,41 @@ class Import_Rss extends Importer
     }
     
     /**
-    * Manipulate content for flickr pull
+    * Manipulate content for image pull
     *
     * @param object $item simplepies item
     * @param object $post an idiorm object with the post
     *
     * @return object $post modified post 
     **/
-    private function _flickr($item, $post)
+    private function _photography($item, $post)
     {
         if (!function_exists("imagecreatefromjpeg")) {
             d("Requires GD to be installed");
             die;
         }
+        
         $orig_img = $item->get_enclosure()->link;
         
         $dst_name = str_replace('%', '_', basename($orig_img));
         
         $dest_thumb_file = Helpers::option('public_loc') . 
-            'flickrthumb_' . 
+            'thumb_' . 
             $dst_name;
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
-        if (file_exists($dest_file) && $this->force === false ) {
+        if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
             d("Not regenerating thumb");
         } else {
             d("Loading image: " . $orig_img);
             
-            $src = imagecreatefromjpeg($orig_img);
+            $img = new Resize($orig_img);
+            $img->resizeImage(1900, 1200);
+            $img->saveImage($dest_file);
             
-            imagejpeg($this->_imgResize($src, 1900, 1200, false), $dest_file);
-
-            $thumb = $this->_imgResize($src, 940, 255, true);
-
-            $bg = imagecolorallocatealpha($thumb, 0, 0, 0, 40);
-            $white = imagecolorallocatealpha($thumb, 255, 255, 255, 10);
-            imagefilledrectangle($thumb, 0, 230, 940, 255, $bg);
-            $font = '/usr/share/fonts/truetype/ttf-bitstream-vera/VeraSe.ttf';
-            imagettftext($thumb, 13, 0, 10, 248, $white, $font, $item->get_title());
-                        
-            imagejpeg($thumb, $dest_thumb_file);
+            $img->resizeImage(940, 255, 'crop');
+            $img->addText($item->get_title());
+            $img->saveImage($dest_thumb_file);
         }
         
         $content  = '<a href="';
@@ -181,8 +175,7 @@ class Import_Rss extends Importer
         $content .= Helpers::option('public_url') . basename($dest_thumb_file);
         $content .= '" width="940" height="255"></a>';
 
-        $post->post_type = 'flickr';
-        $post->post_content  = $content;
+        $post->post_content = $content;
 
         return $post;
     }
@@ -215,30 +208,26 @@ class Import_Rss extends Importer
         
         $items = array();
         foreach ( $rss->get_items() as $item ) {
+
+            d("Importing: " . $item->get_title());
+        
             $post = ORM::for_table('posts')
                 ->where_like('post_title', $item->get_title())
                 ->order_by_desc('post_date')
                 ->find_one();
-
-            if (isset($post->ID) && $force === false) {
-                d("Skipping: " . $post->post_title);
-                continue;
-            }
-            
-            d("Importing: " . $item->get_title());
             
             if (isset($post->ID)) {
                 $new = ORM::for_table('posts')->find_one($post->ID);
             } else {
                 $new = ORM::for_table('posts')->create();
+                $new->post_date = $item->get_date('c');
+                $new->post_status = 'publish';
+                $new->post_title = $item->get_title();
             }
 
             /**
             * Basic style if there is no custom one
             **/
-            $new->post_status = 'publish';
-            $new->post_title = $item->get_title();
-            $new->post_date = $item->get_date('c');
             $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
                 . basename(strtolower($item->get_id()));
             $new->guid = $new->post_slug;
@@ -248,19 +237,24 @@ class Import_Rss extends Importer
             switch ($parsed_url['host'])
             {
             case 'api.flickr.com':
+                $new = $this->_photography($item, $new);
+                $new->post_type = 'photo';
+                break;
             case 'picasaweb.google.com':
-                $new = $this->_flickr($item, $new);
+                $new = $this->_photography($item, $new);
+                $new->post_type = 'photo';
                 break;
             case 'backend.deviantart.com':
                 $new = $this->_deviantArt($item, $new);
+                $new->post_type = 'deviantart';
                 break;
             }
 
             if (!$dryrun) {
+                d($new->as_array());
                 $new->save();
             }
             
-            d($new->as_array());
         }
     }
 

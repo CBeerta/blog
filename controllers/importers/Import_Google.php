@@ -157,7 +157,7 @@ class Import_Google extends Importer
                     // FIXME: Should parse '#' tags in posts and add them aswell
                     Helpers::addTags(array('Google+'), $post->ID);
                 } else {
-                    //print_r($post);
+                    //d($post->as_array());
                     d("Dry Run, not saving.");
                 }
             }
