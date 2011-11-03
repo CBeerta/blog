@@ -136,7 +136,7 @@ $app->get('/contact', 'Contact::index');
 
 // Photography page #######################################
 $app->get('/photography', 'Photography::index');
-$app->get('/picasa', 'Photography::picasa');
+$app->get('/grid', 'Photography::grid');
 
 // Documentation page #####################################
 $app->get('/docs', 'Docs::index');

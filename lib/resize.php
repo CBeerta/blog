@@ -81,6 +81,7 @@ Class Resize
     private function _openImage($file)
     {
         /*
+        // FIXME: is_file wont work with uri's
         if (!is_file($file)) {
             throw new Exception("File {$file} doesn't exists");
         }
@@ -212,6 +213,34 @@ Class Resize
         return array($width, $height);
     }
 
+    /**
+    * Find Size that doesn't drop below original size
+    *
+    * @param int $newWidth  target width
+    * @param int $newHeight target height
+    *
+    * @return void
+    **/
+    private function _getSizeBySafe($newWidth, $newHeight) 
+    {
+        if ($newWidth >= $this->_width && $newHeight >= $this->_height) {
+            //return the original
+            return array($this->_width, $this->_height);
+        }
+        
+        if ($newWidth >= $this->_width && $newHeight <= $this->_height ) {
+            //height bound
+            return array($this->_getSizeByFixedHeight($newHeight), $newHeight);
+        }
+        
+        if ($newHeight >= $this->_height && $newWidth <= $this->_width ) {
+            //width bound
+            return array($newWidth, $this->_getSizeByFixedWidth($newWidth));
+        }
+        
+        return $this->_getSizeByAuto($newWidth, $newHeight);
+    }
+      
     /**
     * Find crop auto
     *
