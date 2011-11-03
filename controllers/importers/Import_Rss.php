@@ -152,16 +152,25 @@ class Import_Rss extends Importer
         $dest_thumb_file = Helpers::option('public_loc') . 
             'thumb_' . 
             $dst_name;
+
+        $square_thumb_file = Helpers::option('public_loc') . 
+            'square_thumb_' . 
+            $dst_name;
+
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
             d("Not regenerating thumb");
+
         } else {
             d("Loading image: " . $orig_img);
             
             $img = new Resize($orig_img);
             $img->resizeImage(1900, 1200);
             $img->saveImage($dest_file);
+
+            $img->resizeImage(150, 150, 'crop');
+            $img->saveImage($square_thumb_file);
             
             $img->resizeImage(940, 255, 'crop');
             $img->addText($item->get_title());
@@ -174,6 +183,19 @@ class Import_Rss extends Importer
         $content .= '<img src="';
         $content .= Helpers::option('public_url') . basename($dest_thumb_file);
         $content .= '" width="940" height="255"></a>';
+
+        if (preg_match(
+            '#.*>Date:\s+(.*?(AM|PM))<.*#i', 
+            $item->get_content(), 
+            $matches
+        )) {
+            /* Picasa's post_date is CRAP, parse it from the content */
+            $parsed_date = strtotime($matches[1]);
+
+            if ($parsed_date !== false) {
+                $post->post_date = date('c', $parsed_date);
+            }
+        }
 
         $post->post_content = $content;
 
@@ -229,30 +251,42 @@ class Import_Rss extends Importer
             * Basic style if there is no custom one
             **/
             $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
-                . basename(strtolower($item->get_id()));
+                . md5($item->get_id());
             $new->guid = $new->post_slug;
             $new->original_source = $item->get_link();
             $new->post_content = $item->get_content();
+            
+            $tags = array('Imported');
 
             switch ($parsed_url['host'])
             {
             case 'api.flickr.com':
                 $new = $this->_photography($item, $new);
+                $tags = array('Photo', 'Flickr');
                 $new->post_type = 'photo';
                 break;
             case 'picasaweb.google.com':
                 $new = $this->_photography($item, $new);
+                $tags = array('Photo', 'Picasa');
                 $new->post_type = 'photo';
                 break;
             case 'backend.deviantart.com':
                 $new = $this->_deviantArt($item, $new);
+                $tags = array('deviantArt');
                 $new->post_type = 'deviantart';
+                break;
+            case 'github.com':
+                $tags = array('github');
+                $new->post_status = 'draft';
+                $new->post_type = 'github';
                 break;
             }
 
+            
             if (!$dryrun) {
                 d($new->as_array());
                 $new->save();
+                Helpers::addTags($tags, $new->ID);
             }
             
         }

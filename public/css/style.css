@@ -217,7 +217,7 @@ header {
 	color: #444;
 }
 #logo h2 {
-    font-family: Amaranth, serif;
+    font-family: Georgia,"Times New Roman",Times,serif;
 	margin: -4px 0 0 0;
 	padding: 0;
 	text-transform: uppercase;
@@ -300,24 +300,17 @@ header {
 
 
 /* ########################## Posts ############################### */
-.post_type_blog {
-	margin: 0px 0px 15px 0px;
-	border-bottom: 1px dotted #bbb;
-	padding-bottom: 10px;
-	font-family: Maven Pro, serif;
-}
 
+/* General Classes */
 .post .title a {
 	margin: 0px;
     font-family: Lato;
 	padding: 4px 15px 4px 15px;
-	background: #fff;
 	text-decoration: none;
 	font-weight: normal;
 	color: #444;
 	font-size: 161.6%;
 	line-height: 30px;
-	text-transform: uppercase;
 }
 
 .post .entry {
@@ -331,14 +324,9 @@ header {
 	padding: 4px;
 }
 
-.post_type_photo img {
-	border: 1px solid #ccc;
-	padding: 2px;
-}
-
 .post .date {
 	float: right;
-	margin-top: -30px;
+	margin-top: -25px;
     font-size: 77%;
     color: #aaa;
 }
@@ -352,13 +340,6 @@ header {
     background: url(/public/img/emblem-symbolic-link.png) left no-repeat;  
     padding-left: 18px;
 } 
-
-.post .byline {
-	float: right;
-	margin-top: -30px;
-	font-weight: bold;
-	color: #5E5E5E;
-}
 
 .post p, blockquote, ul, ol {
     margin-bottom: 15px;
@@ -378,7 +359,31 @@ header {
     color: #333;
 }
 
+/* Post Types overwriting more general classes */
+.post_type_blog {
+	margin: 0px 0px 15px 0px;
+	border-bottom: 1px dotted #bbb;
+	padding-bottom: 10px;
+	font-family: Maven Pro, serif;
+}
 
+.post_type_github {
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 2px solid #ccc;
+	margin: 0px 0px 15px 0px;
+    border-radius: 5px 5px 5px 5px;
+    background-color: #eee;
+}
+
+.post_type_photo img {
+	border: 1px solid #ccc;
+	padding: 2px;
+}
+
+
+
+/* ########################## Archive ############################### */
 .archive {
     font-style: Lato, serif;
     line-height: 30px;
@@ -511,7 +516,6 @@ sidebar .deviantart li {
 /* ######################### About #################### */
 #deckblatt p {
     display: block;
-    white-space: pre;    
 }
 #deckblatt b {
     font-weight: bold;
@@ -523,12 +527,11 @@ sidebar .deviantart li {
     border: 2px solid #ddd;
     float: right;
 }
-div#deckblatt {
-}
-#deckblatt h1 {
-}
+
 div#lebenslauf {
-    clear: right;
+}
+#lebenslauf h1 {
+    padding-top: 40px;
 }
 #lebenslauf .first li {
     margin-left: 150px;
@@ -540,7 +543,6 @@ div#lebenslauf {
     list-style: square;
     line-height: 2em;
 }
-
 #lebenslauf h2 {
     float: left;
     line-height: 2em;

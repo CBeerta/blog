@@ -73,14 +73,40 @@ class Photography
     }
 
     /**
-    * Picasa Page
+    * Grid layout of images
     *
     * @return html
     **/
-    public static function picasa()
+    public static function grid()
     {
-        $userID = 106832871642761506709;
-        $albumID = 5656649800328939665;
+        $app = Slim::getInstance();
+        $public_dir = Helpers::option('public_loc');
+        $public_url = Helpers::option('public_url');
+        
+        $glob = "{{$public_dir}/square_thumb_*.jpg}";
+        foreach (glob($glob, GLOB_BRACE) as $filename) {
+            $square_thumb[] = basename($filename);
+        }
+
+        $posts = ORM::for_table('posts')
+            ->select_expr(Blog::_POSTS_SELECT_EXPR)
+            ->order_by_desc('post_date')
+            ->where_equal('post_type', 'photo');
+
+        if (!Helpers::isEditor()) {
+            $posts = $posts->where('post_status', 'publish');
+        }
+        $posts = $posts->find_many();
+        
+        $app->view()->appendData(
+            array(
+            'title' => 'Photography',
+            'active' => 'photography',
+            'posts' => $posts,
+            )
+        );
+        
+        return $app->render('photogrid.html');
     }
 
 }

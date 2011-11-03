@@ -393,7 +393,7 @@ class Blog
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->limit(Helpers::option('posts_per_page'))
-            ->where_not_equal('post_type', 'photo')
+            ->where_equal('post_type', 'blog')
             ->find_many();
 
         $posts = Projects::mergeBlogPosts($posts);
