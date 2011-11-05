@@ -93,6 +93,7 @@ class Blog
             ->select_expr(self::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
             ->where_not_equal('post_type', 'photo')
+            ->where_not_equal('post_type', 'activity')
             ->offset($offset)
             ->limit($ppp);
 
@@ -348,7 +349,9 @@ class Blog
             ->order_by_desc('post_date');
 
         if (!Helpers::isEditor()) {
-            $posts = $posts->where('post_status', 'publish');
+            $posts->where('post_status', 'publish');
+            $posts->where_not_equal('post_type', 'photo');
+            $posts->where_not_equal('post_type', 'activity');
         }
         
         $posts = $posts->find_many();

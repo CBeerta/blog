@@ -54,8 +54,6 @@ class Import_Google extends Importer
     **/
     public function run()
     {
-        $dryrun = $this->dryrun;
-        $force = $this->force;
         $page_token = null;
         
         $google_id = Helpers::option('google_id');
@@ -72,7 +70,7 @@ class Import_Google extends Importer
             
             $page_token = null;
             
-            //d("## Loading: {$url}.");
+            d("## Loading: {$url}.");
             $res = file_get_contents($url);
             $json = json_decode($res);
             
@@ -91,79 +89,91 @@ class Import_Google extends Importer
             }
             
             foreach ($json->items as $item) {
-            
-                $content = $item->object->content;
-                $pos = strpos($content, '<br />');
-                $title = strip_tags(substr($content, 0, $pos));
-
-                // Handle Attachments
-                $content = self::handleAttachments($content, $item);
-
-                if (empty($title)) {
-                    d("Invalid Post: {$content}");
+                $ret = self::handleItem($item);
+                
+                if ($ret === false || !is_numeric($ret)) {
                     continue;
                 }
 
-                // Strip title and one '<br />' from content
-                $content = substr($content, $pos + 6);
-                
-                $post = ORM::for_table('posts')
-                    ->where('post_title', $title)
-                    ->find_one();
-                    
-                if (!$post) {
-                    d("## Creating: {$title}");
-                    $post = ORM::for_table('posts')->create();
-                    $post->post_status = 'publish';
-                } else {
-                    
-                    // Import Comments for existing posts.
-                    if (isset($item->object->replies)) {
-                        self::importComments($post->ID, $item->object->replies);
-                    }
+                // Import Comments for existing posts.
+                self::importComments($ret, $item->object->replies);
 
-                    if (!$force) {
-                        d("Skipping: {$title}. Already Exists. Force to Update.");
-                        continue;
-                    }
-                    
-                    // If a post is from somewhere but google+,
-                    // don't update it. 
-                    // This is usually stuff pulled via picasa, then shared on G+
-                    if ($post->post_type != 'blog') {
-                        d("Skipping: {$title}. Not of type 'blog'");
-                        continue;
-                    }
-                    
-                }
-
-                $parsed_date = strtotime($item->published);
-                if ($parsed_date === false) {
-                    d("Can't Parse Date: {$item->published}.");
-                    continue;
-                }
-                
-                $post->post_date = date('c', $parsed_date);
-                $post->post_slug = Helpers::buildSlug($title);
-                $post->post_title = $title;
-                $post->post_content = $content;
-                $post->guid = $post->post_slug . '-' . time();
-                $post->original_source = $item->url;
-                $post->post_type = 'blog';
-
-                if (!$dryrun) {
-                    d("Saving '{$post->post_title}'.");
-                    $post->save();
-                    // FIXME: Should parse '#' tags in posts and add them aswell
-                    Helpers::addTags(array('Google+'), $post->ID);
-                } else {
-                    //d($post->as_array());
-                    d("Dry Run, not saving.");
-                }
+                // FIXME: Should parse '#' hashtags in posts and add them aswell
+                Helpers::addTags(array('Google+'), $ret);
             }
         
         } while ($page_token !== null);
- 
+    }
+
+    /**
+    * Handle an Item from G+
+    *
+    * @param object $item The items 'object'
+    *
+    * @return int
+    **/
+    public function handleItem($item)
+    {
+        $content = $item->object->content;
+        $pos = strpos($content, '<br />');
+        $title = strip_tags(substr($content, 0, $pos));
+
+        // Handle Attachments
+        $content = self::handleAttachments($content, $item);
+
+        if (empty($title)) {
+            d("Invalid Post: {$content}");
+            return false;
+        }
+
+        // Strip title and one '<br />' from content
+        $content = substr($content, $pos + 6);
+        
+        $post = ORM::for_table('posts')
+            ->where('post_title', $title)
+            ->find_one();
+            
+        if (!$post) {
+            d("## Creating: {$title}");
+            $post = ORM::for_table('posts')->create();
+            $post->post_status = 'publish';
+        } else {
+            if (!$this->force) {
+                d("Skipping: {$title}. Already Exists. Force to Update.");
+                return $post->ID;
+            }
+
+            // If a post is from somewhere but google+, don't update it. 
+            // This is usually stuff pulled via picasa, then shared on G+
+            if ($post->post_type != 'blog') {
+                d("Skipping: {$title}. Not of type 'blog'");
+                return $post->ID;
+            }
+        }
+
+        $parsed_date = strtotime($item->published);
+        if ($parsed_date === false) {
+            d("Can't Parse Date: {$item->published}.");
+            return false;
+        }
+        
+        $post->post_date = date('c', $parsed_date);
+        $post->post_slug = Helpers::buildSlug($title);
+        $post->post_title = $title;
+        $post->post_content = $content;
+        $post->guid = $post->post_slug . '-' . time();
+        $post->original_source = $item->url;
+        $post->post_type = 'blog';
+
+        if (!$this->dryrun) {
+            d("Saving '{$post->post_title}'.");
+            $post->save();
+            return $post->ID;
+        } else {
+            d("Dry Run, not saving.");
+        }
+        
+        return false;
     }
 
     /**
@@ -196,24 +206,28 @@ class Import_Google extends Importer
             switch ($attachment->objectType) {
             case 'photo':
 
-                $content .= '<a href="' . $attachment->url;
-                $content .= '"><img src="' . $attachment->image->url;
-                $content .= '"></a>';
+                //FIXME: Fabricate the Content here?
+                
+                //$content .= '<a href="' . $attachment->url;
+                //$content .= '"><img src="' . $attachment->image->url;
+                //$content .= '"></a>';
                 
                 if (isset($post->ID)) {
                     // There is a Matching Post, thus try to import 
-                    // The Comments associated with i.
+                    // The Comments associated with it.
                     self::importComments($post->ID, $item->object->replies);
                 }
                 break;
                 
             case 'photo-album':
+                print_r($item);
                 break;
 
             case 'article':
                 $content .= '<br /><br />';
                 $content .= '<a href="' . $attachment->url;
                 $content .= '">';
+                //FIXME needs the favicon? : 
                 // https://s2.googleusercontent.com/s2/favicons?domain=owncloud.net
                 $content .=  $attachment->displayName;
                 $content .= '</a>';
@@ -223,7 +237,6 @@ class Import_Google extends Importer
                 
             default:
                 print_r($item);
-            
                 break;
             }
         }
@@ -241,7 +254,6 @@ class Import_Google extends Importer
     **/
     public function importComments($ID, $replies)
     {
-        $dryrun = $this->dryrun;
         $google_id = Helpers::option('google_id');
         $api_key = Helpers::option('google_api_key');
 

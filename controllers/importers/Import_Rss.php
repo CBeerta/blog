@@ -277,8 +277,7 @@ class Import_Rss extends Importer
                 break;
             case 'github.com':
                 $tags = array('github');
-                $new->post_status = 'draft';
-                $new->post_type = 'github';
+                $new->post_type = 'activity';
                 break;
             }
 
