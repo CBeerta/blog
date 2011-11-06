@@ -55,7 +55,7 @@ class Other
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->find_many();
-
+        $posts = Blog::setPermissions($posts);
         $posts = Projects::mergeBlogPosts($posts);
         reset($posts);
         
@@ -79,7 +79,7 @@ class Other
     {
         $app = Slim::getInstance();
         
-        $s = isset($_POST['s']) ? sqlite_escape_string($_POST['s']) : false;
+        $s = isset($_POST['s']) ? SQLite3::escapeString($_POST['s']) : false;
         
         $posts = ORM::for_table('posts')
             ->select_expr(Blog::_POSTS_SELECT_EXPR)

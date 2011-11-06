@@ -54,10 +54,6 @@ class Post_By_Mail extends Importer
     **/
     public function run()
     {
-        $value = $this->value;
-        $dryrun = $this->dryrun;
-        $force = $this->force;
-        
         if (ftell(STDIN) !== 0) {
             fwrite(STDERR, "Nothing on STDIN.\n");
             return;
@@ -116,7 +112,7 @@ class Post_By_Mail extends Importer
         $post->guid = $post->post_slug . '-' . mktime();
         $post->post_status = 'draft';
         
-        if (!$dryrun) {
+        if (!$this->dryrun) {
             $post->save();
         }
         

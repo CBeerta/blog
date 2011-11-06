@@ -56,10 +56,6 @@ class Wp_Import_Blog_Posts extends Importer
     {
         include_once __DIR__.'/../projects.php';
         
-        $value = $this->value;
-        $dryrun = $this->dryrun;
-        $force = $this->force;
-        
         $dbhost = 'aello.local';
         $dbname = 'claus';
         $dbuser = $_SERVER['DBUSER'];
@@ -106,7 +102,7 @@ class Wp_Import_Blog_Posts extends Importer
                 
             if (!$post) {
                 $post = ORM::for_table('posts')->create();
-            } else if (!$force) {
+            } else if (!$this->force) {
                 d("Skipping already imported: {$data['post_title']}.");
                 continue;
             } else {
@@ -158,7 +154,7 @@ class Wp_Import_Blog_Posts extends Importer
             $post->guid = $data['guid'];
             $post->post_status = $data['post_status'];
             
-            if (!$dryrun) {
+            if (!$this->dryrun) {
                 d("Importing: " . $post->post_title);
                 $post->save();
             } else {

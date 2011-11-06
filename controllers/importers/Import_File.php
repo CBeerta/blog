@@ -55,8 +55,6 @@ class Import_File extends Importer
     **/
     public function run()
     {
-        $dryrun = $this->dryrun;
-    
         $posts_dir = Helpers::option('posts_dir');
         
         $glob = "{{$posts_dir}/*.html,{$posts_dir}/*.mkd}";
@@ -109,7 +107,7 @@ class Import_File extends Importer
             $post->guid = $post->post_slug . '-' . time();
             $post->original_source = null;
             
-            if (!$dryrun) {
+            if (!$this->dryrun) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
             } else {

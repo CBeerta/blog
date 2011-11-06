@@ -32,7 +32,7 @@
 **/
 
 /**
-* Projects
+* Blog
 *
 * @category Personal_Website
 * @package  MyWebPage
@@ -65,21 +65,15 @@ class Blog
     /**
     * the Blog
     *
-    * @param strign $tag_or_offset Offset for pager, or a tag to select
-    * @param int    $offset        Offset when there is a tag selected
+    * @param int $offset Offset when there is a tag selected
     *
     * @return html
     **/
-    public static function index($tag_or_offset = 0, $offset = 0)
+    public static function index($offset = 0)
     {
         $app = Slim::getInstance();
         $ppp = Helpers::option('posts_per_page');
 
-        if (is_numeric($tag_or_offset)) {
-            $offset = $tag_or_offset;
-            $tag_or_offset = null;
-        }
-            
         $app->view()->appendData(
             array(
             'title' => 'Blog',
@@ -92,22 +86,9 @@ class Blog
         $posts = ORM::for_table('posts')
             ->select_expr(self::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
-            ->where_not_equal('post_type', 'photo')
-            ->where_not_equal('post_type', 'activity')
-            ->offset($offset)
-            ->limit($ppp);
-
-        if (!Helpers::isEditor()) {
-            $posts = $posts->where('post_status', 'publish');
-        }
-        
-        if ($tag_or_offset) {
-            $posts = $posts->where_like('tags', "%{$tag_or_offset}%");
-            $app->view()->setData('base_url', "/blog/tag/{$tag_or_offset}");
-        } else {
-            $app->view()->setData('base_url', "/blog/pager");
-        }
-         
+            ->limit($ppp)
+            ->offset($offset);
+        $posts = self::setPermissions($posts);
         $posts = $posts->find_many();
 
         if (!$posts) {
@@ -115,6 +96,43 @@ class Blog
             return $app->render('404.html');
         }
         
+        $app->view()->setData('base_url', "/blog/pager");
+        $app->view()->setData('posts', $posts);
+        
+        return $app->render('blog/index.html');
+    }
+
+    /**
+    * Tags Archive
+    *
+    * @param strign $tag Selected Tag
+    *
+    * @return html
+    **/
+    public static function tag($tag)
+    {
+        $app = Slim::getInstance();
+    
+        $app->view()->appendData(
+            array(
+            'title' => 'Blog',
+            'active' => 'blog',
+            )
+        );
+    
+        $posts = ORM::for_table('posts')
+            ->select_expr(self::_POSTS_SELECT_EXPR)
+            ->order_by_desc('post_date')
+            ->where_like('tags', "%{$tag}%");
+        $posts = self::setPermissions($posts);
+        $posts = $posts->find_many();
+
+        if (!$posts) {
+            $app->response()->status(404);
+            return $app->render('404.html');
+        }
+
+        $app->view()->setData('base_url', "/blog/tag/{$tag}");
         $app->view()->setData('posts', $posts);
         
         return $app->render('blog/index.html');
@@ -143,9 +161,7 @@ class Blog
             ->where_like('post_slug', "%{$slug}%")
             ->order_by_desc('post_date');
 
-        if (!Helpers::isEditor()) {
-            $post = $post->where('post_status', 'publish');
-        }
+        $post = self::setPermissions($post);
         $post = $post->find_one();
 
         if ($post) {            
@@ -166,177 +182,6 @@ class Blog
     }
 
     /**
-    * Load a Post, return as json
-    *
-    * @return json
-    **/
-    public static function loadJSON()
-    {
-        $app = Slim::getInstance();
-        
-        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
-            ? $_POST['id'] 
-            : null;
-            
-        $post = ORM::for_table('posts')->find_one($id);
-        
-        $content = '# ' . $post->post_title . "\n\n" . $post->post_content;
-
-        return $app->response()->body($content);
-    }
-
-    /**
-    * Save a Post, return html
-    *
-    * @return json
-    **/
-    public static function save()
-    {
-        $app = Slim::getInstance();
-        
-        if (Helpers::isEditor() !== true) {
-            return $app->response()->body('No Permission to edit!');
-        }
-        
-        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
-            ? $_POST['id'] 
-            : null;
-        $value = isset($_POST['value']) 
-            ? $_POST['value'] 
-            : null;
-            
-        $post = ORM::for_table('posts')->find_one($id);
-        
-        if ( !$post || is_null($id) || is_null($value) ) {
-            return $app->response()->body('Will not Save!');
-        }
-        
-        $title_match = "|^#\s?(.*?)\n|";
-        if (preg_match($title_match, $value, $matches)) {
-            $value = trim(preg_replace($title_match, '', $value));
-            $post->post_title = trim($matches[1]);
-        }
-
-        $post->post_content = $value;
-        $post->save();
-        
-        return $app->response()->body(Helpers::formatContent($value));
-    }
-
-    /**
-    * Save Tags
-    *
-    * @return json
-    **/
-    public static function saveTags()
-    {
-        $app = Slim::getInstance();
-        
-        if (Helpers::isEditor() !== true) {
-            return $app->response()->body('No Permission to edit!');
-        }
-        
-        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
-            ? $_POST['id'] 
-            : null;
-        $value = isset($_POST['value']) 
-            ? $_POST['value'] 
-            : null;
-
-        if (is_null($id) || is_null($value)) {
-            return $app->response()->body('POST Data incomplete!');
-        }        
-        
-        /* Remove all existing relations for this Post */
-        $relations = ORM::for_table('term_relations')
-            ->where_equal('posts_ID', $id)
-            ->delete_many();
-
-        foreach (preg_split('#[\s,]#', $value) as $t) {
-        
-            /* Find if tag exists */
-            $tag = ORM::for_table('post_terms')
-                ->where('slug', Helpers::buildSlug($t))
-                ->find_one();
-                
-            if (!$tag) {
-                /* If not, create it */
-                $tag = ORM::for_table('post_terms')->create();
-                $tag->name = $t;
-                $tag->slug = Helpers::buildSlug($t);
-                $tag->save();
-            }
-            
-            /* And insert new relations back to db */            
-            $rel = ORM::for_table('term_relations')->create();
-            $rel->posts_ID = $id;
-            $rel->post_terms_ID = $tag->ID;
-            $rel->save();
-        }
-        
-        return $app->response()->body($value);
-    }
-    /**
-    * Trash a Post
-    *
-    * @return partial
-    **/
-    public static function trash()
-    {
-        $app = Slim::getInstance();
-        
-        if (Helpers::isEditor() !== true) {
-            return $app->response()->body('No Permission to edit!');
-        }
-
-        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
-            ? $_POST['id'] 
-            : null;
-
-        $post = ORM::for_table('posts')->find_one($id);
-        
-        if ( !$post || is_null($id) ) {
-            return $app->response()->body('Will not Save!');
-        }
-        
-        $post->delete();
-
-        return $app->response()->body('Deleted!');
-    }
-
-    /**
-    * Toggle the Publish status
-    *
-    * @return partial
-    **/
-    public static function togglePublish()
-    {
-        $app = Slim::getInstance();
-        
-        if (Helpers::isEditor() !== true) {
-            return $app->response()->body('No Permission to edit!');
-        }
-
-        $id = ( isset($_POST['id']) && is_numeric($_POST['id']) ) 
-            ? $_POST['id'] 
-            : null;
-
-        $post = ORM::for_table('posts')->find_one($id);
-        
-        if ( !$post || is_null($id) ) {
-            return $app->response()->body('Will not Save!');
-        }
-        
-        $post->post_status = ($post->post_status == 'publish' )
-            ? 'draft'
-            : 'publish';
-        
-        $post->save();
-        
-        return $app->response()->body($post->post_status);
-    }
-    
-    /**
     * Archives
     *
     * @return html
@@ -348,12 +193,7 @@ class Blog
         $posts = ORM::for_table('posts')
             ->order_by_desc('post_date');
 
-        if (!Helpers::isEditor()) {
-            $posts->where('post_status', 'publish');
-            $posts->where_not_equal('post_type', 'photo');
-            $posts->where_not_equal('post_type', 'activity');
-        }
-        
+        $posts = self::setPermissions($posts);
         $posts = $posts->find_many();
 
         $tags = ORM::for_table('post_terms')
@@ -410,6 +250,27 @@ class Blog
         
         $app->response()->header('Content-Type', 'application/rss+xml');        
         return $app->render('blog/feed.xml');
+    }
+
+
+    /**
+    * Set Permissions on Posts ORM
+    *
+    * @param object $posts posts ORM object
+    *
+    * @return object
+    **/
+    public static function setPermissions($posts)
+    {
+        if (!Helpers::isEditor()) {
+            $posts->where('post_status', 'publish');
+            $posts->where_not_equal('post_type', 'photo');
+            $posts->where_not_equal('post_type', 'activity');
+        } else {
+        
+        }
+        
+        return $posts;    
     }
 
 }

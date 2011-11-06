@@ -54,10 +54,6 @@ class Wp_Import_Comments extends Importer
     **/
     public function run()
     {
-        $value = $this->value;
-        $dryrun = $this->dryrun;
-        $force = $this->force;
-        
         $dbhost = 'aello.local';
         $dbname = 'claus';
         $dbuser = $_SERVER['DBUSER'];
@@ -106,7 +102,7 @@ class Wp_Import_Comments extends Importer
                 ? 'visible' 
                 : 'hidden';
             
-            if (!$dryrun) {
+            if (!$this->dryrun) {
                 $comment->save();
             }
             

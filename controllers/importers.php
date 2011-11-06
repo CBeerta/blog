@@ -87,21 +87,28 @@ class Importer
     * force overwrites?
     **/
     protected $force = false;
+
+    /**
+    * what post_type
+    **/
+    protected $post_type = null;
     
     /**
     * Setup the importer
     *
-    * @param string $value  Any Command line Argument
-    * @param boot   $dryrun Dryrun
-    * @param boot   $force  Force Overwrites
+    * @param string    $value     Any Command line Argument
+    * @param boot      $dryrun    Dryrun
+    * @param boot      $force     Force Overwrites
+    * @param post_type $post_type post_type to use
     *
     * @return self
     **/
-    public function setup($value, $dryrun, $force)
+    public function setup($value, $dryrun, $force, $post_type = null)
     {
         $this->value = $value;
         $this->dryrun = $dryrun;
         $this->force = $force;
+        $this->post_type = $post_type;
 
         return $this;
     }
@@ -150,6 +157,7 @@ class Importers
             'help' => 'This Help',
             'dry-run' => 'Don\'t apply',
             'force' => 'Force Overwrites',
+            'post-type:' => 'What post_type to use, overrides defaults',
     );
         
     /**
@@ -178,6 +186,7 @@ class Importers
         $value = null;
         $dryrun = false;
         $force = false;
+        $post_type = null;
         
         foreach ($options as $k => $v) {
             switch ($k) {
@@ -223,20 +232,22 @@ class Importers
             case 'force':
                 $force = true;
                 break;
+            case 'post-type':
+                $post_type = $v;
+                break;
             }
         }
         
         if ($class !== false) {
             include_once __DIR__ . '/importers/' . $class . ".php";
             $ret = new $class();
-            $ret->setup($value, $dryrun, $force)->run();
+            $ret->setup($value, $dryrun, $force, $post_type)->run();
             exit;
         } else {
             self::_help();
             exit;
         }
     }
-
 
     /**
     * Fix Post Dates in sqlite
@@ -270,7 +281,6 @@ class Importers
             
             $post->save();
         }
-
     }
 
     /**

@@ -220,7 +220,7 @@ class Import_Google extends Importer
                 break;
                 
             case 'photo-album':
-                print_r($item);
+                //print_r($item);
                 break;
 
             case 'article':
@@ -236,7 +236,7 @@ class Import_Google extends Importer
                 break;
                 
             default:
-                print_r($item);
+                //print_r($item);
                 break;
             }
         }

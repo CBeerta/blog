@@ -114,17 +114,17 @@ $app->get('/projects(/:slug)', 'Projects::overview');
 $app->get('^/blog/.*feed.*', 'Blog::feed');
 $app->get('/blog', 'Blog::index');
 $app->get('/blog/pager/:offset', 'Blog::index');
-$app->get('/blog/tag/:tag(/:offset)', 'Blog::index');
+$app->get('/blog/tag/:tag(/:offset)', 'Blog::tag');
 $app->get('/blog/archive', 'Blog::archive');
 $app->get('/blog/:slug', 'Blog::detail');
 
 // The editor stuff #######################################
 if (Helpers::isEditor()) {
-    $app->post('/blog/json_load', 'Blog::loadJSON');
-    $app->put('/blog/save/tags', 'Blog::saveTags');
-    $app->put('/blog/save', 'Blog::save');
-    $app->delete('/blog/trash', 'Blog::trash');
-    $app->post('/blog/toggle_publish', 'Blog::togglePublish');
+    $app->post('/blog/json_load', 'BlogEdit::loadJSON');
+    $app->put('/blog/save/tags', 'BlogEdit::saveTags');
+    $app->put('/blog/save', 'BlogEdit::save');
+    $app->delete('/blog/trash', 'BlogEdit::trash');
+    $app->post('/blog/toggle_publish', 'BlogEdit::togglePublish');
 }
 
 // sidebar content. probably ajax #########################
@@ -132,11 +132,9 @@ $app->post('/sidebar/search', 'Other::search');
 
 // contact ################################################
 $app->get('/contact', 'Contact::index');
-//$app->get('/about', 'Contact::about');
 
 // Photography page #######################################
 $app->get('/photography', 'Photography::index');
-$app->get('/grid', 'Photography::grid');
 
 // Documentation page #####################################
 $app->get('/docs', 'Docs::index');
@@ -144,6 +142,13 @@ $app->get('/docs/:slug', 'Docs::index');
 
 // Sitemap ################################################
 $app->get('/sitemap.xml', 'Other::sitemap');
+
+// In Development Stuff ###################################
+if (Helpers::isEditor()) {
+    $app->config('debug', true);
+    $app->get('/about', 'Contact::about');
+    $app->get('/grid', 'Photography::grid');
+}
 
 // And the root of all evil ###############################
 $app->get('/', 'Projects::overview');

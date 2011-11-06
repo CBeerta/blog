@@ -54,10 +54,6 @@ class Wp_Import_Projects extends Importer
     **/
     public function run()
     {
-        $value = $this->value;
-        $dryrun = $this->dryrun;
-        $force = $this->force;
-        
         $dbhost = 'aello.local';
         $dbname = 'claus';
         $dbuser = $_SERVER['DBUSER'];
@@ -114,12 +110,12 @@ class Wp_Import_Projects extends Importer
                 $post_date->format('Y-m-d') . 
                 " {$data['post_name']}.html";
                 
-            if (file_exists($filename) && $force !== true) {
+            if (file_exists($filename) && $this->force !== true) {
                 d("Not overwriting {$filename}");
                 continue;
             }
 
-            if (!$dryrun) {
+            if (!$this->dryrun) {
                 file_put_contents(
                     $filename, 
                     utf8_encode($data['post_title'] . "\n\n" . $content)
