@@ -189,6 +189,10 @@ class Helpers
             $name = ucfirst(strtolower($tag));
             $slug = Helpers::buildSlug($tag);
             
+            if (empty($slug)) {
+                continue;
+            }
+            
             $term = ORM::for_table('post_terms')
                 ->raw_query(
                     "

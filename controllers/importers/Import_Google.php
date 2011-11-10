@@ -54,6 +54,7 @@ class Import_Google extends Importer
     **/
     public function run()
     {
+        $created = 0;
         $page_token = null;
         
         $google_id = Helpers::option('google_id');
@@ -94,7 +95,7 @@ class Import_Google extends Importer
                 if ($ret === false || !is_numeric($ret)) {
                     continue;
                 }
-
+                
                 // Import Comments for existing posts.
                 self::importComments($ret, $item->object->replies);
 
@@ -103,6 +104,8 @@ class Import_Google extends Importer
             }
         
         } while ($page_token !== null);
+        
+        return $created;
     }
 
     /**

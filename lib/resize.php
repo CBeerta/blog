@@ -80,13 +80,6 @@ Class Resize
     **/
     private function _openImage($file)
     {
-        /*
-        // FIXME: is_file wont work with uri's
-        if (!is_file($file)) {
-            throw new Exception("File {$file} doesn't exists");
-        }
-        */
-
         switch(pathinfo($file, PATHINFO_EXTENSION)) {
         case 'jpg':
         case 'jpeg': return imagecreatefromjpeg($file);
@@ -288,6 +281,19 @@ Class Resize
             $height, 
             $width, 
             $height
+        );
+    }
+
+    /**
+    * Return Dimensions of the Original Image
+    *
+    * @return array
+    **/
+    public function dimensions()
+    {
+        return array(
+            'width' => $this->_width,
+            'height' => $this->_height,
         );
     }
 

@@ -73,6 +73,54 @@ class Photography
     }
 
     /**
+    * Page for wallpapers
+    *
+    * FIXME: stuff is beeing encoded into the guid which is wierd
+    *        should really add a table to the database for additional metadata
+    *
+    * @return html
+    **/
+    public static function wallpaper()
+    {
+        $app = Slim::getInstance();
+        $public_url = Helpers::option('public_url');
+    
+        $posts = ORM::for_table('posts')
+            ->select_expr(Blog::_POSTS_SELECT_EXPR)
+            ->where_like('tags', "%Wallpaper%")
+            ->order_by_desc('post_date')
+            ->where_equal('post_type', 'photo');
+
+        $posts = $posts->find_many();
+
+        $dimensions = array();
+        $filenames = array();
+
+        foreach ($posts as $post) {
+            preg_match('#(.*)-(\d+)-(\d+)$#', $post->guid, $matches);
+            
+            $dimensions[$post->guid] = array(
+                'width' => $matches[2],
+                'height' => $matches[3],
+            );
+            $filenames[$post->guid] = $matches[1];
+        }
+        
+        $app->view()->appendData(
+            array(
+            'title' => 'Wallpaper',
+            'active' => 'wallpaper',
+            'public_url' => $public_url,
+            'dimensions' => $dimensions,
+            'filenames' => $filenames,
+            'posts' => $posts,
+            )
+        );
+        
+        return $app->render('wallpaper.html');
+    }
+
+    /**
     * Grid layout of images
     *
     * @return html

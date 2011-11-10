@@ -100,6 +100,9 @@ h2 {
 }
 
 h3 {
+    font-size: 200%;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
 }
 
 h4 {
@@ -191,7 +194,6 @@ pre code {
 	margin: 0 auto;
 	padding-top: 30px;
 }
-
 
 /* ####################### Header ############################# */
 
@@ -546,6 +548,30 @@ div#lebenslauf {
 div#lebenslauf {
 }
 
+/* ######################### Wallpapers ############### */
+
+.wallpaper ul {
+}
+.wallpaper ul li {
+    float: left;
+    list-style: none;
+    margin: 15px;
+    border: 1px solid #aaa;
+}
+
+.wallpaper img {
+    border: 1px solid #888;
+    margin: 2px;
+}
+
+.wallpaper a {
+    padding: 0;
+}
+
+.wallpaper ul li div {
+    text-align: center;
+}
+
 
 /* ######################### Footer ################### */
 
@@ -611,7 +637,7 @@ footer a:hover {
     #splash, .search, .fork_me {
         display: none;
     }
-    .post_type_flickr img {
+    .post_type_photo img {
         width: 480px;
         height: 130px;
     }
@@ -637,7 +663,7 @@ footer a:hover {
     #splash, .search, .fork_me {
         display: none;
     }
-    .post_type_flickr img {
+    .post_type_photo img {
         width: 480px;
         height: 130px;
     }

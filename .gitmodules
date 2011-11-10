@@ -1,6 +1,6 @@
 [submodule "vendor/idiorm"]
 	path = vendor/idiorm
-	url = https://github.com/j4mie/idiorm.git
+	url = https://github.com/CBeerta/idiorm.git
 [submodule "vendor/markdown"]
 	path = vendor/markdown
 	url = http://git.michelf.com/php-markdown

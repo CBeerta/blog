@@ -92,6 +92,7 @@ class Importer
     * what post_type
     **/
     protected $post_type = null;
+
     
     /**
     * Setup the importer
@@ -239,9 +240,19 @@ class Importers
         }
         
         if ($class !== false) {
+
             include_once __DIR__ . '/importers/' . $class . ".php";
+
             $ret = new $class();
-            $ret->setup($value, $dryrun, $force, $post_type)->run();
+
+            $count = $ret->setup($value, $dryrun, $force, $post_type)
+                ->run();
+
+            if (is_numeric($count) && $count > 0) {
+                d("there was an update, call ping-o-matic");
+                //TODO obviously...
+            }
+
             exit;
         } else {
             self::_help();

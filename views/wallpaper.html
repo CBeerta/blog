@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{%block content %}
+<div class="wallpaper">
+<!--h3>Wallpaper</h3-->
+<p>
+Some Photos from my collection that are suitable as Desktop Wallpapers. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. 
+</p>
+<br />
+<ul>
+{% for post in posts %}
+<li>
+    <img src="{{ public_url }}wallpaper_thumb_{{ filenames[post.guid] }}" width="250" height="150">
+    
+    <div>
+    <strong><a href="{{ post.original_source }}">{{ post.post_title }}</a></strong>
+    </div>
+
+    <div>
+    Resolution: {{ dimensions[post.guid].width }}x{{ dimensions[post.guid].height }}
+    </div>
+
+    <div>
+    <a href="{{ public_url }}{{ filenames[post.guid] }}">
+        Download
+    </a>
+    </div>
+
+</li>
+{% endfor %}
+</ul>
+
+</div>
+{% endblock %}

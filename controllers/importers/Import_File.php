@@ -56,6 +56,7 @@ class Import_File extends Importer
     public function run()
     {
         $posts_dir = Helpers::option('posts_dir');
+        $created = 0;
         
         $glob = "{{$posts_dir}/*.html,{$posts_dir}/*.mkd}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {
@@ -94,6 +95,7 @@ class Import_File extends Importer
                 print "## Creating: ";
                 $post = ORM::for_table('posts')->create();
                 $post->post_status = 'publish';
+                $created++;
             } else {
                 print "## Updating: ";
             }
@@ -114,6 +116,8 @@ class Import_File extends Importer
                 print "Dry Run, not saving\n";
             }
         }
+        
+        return $created;
     }
 }
 

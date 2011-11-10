@@ -104,28 +104,34 @@ class Import_Rss extends Importer
             $dst_name;
 
         $square_thumb_file = Helpers::option('public_loc') . 
-            'square_thumb_' . 
+            'wallpaper_thumb_' . 
             $dst_name;
 
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
-            d("Not regenerating thumb");
-
+            d("Not regenerating thumb {$dst_name}");
+            $img = new Resize($dest_file);
         } else {
             d("Loading image: " . $orig_img);
             
             $img = new Resize($orig_img);
-            $img->resizeImage(1900, 1200);
+            $img->resizeImage(1920, 1200);
             $img->saveImage($dest_file);
 
-            $img->resizeImage(150, 150, 'crop');
+            $img->resizeImage(250, 150, 'crop');
             $img->saveImage($square_thumb_file);
             
             $img->resizeImage(940, 255, 'crop');
             $img->addText($item->get_title());
             $img->saveImage($dest_thumb_file);
         }
+        $dimensions = $img->dimensions();
+        unset($img);
+        
+        $post->guid = $dst_name . 
+            '-' . $dimensions['width'] . 
+            '-' . $dimensions['height'];
         
         $content  = '<a href="';
         $content .= Helpers::option('public_url') . basename($dest_file);
@@ -159,6 +165,7 @@ class Import_Rss extends Importer
     **/
     public function run()
     {
+        $created = 0;
         $parsed_url = parse_url($this->value);
         
         d("Will import {$this->value}");
@@ -191,6 +198,7 @@ class Import_Rss extends Importer
                 $new->post_date = $item->get_date('c');
                 $new->post_status = 'publish';
                 $new->post_title = $item->get_title();
+                $created++;
             }
 
             /**
@@ -231,7 +239,7 @@ class Import_Rss extends Importer
                 ? $this->post_type 
                 : $new->post_type;
             
-            //d($new->as_array());
+            // d($new->as_array());
 
             if (!$this->dryrun) {
                 $new->save();
@@ -239,6 +247,8 @@ class Import_Rss extends Importer
             }
             
         }
+        
+        return $created;
     }
 
 }
