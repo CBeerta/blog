@@ -1,9 +1,21 @@
-    <!--h2 class="title">
+
+<div class="entry-meta">
+    <div class="date">{{ post.post_date|date(date_format) }}</div>
+    {% if post.comment_count > 0 %}
+    <div class="comments"><a href="/blog/{{ post.post_slug }}#comments">{{ post.comment_count}} Comments</a></div>
+    {% endif %}
+    <span class="cat-links">{{ post.tags|format_tags|raw }}</span>
+{% if post.post_status == 'draft' %}<b>Draft</b>{% endif %}
+</div>
+<div class="main">
+
+    <h2 class="entry-title">
         <a href="/blog/{{ post.post_slug }}">
             {{ post.post_title }}
         </a>
-    </h2-->
-    <div class="entry" id="{{ post.ID }}">
-        {{ post.post_content|raw }}
+    </h2>
+    <div class="blog entry-content" id="{{ post.ID }}">
+        <p>{{ post.post_content|format_content|raw }}</p>
     </div>
-    <!--a class="meta" href="{{ post.original_source }}">View Source</a-->
+    
+</div>

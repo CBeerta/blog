@@ -56,7 +56,7 @@ class Helpers
         'public_loc' => './data/uploads',
         'deviantart_items' => 4,
         'posts_per_page' => 10,
-        'date_format' => 'D, d M Y',
+        'date_format' => 'M d Y',
         'base_uri' => '/',
         'public_dir' => './public/',
         'google_id' => null,
@@ -130,6 +130,30 @@ class Helpers
     }
 
     /**
+    * Plural a word
+    *
+    * @param string $word  Word
+    * @param int    $count Number of objects
+    *
+    * @return string
+    **/
+    public static function plural($word, $count)
+    {
+        switch ($count) {
+        
+        case 0:
+            return "no " . $word . "s";
+            
+        case 1:
+            return "one " . $word;
+            
+        default:
+            return $count . " " . $word . "s";
+            
+        }
+    }
+
+    /**
     * Return a Random Header Image
     *
     * @param string $image_dir Directory under $public_dir with images
@@ -167,8 +191,9 @@ class Helpers
         foreach ($tags as $tag) {
             $ret .= '<a href="/blog/tag/' . self::buildSlug($tag) . '">';
             $ret .= $tag;
-            $ret .= '</a>&nbsp;&nbsp;';
+            $ret .= '</a>, ';
         }
+        $ret = rtrim($ret, ', ');
     
         return $ret;
     }
@@ -234,11 +259,11 @@ class Helpers
             // email, use gravatar
             $ret = 'http://www.gravatar.com/avatar/';
             $ret .= md5($uri);
-            $ret .= '?d=retro&s=64';
+            $ret .= '?d=retro&s=32';
         } else if (strpos($uri, 'google') !== false) {
             // google url, probably from G+ comments
             $ret = $uri;
-            $ret .= '?sz=64';
+            $ret .= '?sz=32';
         } 
         
         return $ret;

@@ -122,23 +122,27 @@ class Import_Rss extends Importer
             $img->resizeImage(250, 150, 'crop');
             $img->saveImage($square_thumb_file);
             
-            $img->resizeImage(940, 255, 'crop');
+            $img->resizeImage(580, 385, 'crop');
             $img->addText($item->get_title());
             $img->saveImage($dest_thumb_file);
         }
         $dimensions = $img->dimensions();
         unset($img);
         
-        $post->guid = $dst_name . 
-            '-' . $dimensions['width'] . 
-            '-' . $dimensions['height'];
-        
+        $post->guid = $dst_name;
+
+        $post->post_meta = array(
+            'photo_width' => $dimensions['width'],
+            'photo_height' => $dimensions['height'],
+            'filename' => $dst_name,
+            );
+
         $content  = '<a href="';
         $content .= Helpers::option('public_url') . basename($dest_file);
         $content .= '" title="' . $post->post_title . '">';
         $content .= '<img src="';
         $content .= Helpers::option('public_url') . basename($dest_thumb_file);
-        $content .= '" width="940" height="255"></a>';
+        $content .= '" width="580" height="385"></a>';
 
         if (preg_match(
             '#.*>Date:\s+(.*?(AM|PM))<.*#i', 
@@ -235,15 +239,35 @@ class Import_Rss extends Importer
                 break;
             }
             
+            $post_meta = $new->post_meta;
+            unset($new->post_meta);
+            
             $new->post_type = !is_null($this->post_type) 
                 ? $this->post_type 
                 : $new->post_type;
             
             // d($new->as_array());
-
+            
             if (!$this->dryrun) {
                 $new->save();
                 Helpers::addTags($tags, $new->ID);
+            }
+            
+            if (!empty($post_meta)) {
+            
+                ORM::for_table('post_meta')
+                    ->where_equal('posts_ID', $new->ID)
+                    ->delete_many();
+                    
+                foreach ($post_meta as $k => $v) {
+                    $meta = ORM::for_table('post_meta')->create();
+                    $meta->posts_ID = $new->ID;
+                    $meta->meta_key = $k;
+                    $meta->meta_value = $v;
+                    
+                    $meta->save();
+                }
+            
             }
             
         }

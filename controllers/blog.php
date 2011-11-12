@@ -109,14 +109,14 @@ class Blog
     *
     * @return html
     **/
-    public static function tag($tag)
+    public static function tag($tag, $active = 'blog')
     {
         $app = Slim::getInstance();
     
         $app->view()->appendData(
             array(
-            'title' => 'Blog',
-            'active' => 'blog',
+            'title' => ucfirst($active),
+            'active' => $active,
             )
         );
     
@@ -264,7 +264,7 @@ class Blog
     {
         if (!Helpers::isEditor()) {
             $posts->where('post_status', 'publish');
-            $posts->where_not_equal('post_type', 'photo');
+            //$posts->where_not_equal('post_type', 'photo');
             $posts->where_not_equal('post_type', 'activity');
         } else {
         

@@ -18,8 +18,7 @@
   <link rel="stylesheet" href="/public/css/codecolor.css?v=2">
   <link rel="stylesheet" href="/public/js/libs/fancybox/jquery.fancybox.compressed-1.3.4.css">
   
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato:regular,regularitalic,italic,bold,bolditalic" type="text/css">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Maven+Pro:regular,bold,italic,bolditalic" type="text/css">
+  <link rel='stylesheet' id='oswald-css'  href='http://fonts.googleapis.com/css?family=Oswald&#038;ver=MU' type='text/css' media='all' />
   
   <script src="/public/js/libs/modernizr-1.7.min.js"></script>
   <link href="/blog/feed" rel="alternate" title="Claus Beerta - Feed" type="application/atom+xml" />
@@ -27,57 +26,71 @@
 
 <body>
 
+    <!--a href="http://github.com/CBeerta" class="fork_me">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://d3nwyuy0nl342s.cloudfront.net/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub">
+    </a-->
+
   <div id="container">
-    <header>
-        <div id="logo">
-          <h1><a href="#">Claus Beerta</a></h1>
-          <h2>Stuff i do, don't and other babble.</h2>
-        </div>
-        <a href="http://github.com/CBeerta" class="fork_me">
-            <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://d3nwyuy0nl342s.cloudfront.net/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub">
-        </a>
-    </header>
-    <!-- end div#header -->
-    <div id="menu">
-    <ul>
-{% for key, item in menu_items %}
-        <li class="menu_item_{{ key }}{% if active==key %} active{% endif %}">
-            <a href="/{{ key }}">{{ item }}</a>
-        </li>
-{% endfor %}
-    </ul>
-    <div class="search">        
-        <form method="POST" action="/sidebar/search">
-        <fieldset>
-        <input type="text" id="search-text" name="s" placeholder="{{ search|default('Search') }}"/>
-        </fieldset>
-        </form>
+
+    <div id="header">
+      <h1 id="site-title"><a href="#">Claus Beerta</a></h1>
+      <h2 id="site-description">Stuff i do, don't and other babble.</h2>
     </div>
+    <!-- end div#header -->
+    
+    <div id="menu">
+
+		<div id="header-image">
+            <div id="splash" style="background-image: url(/public/header-images/{{ header_image }})">
+                <p>        
+                    <a href="/blog/feed"><img title="RSS Feed" src="/public/img/social/rss_32.png"></a>
+                    <a href="mailto:claus@beerta.de"><img title="Email Me" src="/public/img/social/email_32.png"></a>
+                    <a href="http://picasaweb.google.com/106832871642761506709"><img title="Picasa" src="/public/img/social/picasa_32.png"></a>
+                    <a href="http://amg.deviantart.com/"><img title="DeviantART" src="/public/img/social/deviantart_32.png"></a>
+                    <a href="https://github.com/CBeerta"><img title="Github" src="/public/img/social/github_32.png"></a>
+                    <a href="https://plus.google.com/106832871642761506709/about"><img title="Google+" src="/public/img/social/google_plus_32.png"></a>
+                </p>    
+            </div>
+    	</div>
+    
+        <ul class="menu" id="menu-menu">
+{% for key, item in menu_items %}
+            <li class="menu_item_{{ key }}{% if active==key %} current_page_item{% endif %}">
+                <a href="/{{ key }}">{{ item }}</a>
+            </li>
+{% endfor %}
+        </ul>
+
     </div>
     <!-- end div#menu -->
 
-    <div id="splash" style="background-image: url(/public/header-images/{{ header_image }})">
-        <p>        
-            <a href="/blog/feed"><img title="RSS Feed" src="/public/img/social/rss_32.png"></a>
-            <a href="mailto:claus@beerta.de"><img title="Email Me" src="/public/img/social/email_32.png"></a>
-            <a href="http://picasaweb.google.com/106832871642761506709"><img title="Picasa" src="/public/img/social/picasa_32.png"></a>
-            <a href="http://amg.deviantart.com/"><img title="DeviantART" src="/public/img/social/deviantart_32.png"></a>
-            <a href="https://github.com/CBeerta"><img title="Github" src="/public/img/social/github_32.png"></a>
-            <a href="https://plus.google.com/106832871642761506709/about"><img title="Google+" src="/public/img/social/google_plus_32.png"></a>
-        </p>    
-    </div>
-
     <div id="main" role="main">
-        <div id="content">
 {% block content %}{% endblock %}
-        </div>
     <div class="clearfix"></div>
     </div>
 
-    <footer>
+
+    <div id="widgets">
+    	<div class="widget-area">
+	    	<aside id="search-3" class="widget widget_search">
+                <h3 class="widget-title">Search</h3>
+    	    	<form role="search" method="POST" id="searchform" action="/sidebar/search" >
+        	    <div>
+                	<input type="text" value="" name="s" id="s" placeholder="{{ search|default('Search') }}"/>
+    	            <input type="submit" id="searchsubmit" value="Search" />
+            	</div>
+        	    </form>
+            </aside>
+            <!--aside id="text-3" class="widget widget_text">
+                <h3 class="widget-title">Footer Widget</h3>
+                <div class="textwidget">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+    		</aside-->        	
+	    </div>
+    </div>
+    <div id="footer">
         <p>Copyright &copy; 2000 - {{ "now"|date("Y") }} Claus Beerta. All Rights Reserved. </p>
         <p id="links"><a href="/contact">Impressum</a></p>
-    </footer>
+    </div>
   </div> <!-- eo #container -->
   
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>

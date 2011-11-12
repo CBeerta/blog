@@ -1,39 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if post %}
-<div class="post{% if editor %} editable{% endif %} post_type_{{ post.post_type }}" id="{{ post.ID }}">
+<div id="contents">
+{% if not post %}
+<alert>Post does not exist!</alert>
+{% else %}
+
+    <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }} post{% if editor %} editable{% endif %}" id="post">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
-    <div class="clearfix"></div>
-</div>
+    </div>
 {% if editor %}
     <div class="editor">
         <img class="editor trash_post" id="{{ post.ID }}" onclick="trash_post({{ post.ID }});" src="/public/img/trash_stroke_32x32.png">
         <img class="editor toggle_publish" id="{{ post.ID }}" onclick="toggle_publish({{ post.ID }});" src="/public/img/{{ post.post_status != 'publish' ? 'denied' : 'check_alt' }}_32x32.png">
         <form id="post_tags" method="POST">
-            Tags: <input id="post_tags" type="text" value="{{ post.tags }}" size="100">
+            Tags: <input id="post_tags" type="text" value="{{ post.tags }}" size="80">
             <input type="hidden" id="post_ID" type="text" value="{{ post.ID }}" size="100">
         </form>
     </div>
-    <div class="clearfix"></div>
 {% endif %}
+<div id="comments">
 {% for c in comments %}
-<div class="comment" id="{{ c.ID }}">
-    <img class="gravatar" src="{{ c.comment_author_email|raw|comment_image }}" />
-    <div class="comment_content">
-        <div class="title">
-            <a href="{{ c.comment_author_url|default('#')|raw }}">{{ c.comment_author }}</a>
-            &nbsp;|&nbsp;
-            <small>{{ c.comment_date|date(date_format) }}</small>
-        </div>
-        <p>
-            {{ c.comment_content|raw }}
-        </p>
-    </div>
-    <div class="clearfix"></div>
-</div>
-{% endfor %}
-{% else %}
-<alert>Post does not exist!</alert>
+{% if loop.first %}
+<div class="comment-{{ c.ID }}" id="comments">
+    <h2 id="comments-title">{{ post.comment_count }} thoughts on &ldquo;<span>{{ post.post_title }}</span>&rdquo;</h2>
+    <ol class="commentlist">
 {% endif %}
+    <li class="comment" id="{{ comment-c.ID }}">
+    <div class="comment-body">
+        <div class="comment-author vcard">
+            <img class="avatar" src="{{ c.comment_author_email|raw|comment_image }}" width="32" height="32"/>
+            <cite class="fn"><a href="{{ c.comment_author_url|default('#')|raw }}" rel="external nofollow" class="url">{{ c.comment_author }}</a></cite>
+            <span class="says">says:</span>
+        </div>
+
+        <div class="comment-meta commentmetadata"><a href="#">{{ c.comment_date|date(date_format) }}</a></div>
+        
+        <p>{{ c.comment_content|raw }}</p>
+    </div>
+    </li>
+{% if loop.last %}
+    </ol>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+</div>
 {% endblock %}

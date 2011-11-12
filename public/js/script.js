@@ -28,14 +28,14 @@ $(document).ready(function()
 
     // go through entry links and set a title if theres none.
     // Yes, i'm that lazy. Mainly for fancybox to display pretty footer
-    $('.entry a').each(function() {
+    $('.entry-content a').each(function() {
         if ( !$(this).attr('title') ) {
             $(this).attr('title', basename($(this).attr('href')));
         }
     });
 
     // Just enable fancybox for all img src inside an href for our posts    
-    $('.entry a').each(function() {
+    $('.entry-content a').each(function() {
         if ($(this).html().match(/img.*src/i)) {
             $(this).fancybox({
                 'titlePosition': 'over',

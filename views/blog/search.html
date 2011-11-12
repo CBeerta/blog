@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="contents">
 {% for post in posts %}
-<div class="post post_type_{{ post.post_type }}" id="{{ post.ID }}">
-{% if post.post_status == 'draft' %}<b>Draft: </b>{% endif %}
+
+    <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }}" id="post">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
-    <div class="clearfix"></div>
-</div>
+    </div>
 {% else %}
-<alert>Nothing was Found!</alert>
+<alert><h1>Nothing was Found!</h1></alert>
 {% endfor %}
+</div>
 {% endblock %}

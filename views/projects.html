@@ -1,27 +1,34 @@
 {% extends "base.html" %}
 
 {%block content %}
+<div id="contents">
 {% for proj in projects %}
-<div class="post">
-    <h2 class="title"><a href="/projects/{{ proj.post_slug }}">{{ proj.post_title }}</a></h2>
-    <p class="date">Posted: {{ proj.post_date|date(date_format) }}</p>
-    <div class="entry project">
-        <p>
-            {{ proj.teaser|raw }}
-        </p>
+<div class="post hentry post_type_{{ post.post_type }} post-{{ post.ID }}" id="post">
+    <div class="entry-meta">
+        <div class="date">{{ post.post_date|date(date_format) }}</div>
+    </div>
+    
+    <div class="main">
+
+        <h2 class="entry-title"><a href="/projects/{{ proj.post_slug }}">{{ proj.post_title }}</a></h2>
+        <div class="entry-content project">
+            <p>
+                {{ proj.teaser|raw }}
+            </p>
 {% if body %}
-        <p>
-            {{ proj.content|raw }}
-        </p>
+            <p>
+                {{ proj.content|raw }}
+            </p>
 {% elseif proj.content %}
-    <div class="meta">
-        <p class="links"><a href="/projects/{{ proj.post_slug }}" class="comments">Continue Reading</a></p>
-    </div>
+        <div class="meta">
+            <p class="links"><a href="/projects/{{ proj.post_slug }}" class="comments">Continue Reading</a></p>
+        </div>
 {% endif %}
+        </div>
     </div>
-    <div class="clearfix"></div>
 </div>
 {% else %}
     <alert>No Project Found!</alert>
 {% endfor %}
+</div>
 {% endblock %}

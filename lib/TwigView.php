@@ -97,6 +97,10 @@ class TwigView extends Slim_View
                 new Twig_Filter_Function('md5')
             );
             $this->_twigEnvironment->addFilter(
+                'plural',
+                new Twig_Filter_Function('Helpers::plural')
+            );
+            $this->_twigEnvironment->addFilter(
                 'comment_image',
                 new Twig_Filter_Function('Helpers::commentImage')
             );

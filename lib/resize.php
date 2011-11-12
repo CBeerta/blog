@@ -308,7 +308,15 @@ Class Resize
     {
         $bg = imagecolorallocatealpha($this->_imageResized, 0, 0, 0, 40);
         $white = imagecolorallocatealpha($this->_imageResized, 255, 255, 255, 10);
-        imagefilledrectangle($this->_imageResized, 0, 230, 940, 255, $bg);
+        
+        imagefilledrectangle(
+            $this->_imageResized, 
+            0, 
+            360, 
+            $this->_width, 
+            $this->_height, 
+            $bg
+        );
         $font = __DIR__ . '/../public/VeraSe.ttf';
         
         imagettftext(
@@ -316,7 +324,7 @@ Class Resize
             13, 
             0, 
             10, 
-            248, 
+            378, 
             $white, 
             $font, 
             $text
@@ -331,7 +339,7 @@ Class Resize
     *
     * @return void
     **/
-    public function saveImage($savePath, $imageQuality="100")
+    public function saveImage($savePath, $imageQuality="92")
     {
         switch(pathinfo($savePath, PATHINFO_EXTENSION)) {
 
