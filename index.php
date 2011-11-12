@@ -136,6 +136,7 @@ $app->get('/contact', 'Contact::index');
 
 // Photography page #######################################
 $app->get('/photography', 'Photography::index');
+$app->get('/wallpaper', 'Photography::wallpaper');
 
 // Documentation page #####################################
 $app->get('/docs', 'Docs::index');
@@ -149,7 +150,6 @@ if (Helpers::isEditor()) {
     $app->config('debug', true);
     $app->get('/about', 'Contact::about');
     $app->get('/grid', 'Photography::grid');
-    $app->get('/wallpaper', 'Photography::wallpaper');
 }
 
 // And the root of all evil ###############################
