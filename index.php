@@ -120,6 +120,7 @@ $app->get('^/blog/.*feed.*', 'Blog::feed');
 $app->get('/blog', 'Blog::index');
 $app->get('/blog/pager/:offset', 'Blog::index');
 $app->get('/blog/archive', 'Blog::archive');
+$app->get('/blog/:slug', 'Posts::detail');
 
 // The editor stuff #######################################
 if (Helpers::isEditor()) {
