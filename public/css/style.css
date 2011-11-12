@@ -38,6 +38,10 @@ body {
 	padding-bottom: 10px;
 }
 
+pre {
+    overflow: auto;
+}
+
 /* =Header
 ----------------------------------------------- */
 #site-title {

@@ -46,18 +46,17 @@ class Photography
     /**
     * Photography Page
     *
+    * @param int $offset Offset for Pager
+    *
     * @return html
     **/
-    public static function index()
+    public static function index($offset = 0)
     {
-        return Blog::tag('photo', 'photography');
+        return Posts::tag('photo', $offset, 'photography');
     }
 
     /**
     * Page for wallpapers
-    *
-    * FIXME: stuff is beeing encoded into the guid which is wierd
-    *        should really add a table to the database for additional metadata
     *
     * @return html
     **/
@@ -67,35 +66,17 @@ class Photography
         $public_url = Helpers::option('public_url');
     
         $posts = ORM::for_table('posts')
-            ->select_expr(Blog::_POSTS_SELECT_EXPR)
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
             ->where_like('tags', "%Wallpaper%")
             ->order_by_desc('post_date')
             ->where_equal('post_type', 'photo');
 
         $posts = $posts->find_many();
 
-        $dimensions = array();
-        $filenames = array();
-
+        $post_meta = array();
+        
         foreach ($posts as $post) {
-
-            $metas = ORM::for_table('post_meta')
-                ->where('posts_ID', $post->ID);
-            $metas = $metas->find_many();
-            
-            foreach ($metas as $meta) {
-                switch ($meta->meta_key) {
-                case 'photo_width':
-                    $dimensions[$post->guid]['width'] = $meta->meta_value;
-                    break;
-                case 'photo_height':
-                    $dimensions[$post->guid]['height'] = $meta->meta_value;
-                    break;
-                case 'filename':
-                    $filenames[$post->guid] = $meta->meta_value;
-                }
-            }
-
+            $post_meta[$post->guid] = Posts::splitMeta($post->post_meta);
         }
         
         $app->view()->appendData(
@@ -103,8 +84,7 @@ class Photography
             'title' => 'Wallpaper',
             'active' => 'wallpaper',
             'public_url' => $public_url,
-            'dimensions' => $dimensions,
-            'filenames' => $filenames,
+            'post_meta' => $post_meta,
             'posts' => $posts,
             )
         );
@@ -129,7 +109,7 @@ class Photography
         }
 
         $posts = ORM::for_table('posts')
-            ->select_expr(Blog::_POSTS_SELECT_EXPR)
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
             ->where_equal('post_type', 'photo');
 

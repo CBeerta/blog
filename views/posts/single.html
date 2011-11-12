@@ -6,8 +6,8 @@
 <alert>Post does not exist!</alert>
 {% else %}
 
-    <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }} post{% if editor %} editable{% endif %}" id="post">
-{% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
+    <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }} post{% if editor %} editable{% endif %}" id="{{ post.ID }}">
+{% include ['posts/index.' ~ post.post_type ~ '.html', 'posts/index.blog.html'] %} 
     </div>
 {% if editor %}
     <div class="editor">
@@ -23,7 +23,7 @@
 {% for c in comments %}
 {% if loop.first %}
 <div class="comment-{{ c.ID }}" id="comments">
-    <h2 id="comments-title">{{ post.comment_count }} thoughts on &ldquo;<span>{{ post.post_title }}</span>&rdquo;</h2>
+    <h2 id="comments-title">{{ post.comment_count|plural('though') }} on &ldquo;<span>{{ post.post_title }}</span>&rdquo;</h2>
     <ol class="commentlist">
 {% endif %}
     <li class="comment" id="{{ comment-c.ID }}">

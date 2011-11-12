@@ -5,13 +5,14 @@
 
 {% for post in posts %}
     <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }}" id="post">
-{% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
+{% include ['posts/index.' ~ post.post_type ~ '.html', 'posts/index.blog.html'] %} 
     </div>
 {% else %}
     <alert>No more Posts!</alert>
 {% endfor %}
 </div>
 
+{%if ppp %}
 <div class="navigation">
 	<div class="nav-previous">
 {% if posts|length == ppp %}
@@ -24,5 +25,5 @@
 {% endif %}
     </div>
 </div>
-
+{% endif %}
 {% endblock %}

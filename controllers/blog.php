@@ -42,26 +42,6 @@
 **/
 class Blog
 {
-
-    /**
-    * Select Expression for Posts for Idiorm
-    **/
-    const _POSTS_SELECT_EXPR = "
-            *,
-            (
-                SELECT COUNT(ID)
-                FROM comments
-                WHERE
-                    comments.post_ID=posts.ID
-            ) AS comment_count,
-            (
-                SELECT GROUP_CONCAT(name) 
-                FROM post_terms,term_relations 
-                WHERE 
-                    term_relations.post_terms_id=post_terms.ID AND
-                    term_relations.posts_ID=posts.ID
-            ) AS tags                
-            ";
     /**
     * the Blog
     *
@@ -84,11 +64,11 @@ class Blog
         );
 
         $posts = ORM::for_table('posts')
-            ->select_expr(self::_POSTS_SELECT_EXPR)
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
             ->limit($ppp)
             ->offset($offset);
-        $posts = self::setPermissions($posts);
+        $posts = Posts::setPermissions($posts);
         $posts = $posts->find_many();
 
         if (!$posts) {
@@ -99,86 +79,7 @@ class Blog
         $app->view()->setData('base_url', "/blog/pager");
         $app->view()->setData('posts', $posts);
         
-        return $app->render('blog/index.html');
-    }
-
-    /**
-    * Tags Archive
-    *
-    * @param strign $tag Selected Tag
-    *
-    * @return html
-    **/
-    public static function tag($tag, $active = 'blog')
-    {
-        $app = Slim::getInstance();
-    
-        $app->view()->appendData(
-            array(
-            'title' => ucfirst($active),
-            'active' => $active,
-            )
-        );
-    
-        $posts = ORM::for_table('posts')
-            ->select_expr(self::_POSTS_SELECT_EXPR)
-            ->order_by_desc('post_date')
-            ->where_like('tags', "%{$tag}%");
-        $posts = self::setPermissions($posts);
-        $posts = $posts->find_many();
-
-        if (!$posts) {
-            $app->response()->status(404);
-            return $app->render('404.html');
-        }
-
-        $app->view()->setData('base_url', "/blog/tag/{$tag}");
-        $app->view()->setData('posts', $posts);
-        
-        return $app->render('blog/index.html');
-    }
-
-    /**
-    * Detail on a slug
-    *
-    * @param string $slug detail on which slug
-    *
-    * @return html
-    **/
-    public static function detail($slug = null)
-    {
-        $app = Slim::getInstance();
-        
-        $app->view()->appendData(
-            array(
-            'title' => 'Blog',
-            'active' => 'blog',
-            )
-        );
-
-        $post = ORM::for_table('posts')
-            ->select_expr(self::_POSTS_SELECT_EXPR)
-            ->where_like('post_slug', "%{$slug}%")
-            ->order_by_desc('post_date');
-
-        $post = self::setPermissions($post);
-        $post = $post->find_one();
-
-        if ($post) {            
-            $comments = ORM::for_table('comments')
-                ->where('post_ID', $post->ID)
-                ->order_by_asc('comment_date')
-                ->find_many();
-        
-            $app->view()->setData('comments', $comments);
-        } else {
-            $app->response()->status(404);
-            return $app->render('404.html');
-        }
-        
-        $app->view()->setData('post', $post);
-        
-        return $app->render('blog/single.html');
+        return $app->render('posts/index.html');
     }
 
     /**
@@ -193,7 +94,7 @@ class Blog
         $posts = ORM::for_table('posts')
             ->order_by_desc('post_date');
 
-        $posts = self::setPermissions($posts);
+        $posts = Posts::setPermissions($posts);
         $posts = $posts->find_many();
 
         $tags = ORM::for_table('post_terms')
@@ -220,7 +121,7 @@ class Blog
             )
         );
 
-        return $app->render('blog/archive.html');
+        return $app->render('posts/archive.html');
     }
 
     /**
@@ -249,28 +150,7 @@ class Blog
         );
         
         $app->response()->header('Content-Type', 'application/rss+xml');        
-        return $app->render('blog/feed.xml');
-    }
-
-
-    /**
-    * Set Permissions on Posts ORM
-    *
-    * @param object $posts posts ORM object
-    *
-    * @return object
-    **/
-    public static function setPermissions($posts)
-    {
-        if (!Helpers::isEditor()) {
-            $posts->where('post_status', 'publish');
-            //$posts->where_not_equal('post_type', 'photo');
-            $posts->where_not_equal('post_type', 'activity');
-        } else {
-        
-        }
-        
-        return $posts;    
+        return $app->render('posts/feed.xml');
     }
 
 }

@@ -111,13 +111,15 @@ $app->view()->appendData(
 // Projects related #######################################
 $app->get('/projects(/:slug)', 'Projects::overview');
 
+// Posts stuff ############################################
+$app->get('/posts/tag/:tag(/:offset)', 'Posts::tag');
+$app->get('/post/:slug', 'Posts::detail');
+
 // Blog stuff #############################################
 $app->get('^/blog/.*feed.*', 'Blog::feed');
 $app->get('/blog', 'Blog::index');
 $app->get('/blog/pager/:offset', 'Blog::index');
-$app->get('/blog/tag/:tag(/:offset)', 'Blog::tag');
 $app->get('/blog/archive', 'Blog::archive');
-$app->get('/blog/:slug', 'Blog::detail');
 
 // The editor stuff #######################################
 if (Helpers::isEditor()) {
@@ -136,6 +138,7 @@ $app->get('/contact', 'Contact::index');
 
 // Photography page #######################################
 $app->get('/photography', 'Photography::index');
+$app->get('/photography/tag/photo(/:offset)', 'Photography::index');
 $app->get('/wallpaper', 'Photography::wallpaper');
 
 // Documentation page #####################################

@@ -132,24 +132,22 @@ class Helpers
     /**
     * Plural a word
     *
-    * @param string $word  Word
     * @param int    $count Number of objects
+    * @param string $word  Word
+    *
+    * FIXME: This is retarded. Should use I18N Twig extension
     *
     * @return string
     **/
-    public static function plural($word, $count)
+    public static function plural($count, $word)
     {
         switch ($count) {
-        
         case 0:
             return "no " . $word . "s";
-            
         case 1:
             return "one " . $word;
-            
         default:
             return $count . " " . $word . "s";
-            
         }
     }
 
@@ -189,7 +187,7 @@ class Helpers
         $ret = '';
 
         foreach ($tags as $tag) {
-            $ret .= '<a href="/blog/tag/' . self::buildSlug($tag) . '">';
+            $ret .= '<a href="/posts/tag/' . self::buildSlug($tag) . '">';
             $ret .= $tag;
             $ret .= '</a>, ';
         }

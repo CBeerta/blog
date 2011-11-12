@@ -5,7 +5,7 @@
 <p class="archive">
 {% for tag in tags %}
 {% if tag.posts_with_tag > 0 %}
-<a href="/blog/tag/{{ tag.slug }}">{{ tag.name }}</a> ({{ tag.posts_with_tag }}), 
+<a href="/posts/tag/{{ tag.slug }}">{{ tag.name }}</a> ({{ tag.posts_with_tag }}), 
 {% endif %}
 {% else %}
 <p>No Tags Whatsoever</p>
@@ -16,7 +16,7 @@
 <div class="archive">
 <h2>
     {% if post.post_status == 'draft' %}<b>Draft: </b>{% endif %}
-    <a href="/blog/{{ post.post_slug }}">
+    <a href="/post/{{ post.post_slug }}">
         {{ post.post_title }}
     </a>
     <div class="date">{{ post.post_date|date(date_format) }}</div>

@@ -55,7 +55,7 @@ class Other
             ->where('post_status', 'publish')
             ->order_by_desc('post_date')
             ->find_many();
-        $posts = Blog::setPermissions($posts);
+        $posts = Posts::setPermissions($posts);
         $posts = Projects::mergeBlogPosts($posts);
         reset($posts);
         
@@ -78,11 +78,12 @@ class Other
     public static function search()
     {
         $app = Slim::getInstance();
+        $ppp = Helpers::option('posts_per_page');
         
         $s = isset($_POST['s']) ? SQLite3::escapeString($_POST['s']) : false;
         
         $posts = ORM::for_table('posts')
-            ->select_expr(Blog::_POSTS_SELECT_EXPR)
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
             ->where_raw(
                 "
                 (
@@ -94,7 +95,7 @@ class Other
                 "
             )
             ->order_by_desc('post_date')
-            ->limit(10)
+            ->limit($ppp)
             ->find_many();
 
         $app->view()->appendData(
@@ -103,9 +104,11 @@ class Other
             'active' => 'blog',
             'posts' => $posts,
             'search' => $s,
+            'base_url' => '/sidebar/search',
             )
         );
-        return $app->render('blog/search.html');
+
+        return $app->render('posts/index.html');
     }
     /**
     * Load github user json, and return project list
