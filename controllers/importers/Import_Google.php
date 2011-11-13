@@ -175,7 +175,8 @@ class Import_Google extends Importer
         $post->original_source = $item->url;
         $post->post_type = 'blog';
         
-        d($post->as_array());
+        //d($post->as_array());
+        
         if (!$this->dryrun) {
             d("Saving '{$post->post_title}'.");
             $post->save();
