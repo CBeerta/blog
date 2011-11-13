@@ -110,7 +110,7 @@ class Import_Rss extends Importer
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
-            d("Not regenerating thumb {$dst_name}");
+            // d("Not regenerating thumb {$dst_name}");
             $img = new Resize($dest_file);
         } else {
             d("Loading image: " . $orig_img);
@@ -184,90 +184,89 @@ class Import_Rss extends Importer
         
         // don't sort by pubdate, 
         $rss->enable_order_by_date(false); 
+
+        $post_type = !is_null($this->post_type) 
+            ? $this->post_type 
+            : 'blog';
         
         $items = array();
         foreach ($rss->get_items() as $item) {
 
+            $post_slug =  $post_type . '-' . Helpers::buildSlug($item->get_title());
+            
             $post = ORM::for_table('posts')
-                ->where_like('post_title', $item->get_title())
+                ->where_like('post_slug', $post_slug)
                 ->order_by_desc('post_date')
                 ->find_one();
             
             if (isset($post->ID)) {
-                d("Updating: " . $item->get_title());
-                $new = ORM::for_table('posts')->find_one($post->ID);
+                d("Updating: " . $post->post_slug);
             } else {
-                d("Adding: " . $item->get_title());
-                $new = ORM::for_table('posts')->create();
-                $new->post_date = $item->get_date('c');
-                $new->post_status = 'publish';
-                $new->post_title = $item->get_title();
+                d("Adding: " . $post_slug);
+                $post = ORM::for_table('posts')->create();
+                $post->post_date = $item->get_date('c');
+                $post->post_status = 'publish';
+                $post->post_title = $item->get_title();
                 $created++;
             }
 
             /**
             * Basic style if there is no custom one
             **/
-            $new->post_slug = Helpers::buildSlug($item->get_title()) . '-' 
+
+            $post->post_type = $post_type;
+            $post->post_slug = $post_slug;
+            $post->guid = Helpers::buildSlug($item->get_title()) . '-' 
                 . md5($item->get_id());
-            $new->guid = $new->post_slug;
-            $new->original_source = $item->get_link();
-            $new->post_content = $item->get_content();
+            $post->original_source = $item->get_link();
+            $post->post_content = $item->get_content();
             
             $tags = array('Imported');
 
             switch ($parsed_url['host'])
             {
             case 'api.flickr.com':
-                $new = $this->_photography($item, $new);
+                $post = $this->_photography($item, $post);
                 $tags = array('Photo', 'Flickr');
-                $new->post_type = 'photo';
                 break;
             case 'picasaweb.google.com':
-                $new = $this->_photography($item, $new);
+                $post = $this->_photography($item, $post);
                 $tags = array('Photo', 'Picasa');
-                $new->post_type = 'photo';
                 break;
             case 'backend.deviantart.com':
-                $new = $this->_deviantArt($item, $new);
+                $post = $this->_deviantArt($item, $post);
                 $tags = array('deviantArt');
-                $new->post_type = 'deviantart';
                 break;
             case 'github.com':
-                $tags = array('github');
-                $new->post_type = 'activity';
+                $tags = array('Github');
                 break;
             }
             
-            $post_meta = $new->post_meta;
-            unset($new->post_meta);
+            $post_meta = $post->post_meta;
+            unset($post->post_meta);
             
-            $new->post_type = !is_null($this->post_type) 
-                ? $this->post_type 
-                : $new->post_type;
-            
-            // d($new->as_array());
+            //d($post->as_array());
             
             if (!$this->dryrun) {
-                $new->save();
-                Helpers::addTags($tags, $new->ID);
+                $post->save();
+                Helpers::addTags($tags, $post->ID);
             }
             
             if (!empty($post_meta)) {
             
                 ORM::for_table('post_meta')
-                    ->where_equal('posts_ID', $new->ID)
+                    ->where_equal('posts_ID', $post->ID)
                     ->delete_many();
                     
                 foreach ($post_meta as $k => $v) {
                     $meta = ORM::for_table('post_meta')->create();
-                    $meta->posts_ID = $new->ID;
+                    $meta->posts_ID = $post->ID;
                     $meta->meta_key = $k;
                     $meta->meta_value = $v;
                     
                     $meta->save();
                 }
-            
+                
             }
             
         }

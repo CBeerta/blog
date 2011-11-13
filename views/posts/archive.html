@@ -1,28 +1,18 @@
 {% extends "base.html" %}
 
 {%block content %}
-<h4>Tags</h4>
-<p class="archive">
-{% for tag in tags %}
-{% if tag.posts_with_tag > 0 %}
-<a href="/posts/tag/{{ tag.slug }}">{{ tag.name }}</a> ({{ tag.posts_with_tag }}), 
-{% endif %}
-{% else %}
-<p>No Tags Whatsoever</p>
-{% endfor %}
-</p>
-<h4>Blog Archive</h4>
+<h1>Posts Archive</h1>
+<ul class="archive">
 {% for post in posts %}
-<div class="archive">
-<h2>
+<li>
     {% if post.post_status == 'draft' %}<b>Draft: </b>{% endif %}
     <a href="/post/{{ post.post_slug }}">
         {{ post.post_title }}
     </a>
-    <div class="date">{{ post.post_date|date(date_format) }}</div>
-</h2>
-</div>
+    <span class="date">{{ post.post_date|date(date_format) }}</span>
+</li>
 {% else %}
 <alert>Not a single Post!</alert>
 {% endfor %}
+</ul>
 {% endblock %}

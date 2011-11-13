@@ -22,6 +22,8 @@
   
   <script src="/public/js/libs/modernizr-1.7.min.js"></script>
   <link href="/blog/feed" rel="alternate" title="Claus Beerta - Feed" type="application/atom+xml" />
+
+  <meta name="google-site-verification" content="zX85kldtRmA8Y85FYTLcIMpLimAS9zTEZy-UgEk4HFA" />
 </head>
 
 <body>
@@ -81,6 +83,22 @@
             	</div>
         	    </form>
             </aside>
+            <aside id="cloud-1" class="widget widget_text">
+                <h3 class="widget-title">Tag Cloud</h3>
+                <div class="textwidget">
+{% for tag in tag_cloud %}
+                    {{ tag|raw }}&nbsp;
+{% endfor %}
+                </div>
+    		</aside>        	
+            <aside id="text-1" class="widget widget_text">
+                <h3 class="widget-title">Links</h3>
+                <div class="textwidget">
+                <ul>
+                    <li><a href="/posts/archive">Blog Archive</a>
+                </ul>
+                </div>
+    		</aside>        	
             <!--aside id="text-3" class="widget widget_text">
                 <h3 class="widget-title">Footer Widget</h3>
                 <div class="textwidget">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>

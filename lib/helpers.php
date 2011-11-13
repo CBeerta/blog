@@ -64,55 +64,6 @@ class Helpers
     );
     
     /**
-    * not Found Magic
-    *
-    * @return void
-    **/
-    public static function notFound()
-    {
-        $app = Slim::getInstance();
-        
-        $parts = explode('/', $app->request()->getResourceUri());
-        
-        /**
-        * First look through all projects and see if theres a match
-        **/
-        $slugs = array();
-        $projects = Projects::loadProjects();
-        
-        foreach ($projects as $proj) {
-            $slugs[strtolower($proj->post_slug)] = strtolower($proj->post_slug);
-        }
-        
-        foreach ($parts as $part) {
-            if (in_array(strtolower($part), $slugs)) {
-                $app->redirect('/projects/' . $slugs[strtolower($part)]);
-            }
-        }
-        
-        /**
-        * Then look at all blog posts for a match
-        **/
-        $posts = ORM::for_table('posts')->find_many();
-        
-        $slugs = array();
-        foreach ($posts as $post) {
-            $slugs[] = $post->post_slug;
-        }
-
-        foreach ($parts as $part) {
-            if (in_array($part, $slugs)) {
-                $app->redirect('/blog/' . $part);
-            }
-        }
-        
-        /**
-        * Finally, render our 404 because nothing was found
-        **/
-        $app->render('404.html');
-    }
-
-    /**
     * Options Store
     *
     * @param string $key   Key
@@ -127,28 +78,6 @@ class Helpers
         }
         
         self::$options[$key] = $value;
-    }
-
-    /**
-    * Plural a word
-    *
-    * @param int    $count Number of objects
-    * @param string $word  Word
-    *
-    * FIXME: This is retarded. Should use I18N Twig extension
-    *
-    * @return string
-    **/
-    public static function plural($count, $word)
-    {
-        switch ($count) {
-        case 0:
-            return "no " . $word . "s";
-        case 1:
-            return "one " . $word;
-        default:
-            return $count . " " . $word . "s";
-        }
     }
 
     /**
@@ -174,27 +103,6 @@ class Helpers
         return basename($files[$rand]);
     }
 
-    /**
-    * Format a list of Tags
-    *
-    * @param string $tags String with comma seperated tags
-    *
-    * @return formatted date
-    **/
-    public static function formatTags($tags)
-    {
-        $tags = explode(',', $tags);
-        $ret = '';
-
-        foreach ($tags as $tag) {
-            $ret .= '<a href="/posts/tag/' . self::buildSlug($tag) . '">';
-            $ret .= $tag;
-            $ret .= '</a>, ';
-        }
-        $ret = rtrim($ret, ', ');
-    
-        return $ret;
-    }
 
     /**
     * Add Tags to a Post
@@ -241,31 +149,6 @@ class Helpers
                 )->count();
         }
     }
-
-    /**
-    * Comment Image Url Formatter for Twig
-    *
-    * @param string $uri URl or EMAIL for the image
-    *
-    * @return string 
-    **/
-    public static function commentImage($uri)
-    {
-        $ret = '';
-        
-        if (strpos($uri, '@') !== false) {
-            // email, use gravatar
-            $ret = 'http://www.gravatar.com/avatar/';
-            $ret .= md5($uri);
-            $ret .= '?d=retro&s=32';
-        } else if (strpos($uri, 'google') !== false) {
-            // google url, probably from G+ comments
-            $ret = $uri;
-            $ret .= '?sz=32';
-        } 
-        
-        return $ret;
-    }
      
     
     /**
@@ -284,51 +167,6 @@ class Helpers
         }
         
         return $date->format(option('date_format'));
-    }
-
-    /**
-    * Format content
-    *
-    * @param string $content    The content to format
-    * @param string $line_break What Line Break to use
-    *
-    * @return html
-    **/
-    public static function formatContent($content, $line_break='<br />')
-    {
-        if (strstr($content, '<') !== false) {
-            /**
-            * This is somewhat specific. I dunno if Wordpress generated these.
-            * It SUCKS. maybe easier to just clean my posts?
-            *
-            * Anyhow: Any line ending that is NOT a html tag followed by 2 linebreaks
-            * will be converted to two '<br>' tags
-            *
-            * This seems to convert my posts best, leaving properly formatted 
-            * ones intact and only alter the ones that need it.
-            *
-            * FIXME: This has to DIAF! Fix the goddamn content 
-            *       in the database already!
-            **/
-            $content = preg_replace(
-                '#([\w:;\.,!\?\(\)]+?)(\r|\n){2,}#', 
-                '\1<br><br>', 
-                $content
-            );
-        } else {
-            // This is probably Markdown or plaintext
-            $content = Markdown($content);
-        }
-        
-        $pattern = '#\s*\<pre\s(.*?)\>(.*?)\</pre\>\s*#si';
-        $content = preg_replace_callback(
-            $pattern, 
-            'self::geshiHighlight',
-            $content
-        );
-        
-
-        return $content;
     }
 
     /**

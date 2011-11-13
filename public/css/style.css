@@ -789,6 +789,40 @@ article.comment {
     text-align: center;
 }
 
+/* ########################## Archive ############################### */
+.archive ul {
+    line-height: 30px;
+}
+.archive h2:hover {
+    background-color: #eee;
+}
+.archive .date {
+    margin-right: 5px;
+    float: right;
+    font-weight: normal;
+}
+.archive b {
+    color: red;
+    margin-left: -40px;
+}
+
+.archive li {
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+    line-height: 18px;
+    list-style: none;
+}    
+.archive li a {
+    line-height: 30px;
+    text-decoration: none;
+	font-size: 16px;
+    color: #444;
+    margin: 5px;
+}
+
+
+
 /* =Footer
 ----------------------------------------------- */
 #footer {

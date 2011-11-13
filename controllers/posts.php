@@ -79,7 +79,7 @@ class Posts
     *
     * @return html
     **/
-    public static function tag($tag, $offset = 0, $active = 'blog')
+    public static function tag($tag, $offset = 0, $active = 'posts')
     {
         $app = Slim::getInstance();
         $ppp = Helpers::option('posts_per_page');
@@ -156,6 +156,33 @@ class Posts
         $app->view()->setData('post', $post);
         
         return $app->render('posts/single.html');
+    }
+
+    /**
+    * Archives
+    *
+    * @return html
+    **/
+    public static function archive()
+    {
+        $app = Slim::getInstance();
+        
+        $posts = ORM::for_table('posts')
+            ->order_by_desc('post_date');
+
+        $posts = Posts::setPermissions($posts);
+        $posts = $posts->find_many();
+
+        $app->view()->appendData(
+            array(
+            'title' => 'Posts Archive',
+            'active' => 'blog',
+            'posts' => $posts,
+            //'tags' => Other::tagCloud(),
+            )
+        );
+
+        return $app->render('posts/archive.html');
     }
 
     /**

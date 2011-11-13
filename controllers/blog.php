@@ -83,48 +83,6 @@ class Blog
     }
 
     /**
-    * Archives
-    *
-    * @return html
-    **/
-    public static function archive()
-    {
-        $app = Slim::getInstance();
-        
-        $posts = ORM::for_table('posts')
-            ->order_by_desc('post_date');
-
-        $posts = Posts::setPermissions($posts);
-        $posts = $posts->find_many();
-
-        $tags = ORM::for_table('post_terms')
-            ->select_expr(
-                '
-                *,
-                (
-                    SELECT COUNT(ID) FROM `posts`, `term_relations`
-                    WHERE 
-                        term_relations.post_terms_ID=post_terms.ID AND
-                        term_relations.posts_ID=posts.ID
-                ) AS posts_with_tag
-                '
-            )
-            ->order_by_asc('slug')
-            ->find_many();
-
-        $app->view()->appendData(
-            array(
-            'title' => 'Blog Archive',
-            'active' => 'blog',
-            'posts' => $posts,
-            'tags' => $tags,
-            )
-        );
-
-        return $app->render('posts/archive.html');
-    }
-
-    /**
     * Return a RSS Feed
     *
     * @return xml

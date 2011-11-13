@@ -75,7 +75,7 @@ $app->configureMode(
     }
 );
 
-$app->notFound('Helpers::notFound');
+$app->notFound('Other::notFound');
 
 /**
 * Load config file and override default options
@@ -105,6 +105,7 @@ $app->view()->appendData(
     'header_image'=> Helpers::randomHeaderImage('header-images/'),
     'date_format' => Helpers::option('date_format'),
     'editor' => Helpers::isEditor(),
+    'tag_cloud' => Other::tagCloud(),
     )
 );
 
@@ -113,13 +114,13 @@ $app->get('/projects(/:slug)', 'Projects::overview');
 
 // Posts stuff ############################################
 $app->get('/posts/tag/:tag(/:offset)', 'Posts::tag');
+$app->get('/posts/archive', 'Posts::archive');
 $app->get('/post/:slug', 'Posts::detail');
 
 // Blog stuff #############################################
 $app->get('^/blog/.*feed.*', 'Blog::feed');
 $app->get('/blog', 'Blog::index');
 $app->get('/blog/pager/:offset', 'Blog::index');
-$app->get('/blog/archive', 'Blog::archive');
 $app->get('/blog/:slug', 'Posts::detail');
 
 // The editor stuff #######################################

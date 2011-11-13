@@ -71,7 +71,7 @@ class Other
     }
 
     /**
-    * Load github user json, and return project list
+    * Search for something
     *
     * @return json
     **/
@@ -110,6 +110,136 @@ class Other
 
         return $app->render('posts/index.html');
     }
+
+    /**
+    * not Found Magic
+    *
+    * @return void
+    **/
+    public static function notFound()
+    {
+        $app = Slim::getInstance();
+        
+        $parts = explode('/', $app->request()->getResourceUri());
+        
+        /**
+        * First look through all projects and see if theres a match
+        **/
+        $slugs = array();
+        $projects = Projects::loadProjects();
+        
+        foreach ($projects as $proj) {
+            $slugs[strtolower($proj->post_slug)] = strtolower($proj->post_slug);
+        }
+        
+        foreach ($parts as $part) {
+            if (in_array(strtolower($part), $slugs)) {
+                $app->redirect('/projects/' . $slugs[strtolower($part)]);
+            }
+        }
+        
+        /**
+        * Then look at all blog posts for a match
+        **/
+        $posts = ORM::for_table('posts')->find_many();
+        
+        $slugs = array();
+        foreach ($posts as $post) {
+            $slugs[] = $post->post_slug;
+        }
+
+        foreach ($parts as $part) {
+            if (in_array($part, $slugs)) {
+                $app->redirect('/post/' . $part);
+            }
+        }
+        
+        /**
+        * Finally, render our 404 because nothing was found
+        **/
+        $app->render('404.html');
+    }
+
+
+    /**
+    * Build a Tag Cloud
+    *
+    * @return array
+    **/
+    public static function tagCloud()
+    {
+        $smallest = 8;
+        $largest = 28;
+        
+        $tags = ORM::for_table('post_terms')
+            ->select_expr(
+                '
+                *,
+                (
+                    SELECT COUNT(ID) FROM `posts`, `term_relations`
+                    WHERE 
+                        term_relations.post_terms_ID=post_terms.ID AND
+                        term_relations.posts_ID=posts.ID AND
+                        posts.post_status="publish"
+                ) AS posts_with_tag
+                '
+            )
+            ->order_by_asc('slug')
+            ->find_many();
+        
+        $counts = array();
+        $real_counts = array(); // For the alt tag
+        foreach ( (array) $tags as $key => $tag ) {
+            $real_counts[$key] = $tag->posts_with_tag;
+            $counts[$key] = round(log10($tag->posts_with_tag + 1) * 100);
+        }
+        
+        $min_count = min($counts);
+        
+        $spread = max($counts) - $min_count;
+        if ($spread <= 0) {
+            $spread = 1;
+        }
+
+        $font_spread = $largest - $smallest;
+        if ( $font_spread < 0 ) {
+            $font_spread = 1;
+        }
+        $font_step = $font_spread / $spread;
+
+        $a = array();
+
+        foreach ( $tags as $key => $tag ) {
+            if ($tag->posts_with_tag == 0) {
+                continue;
+            }
+            $count = $counts[$key];
+            $real_count = $real_counts[$key];
+            $tag_link = '/posts/tag/';
+            $tag_id = $tags[$key]->ID;
+            $tag_name = $tags[$key]->name;
+            $tag_link = '/posts/tag/' . $tags[$key]->slug;
+            $a[] = "<a href='{$tag_link}' " 
+                . "class='tag-link-{$tag_id}'" 
+                . "title='{$tag_name}' style='font-size: " .
+                round($smallest + (($count - $min_count) * $font_step))
+                . "px;'>$tag_name</a>";
+        }
+            
+        //$return = "<ul class='wp-tag-cloud'>\n\t<li>";
+        //$return .= join("</li>\n\t<li>", $a);
+        //$return .= "</li>\n</ul>\n";
+        
+        return $a;
+    }
+
+
+
+
+
+
+
+
     /**
     * Load github user json, and return project list
     *

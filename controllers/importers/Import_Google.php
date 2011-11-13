@@ -129,11 +129,14 @@ class Import_Google extends Importer
             return false;
         }
 
+        $post_slug = Helpers::buildSlug("gplus {$title}");
+
         // Strip title and one '<br />' from content
         $content = substr($content, $pos + 6);
         
         $post = ORM::for_table('posts')
             ->where('post_title', $title)
+            ->where_not_like('original_source', '%googleapis%')
             ->find_one();
             
         if (!$post) {
@@ -141,13 +144,17 @@ class Import_Google extends Importer
             $post = ORM::for_table('posts')->create();
             $post->post_status = 'publish';
         } else {
+            d("## Updating: {$title}");
+            /*
             if (!$this->force) {
                 d("Skipping: {$title}. Already Exists. Force to Update.");
                 return $post->ID;
             }
+            */
 
             // If a post is from somewhere but google+, don't update it. 
             // This is usually stuff pulled via picasa, then shared on G+
+            // Return the ID though, so comments can be pulled
             if ($post->post_type != 'blog') {
                 d("Skipping: {$title}. Not of type 'blog'");
                 return $post->ID;
@@ -161,13 +168,14 @@ class Import_Google extends Importer
         }
         
         $post->post_date = date('c', $parsed_date);
-        $post->post_slug = Helpers::buildSlug($title);
+        $post->post_slug = $post_slug;
         $post->post_title = $title;
         $post->post_content = $content;
         $post->guid = $post->post_slug . '-' . time();
         $post->original_source = $item->url;
         $post->post_type = 'blog';
-
+        
+        d($post->as_array());
         if (!$this->dryrun) {
             d("Saving '{$post->post_title}'.");
             $post->save();

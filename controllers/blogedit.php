@@ -97,7 +97,7 @@ class BlogEdit
         $post->post_content = $value;
         $post->save();
         
-        return $app->response()->body(Helpers::formatContent($value));
+        return $app->response()->body(TwigView::formatContent($value));
     }
 
     /**

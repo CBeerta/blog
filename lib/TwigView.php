@@ -90,27 +90,140 @@ class TwigView extends Slim_View
 
             $this->_twigEnvironment->addFilter(
                 'format_content',
-                new Twig_Filter_Function('Helpers::formatContent')
-            );
-            $this->_twigEnvironment->addFilter(
-                'md5',
-                new Twig_Filter_Function('md5')
+                new Twig_Filter_Function('TwigView::formatContent')
             );
             $this->_twigEnvironment->addFilter(
                 'plural',
-                new Twig_Filter_Function('Helpers::plural')
+                new Twig_Filter_Function('TwigView::plural')
             );
             $this->_twigEnvironment->addFilter(
                 'comment_image',
-                new Twig_Filter_Function('Helpers::commentImage')
+                new Twig_Filter_Function('TwigView::commentImage')
             );
             $this->_twigEnvironment->addFilter(
                 'format_tags',
-                new Twig_Filter_Function('Helpers::formatTags')
+                new Twig_Filter_Function('TwigView::formatTags')
             );
         }
         return $this->_twigEnvironment;
     }
+
+    /**
+    * Format content
+    *
+    * @param string $content    The content to format
+    * @param string $line_break What Line Break to use
+    *
+    * @return html
+    **/
+    public static function formatContent($content, $line_break='<br />')
+    {
+        if (strstr($content, '<') !== false) {
+            /**
+            * This is somewhat specific. I dunno if Wordpress generated these.
+            * It SUCKS. maybe easier to just clean my posts?
+            *
+            * Anyhow: Any line ending that is NOT a html tag followed by 2 linebreaks
+            * will be converted to two '<br>' tags
+            *
+            * This seems to convert my posts best, leaving properly formatted 
+            * ones intact and only alter the ones that need it.
+            *
+            * FIXME: This has to DIAF! Fix the goddamn content 
+            *       in the database already!
+            **/
+            $content = preg_replace(
+                '#([\w:;\.,!\?\(\)]+?)(\r|\n){2,}#', 
+                '\1<br><br>', 
+                $content
+            );
+        } else {
+            // This is probably Markdown or plaintext
+            $content = Markdown($content);
+        }
+        
+        $pattern = '#\s*\<pre\s(.*?)\>(.*?)\</pre\>\s*#si';
+        $content = preg_replace_callback(
+            $pattern, 
+            'Helpers::geshiHighlight',
+            $content
+        );
+        
+
+        return $content;
+    }
+
+
+    /**
+    * Comment Image Url Formatter for Twig
+    *
+    * @param string $uri URl or EMAIL for the image
+    *
+    * @return string 
+    **/
+    public static function commentImage($uri)
+    {
+        $ret = '';
+        
+        if (strpos($uri, '@') !== false) {
+            // email, use gravatar
+            $ret = 'http://www.gravatar.com/avatar/';
+            $ret .= md5($uri);
+            $ret .= '?d=retro&s=32';
+        } else if (strpos($uri, 'google') !== false) {
+            // google url, probably from G+ comments
+            $ret = $uri;
+            $ret .= '?sz=32';
+        } 
+        
+        return $ret;
+    }
+
+    /**
+    * Format a list of Tags
+    *
+    * @param string $tags String with comma seperated tags
+    *
+    * @return formatted date
+    **/
+    public static function formatTags($tags)
+    {
+        $tags = explode(',', $tags);
+        $ret = '';
+
+        foreach ($tags as $tag) {
+            $ret .= '<a href="/posts/tag/' . Helpers::buildSlug($tag) . '">';
+            $ret .= $tag;
+            $ret .= '</a>, ';
+        }
+        $ret = rtrim($ret, ', ');
+    
+        return $ret;
+    }
+
+    /**
+    * Plural a word
+    *
+    * @param int    $count Number of objects
+    * @param string $word  Word
+    *
+    * FIXME: This is retarded. Should use I18N Twig extension
+    *
+    * @return string
+    **/
+    public static function plural($count, $word)
+    {
+        switch ($count) {
+        case 0:
+            return "no " . $word . "s";
+        case 1:
+            return "one " . $word;
+        default:
+            return $count . " " . $word . "s";
+        }
+    }
+
+
 
 }
 
