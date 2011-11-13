@@ -54,12 +54,19 @@ class Posts
                     comments.post_ID=posts.ID
             ) AS comment_count,
             (
-                SELECT GROUP_CONCAT(name) 
+                SELECT GROUP_CONCAT(post_terms.slug) 
                 FROM post_terms,term_relations 
                 WHERE 
                     term_relations.post_terms_id=post_terms.ID AND
                     term_relations.posts_ID=posts.ID
             ) AS tags,
+            (
+                SELECT GROUP_CONCAT(post_terms.name) 
+                FROM post_terms,term_relations 
+                WHERE 
+                    term_relations.post_terms_id=post_terms.ID AND
+                    term_relations.posts_ID=posts.ID
+            ) AS tag_names,
             (
                 SELECT GROUP_CONCAT(meta_key || '|' || meta_value)
                 FROM post_meta 

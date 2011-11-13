@@ -20,7 +20,7 @@
 {% for p in posts %}
     <item>
 		<title>{{ p.post_title }}</title>
-		<link>/{{ p.post_type }}/{{ p.post_slug }}</link>
+		<link>http://claus.beerta.net/{{ p.post_type }}/{{ p.post_slug }}</link>
 		<pubDate>{{ p.post_date|date('r') }}</pubDate>
 		<dc:creator>Claus Beerta</dc:creator>
 

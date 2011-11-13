@@ -194,6 +194,10 @@ class Import_Rss extends Importer
 
             $post_slug =  $post_type . '-' . Helpers::buildSlug($item->get_title());
             
+            if ($post_type == 'activity') {
+                $post_slug .= '-' . md5($item->get_id());
+            }
+            
             $post = ORM::for_table('posts')
                 ->where_like('post_slug', $post_slug)
                 ->order_by_desc('post_date')
@@ -231,7 +235,7 @@ class Import_Rss extends Importer
                 break;
             case 'picasaweb.google.com':
                 $post = $this->_photography($item, $post);
-                $tags = array('Photo', 'Picasa');
+                $tags = array('Photo', 'Picasa', $rss->get_title());
                 break;
             case 'backend.deviantart.com':
                 $post = $this->_deviantArt($item, $post);
@@ -245,15 +249,14 @@ class Import_Rss extends Importer
             $post_meta = $post->post_meta;
             unset($post->post_meta);
             
-            //d($post->as_array());
+            d($post->as_array());
             
             if (!$this->dryrun) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
             }
             
-            if (!empty($post_meta)) {
-            
+            if (!empty($post_meta) && !$this->dryrun) {
                 ORM::for_table('post_meta')
                     ->where_equal('posts_ID', $post->ID)
                     ->delete_many();
@@ -266,7 +269,6 @@ class Import_Rss extends Importer
                     
                     $meta->save();
                 }
-                
             }
             
         }

@@ -415,8 +415,18 @@ ul ul, ol ol, ul ol, ol ul {
 .format-aside .entry-title {
 	display: none;
 }
+.format-activity .entry-title {
+	display: none;
+}
 .format-aside .entry-content p:first-child {
 	margin-top: 0;
+}
+/* Photo */
+.format-photo .entry-title:after {
+	content: "\2192";
+	font-size: 26px;
+	padding-left: 10px;
+	text-decoration: none;
 }
 /* Link */
 .format-link .entry-title:after {
@@ -821,6 +831,17 @@ article.comment {
     margin: 5px;
 }
 
+/* ########################## Contact ############################### */
+.contact {
+    text-align: left;
+}
+.contact img {
+    float: left;
+    max-width: 150px;
+    border-radius: 15px 15px 15px 15px;
+    margin-right: 20px;
+    border: 1px solid #888;
+}
 
 
 /* =Footer
