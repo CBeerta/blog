@@ -10,17 +10,17 @@
 <channel>
 	<title>Claus Beerta</title>
 	<atom:link href="http://claus.beerta.net/blog/feed" rel="self" type="application/rss+xml" />
-	<link>http://claus.beerta.net/blog</link>
+	<link>http://{{ _host }}/blog</link>
 	<description>Stuff i do, don&#039;t and other babble.</description>
 	<lastBuildDate>{{ "now"|date('r') }}</lastBuildDate>
 	<language>en</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
-	<generator>http://claus.beerta.net/blog/</generator>
+	<generator>http://{{ _host }}/blog/</generator>
 {% for p in posts %}
     <item>
 		<title>{{ p.post_title }}</title>
-		<link>http://claus.beerta.net/{{ p.post_type }}/{{ p.post_slug }}</link>
+		<link>http://{{ _host }}/{{ p.post_type }}/{{ p.post_slug }}</link>
 		<pubDate>{{ p.post_date|date('r') }}</pubDate>
 		<dc:creator>Claus Beerta</dc:creator>
 

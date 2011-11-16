@@ -105,6 +105,7 @@ $app->view()->appendData(
     'header_image'=> Helpers::randomHeaderImage('header-images/'),
     'date_format' => Helpers::option('date_format'),
     'editor' => Helpers::isEditor(),
+    '_host' => $_SERVER['HTTP_HOST'],
     'tag_cloud' => Other::tagCloud(),
     )
 );
