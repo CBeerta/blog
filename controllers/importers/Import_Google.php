@@ -71,7 +71,7 @@ class Import_Google extends Importer
             
             $page_token = null;
             
-            d("## Loading: {$url}.");
+            // d("## Loading: {$url}.");
             $res = file_get_contents($url);
             $json = json_decode($res);
             
@@ -125,14 +125,16 @@ class Import_Google extends Importer
         $content = self::handleAttachments($content, $item);
 
         if (empty($title)) {
-            d("Invalid Post: {$content}");
+            d("Invalid Post: '{$item->object->content}'.");
+            // d($item->object);
             return false;
+            $title = $content;
+        } else {
+            // Strip title and one '<br />' from content
+            $content = substr($content, $pos + 6);
         }
 
         $post_slug = Helpers::buildSlug("gplus {$title}");
-
-        // Strip title and one '<br />' from content
-        $content = substr($content, $pos + 6);
         
         $post = ORM::for_table('posts')
             ->where('post_title', $title)
@@ -140,23 +142,16 @@ class Import_Google extends Importer
             ->find_one();
             
         if (!$post) {
-            d("## Creating: {$title}");
+            d("Creating: {$title}. Type: {$item->object->objectType}.");
             $post = ORM::for_table('posts')->create();
             $post->post_status = 'publish';
         } else {
-            d("## Updating: {$title}");
-            /*
-            if (!$this->force) {
-                d("Skipping: {$title}. Already Exists. Force to Update.");
-                return $post->ID;
-            }
-            */
+            d("Updating: {$title}. Type: {$item->object->objectType}.");
 
             // If a post is from somewhere but google+, don't update it. 
             // This is usually stuff pulled via picasa, then shared on G+
             // Return the ID though, so comments can be pulled
             if ($post->post_type != 'blog') {
-                d("Skipping: {$title}. Not of type 'blog'");
                 return $post->ID;
             }
         }
@@ -175,16 +170,11 @@ class Import_Google extends Importer
         $post->original_source = $item->url;
         $post->post_type = 'blog';
         
-        d($post->as_array());
-        
         if (!$this->dryrun) {
-            d("Saving '{$post->post_title}'.");
             $post->save();
             return $post->ID;
-        } else {
-            d("Dry Run, not saving.");
-        }
-        
+        }        
+
         return false;
     }
 
@@ -227,13 +217,11 @@ class Import_Google extends Importer
                 if (isset($post->ID)) {
                     // There is a Matching Post, thus try to import 
                     // The Comments associated with it.
+                    d("Importing Comments on '{$attachment->displayName}' Attachment.");
                     self::importComments($post->ID, $item->object->replies);
                 }
                 break;
                 
-            case 'photo-album':
-                //print_r($item);
-                break;
 
             case 'article':
                 $content .= '<br /><br />';
@@ -246,9 +234,11 @@ class Import_Google extends Importer
                 $content .= '<br /><blockquote>' . $attachment->content;
                 $content .= '</blockquote>';
                 break;
+
+            case 'photo-album':
+                break;
                 
             default:
-                //print_r($item);
                 break;
             }
         }
@@ -292,12 +282,12 @@ class Import_Google extends Importer
                 ->find_one();
                 
             if (!$comment) {
-                d("New Comment from '{$item->actor->displayName}', Importing.");
+                d("\t- New Comment from '{$item->actor->displayName}', Importing.");
                 $comment = ORM::for_table('comments')->create();
                 $comment->post_ID = $ID;
                 $comment->comment_status = 'visible';
             } else {
-                d("Comment from '{$item->actor->displayName}' Already Exists.");
+                d("\t- Comment from '{$item->actor->displayName}' Already Exists.");
             }
 
             $parsed_date = strtotime($item->published);

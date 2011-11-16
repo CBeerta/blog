@@ -89,7 +89,7 @@ class Post_By_Mail extends Importer
             d("Can't deal with this mail");
             return;
         }
-
+        
         if ($headers['delivered-to'] !== 'claus@aello.beerta.net'
             || $headers['return-path'] !== '<claus@beerta.net>'
         ) {
@@ -103,22 +103,23 @@ class Post_By_Mail extends Importer
             
         if (!$post) {
             $post = ORM::for_table('posts')->create();
+            $post->post_status = 'draft';
+            $post->guid = $post->post_slug . '-' . time();
+            $post->post_type = 'mail';
         }
         
         $post->post_date = date('c');
-        $post->post_slug = Helpers::buildSlug($headers['subject']);
         $post->post_title = $headers['subject'];
+        $post->post_slug = Helpers::buildSlug('mail-' . $headers['subject']);
         $post->post_content = trim($content);
-        $post->guid = $post->post_slug . '-' . mktime();
-        $post->post_status = 'draft';
         
         if (!$this->dryrun) {
             $post->save();
         }
         
         d($headers);
-
-        //d($post);
+        d($post);
     }
+
 }
 

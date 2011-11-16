@@ -53,10 +53,12 @@ class Other
         
         $posts = ORM::for_table('posts')
             ->where('post_status', 'publish')
-            ->order_by_desc('post_date')
-            ->find_many();
+            ->order_by_desc('post_date');
         $posts = Posts::setPermissions($posts);
+        $posts = $posts->find_many();
+
         $posts = Projects::mergeBlogPosts($posts);
+
         reset($posts);
         
         $app->view()->appendData(
@@ -90,13 +92,13 @@ class Other
                 `post_content` LIKE '%{$s}%' OR 
                 `post_title` LIKE '%{$s}%'
                 )
-                AND
-                `post_status` = 'publish'
                 "
             )
             ->order_by_desc('post_date')
-            ->limit($ppp)
-            ->find_many();
+            ->limit($ppp);
+            
+        $posts = Posts::setPermissions($posts);
+        $posts = $posts->find_many();
 
         $app->view()->appendData(
             array(

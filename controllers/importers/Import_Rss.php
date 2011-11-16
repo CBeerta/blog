@@ -110,7 +110,7 @@ class Import_Rss extends Importer
         $dest_file = Helpers::option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
-            // d("Not regenerating thumb {$dst_name}");
+            d("Not regenerating thumb {$dst_name}");
             $img = new Resize($dest_file);
         } else {
             d("Loading image: " . $orig_img);
@@ -249,7 +249,7 @@ class Import_Rss extends Importer
             $post_meta = $post->post_meta;
             unset($post->post_meta);
             
-            d($post->as_array());
+            //d($post->as_array());
             
             if (!$this->dryrun) {
                 $post->save();
