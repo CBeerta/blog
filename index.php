@@ -160,7 +160,14 @@ if (Helpers::isEditor()) {
 }
 
 // And the root of all evil ###############################
-$app->get('/', 'Projects::overview');
+// Maybe a landing Page?
+$app->get(
+    '/', 
+    function() use ($app) 
+    { 
+        $app->redirect('/projects'); 
+    }
+);
 
 if (PHP_SAPI == 'cli') {
     // Need to manually load here, as we'll skip the run();

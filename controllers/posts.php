@@ -124,7 +124,6 @@ class Posts
     *
     * @param string $tag    Selected Tag
     * @param int    $offset Offset for Pager
-    * @param string $active What Title to activate
     *
     * @return html
     **/
