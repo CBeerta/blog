@@ -93,12 +93,18 @@ pre {
     right: 10px;
     top: 0px;
 }
+#splash div {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
 #splash a img {
     opacity: 0.8;
 }
 #splash a img:hover {
     opacity: 1.0;
 }
+
 /* =Menu
 ----------------------------------------------- */
 #menu {

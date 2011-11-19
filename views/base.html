@@ -51,9 +51,10 @@
                     <a href="https://github.com/CBeerta"><img title="Github" src="/public/img/social/github_32.png"></a>
                     <a href="https://plus.google.com/106832871642761506709?prsrc=3"><img title="Google+" src="/public/img/social/google_plus_32.png"></a>
                 </p>    
+                <div class="g-plusone" data-annotation="none" data-href="http://claus.beerta.de/"></div>
             </div>
     	</div>
-    
+
         <ul class="menu" id="menu-menu">
 {% for key, item in menu_items %}
             <li class="menu_item_{{ key }}{% if active==key %} current_page_item{% endif %}">
@@ -61,7 +62,6 @@
             </li>
 {% endfor %}
         </ul>
-
     </div>
     <!-- end div#menu -->
 
@@ -127,20 +127,6 @@
   <script src="/public/js/plugins.js"></script>
   <script src="/public/js/script.js"></script>
   <!-- end scripts-->
-
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-26492666-1']);
-    _gaq.push(['_setDomainName', 'beerta.net']);
-    _gaq.push(['_setAllowLinker', true]);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
 
   <!--[if lt IE 7 ]>
     <script src="/js/libs/dd_belatedpng.js"></script>
