@@ -7,9 +7,11 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Claus Beerta - {{ title }}</title>
+  <title>{% block title %}{% endblock %} - Claus Beerta</title>
   <meta name="description" content="Claus Beerta">
   <meta name="author" content="Claus Beerta">
+  <meta itemprop="name" content="Claus Beerta - Stuff i do, don't and other babble.">
+  <meta itemprop="image" content="http://{{ _host }}/public/img/site-thumb_small.jpg">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="/public/favicon.png">
@@ -34,7 +36,7 @@
   <div id="container">
 
     <div id="header">
-      <h1 id="site-title"><a href="#">Claus Beerta</a></h1>
+      <h1 id="site-title"><a href="/">Claus Beerta</a></h1>
       <h2 id="site-description">Stuff i do, don't and other babble.</h2>
     </div>
     <!-- end div#header -->
@@ -73,11 +75,6 @@
 
     <div id="widgets">
     	<div class="widget-area">
-            <!--aside id="text-3" class="widget widget_text">
-                <h3 class="widget-title">About</h3>
-                <div class="textwidget">
-                </div>
-    		</aside-->
 	    	<aside id="search-3" class="widget widget_search">
                 <h3 class="widget-title">Search</h3>
     	    	<form role="search" method="POST" id="searchform" action="/sidebar/search" >
@@ -99,7 +96,7 @@
                 <h3 class="widget-title">Links</h3>
                 <div class="textwidget">
                 <ul>
-                    <li><a href="/posts/archive">Archive</a>
+                    <li><a href="/blog/archive">Archive</a>
                 </ul>
                 </div>
     		</aside>        	

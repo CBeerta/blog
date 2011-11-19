@@ -78,6 +78,48 @@ class Posts
             ";
 
     /**
+    * Posts Index
+    *
+    * @param int    $offset    Offset when there is a tag selected
+    * @param string $active    Which subsection to show as active
+    * @param array  $post_type post types to select
+    *
+    * @return html
+    **/
+    public static function index($offset, $active, $post_type)
+    {
+        $app = Slim::getInstance();
+        $ppp = Helpers::option('posts_per_page');
+
+        $app->view()->appendData(
+            array(
+            'active' => $active,
+            'ppp' => $ppp,
+            'offset' => $offset,
+            )
+        );
+
+        $posts = ORM::for_table('posts')
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
+            ->order_by_desc('post_date')
+            ->where_in('post_type', $post_type)
+            ->limit($ppp)
+            ->offset($offset);
+        $posts = Posts::setPermissions($posts);
+        $posts = $posts->find_many();
+
+        if (!$posts) {
+            $app->response()->status(404);
+            return $app->render('404.html');
+        }
+        
+        $app->view()->setData('base_url', "/{$active}/pager");
+        $app->view()->setData('posts', $posts);
+        
+        return $app->render('posts/index.html');
+    }
+
+    /**
     * Tags Archive
     *
     * @param string $tag    Selected Tag
@@ -86,15 +128,14 @@ class Posts
     *
     * @return html
     **/
-    public static function tag($tag, $offset = 0, $active = 'posts')
+    public static function tag($tag, $offset = 0)
     {
         $app = Slim::getInstance();
         $ppp = Helpers::option('posts_per_page');
     
         $app->view()->appendData(
             array(
-            'title' => ucfirst($active),
-            'active' => $active,
+            'active' => 'blog',
             'ppp' => $ppp,
             'offset' => $offset,
             )
@@ -115,7 +156,7 @@ class Posts
             return $app->render('404.html');
         }
 
-        $app->view()->setData('base_url', "/{$active}/tag/{$tag}");
+        $app->view()->setData('base_url', "/blog/tag/{$tag}");
         $app->view()->setData('posts', $posts);
         
         return $app->render('posts/index.html');
@@ -135,7 +176,6 @@ class Posts
         
         $app->view()->appendData(
             array(
-            'title' => ucfirst($active),
             'active' => $active,
             )
         );
@@ -182,10 +222,8 @@ class Posts
 
         $app->view()->appendData(
             array(
-            'title' => 'Posts Archive',
             'active' => 'blog',
             'posts' => $posts,
-            //'tags' => Other::tagCloud(),
             )
         );
 
@@ -228,7 +266,6 @@ class Posts
     {
         if (!Helpers::isEditor()) {
             $posts->where('post_status', 'publish');
-            //$posts->where_not_equal('post_type', 'photo');
             $posts->where_not_equal('post_type', 'activity');
         } else {
         

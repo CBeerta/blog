@@ -106,6 +106,8 @@ $app->view()->appendData(
     'date_format' => Helpers::option('date_format'),
     'editor' => Helpers::isEditor(),
     'tag_cloud' => Other::tagCloud(),
+    'active' => 'projects',
+    'title' => null,
     )
 );
 
@@ -113,14 +115,14 @@ $app->view()->appendData(
 $app->get('/projects(/:slug)', 'Projects::overview');
 
 // Posts stuff ############################################
-$app->get('/posts/tag/:tag(/:offset)', 'Posts::tag');
-$app->get('/posts/archive', 'Posts::archive');
 $app->get('/post/:slug', 'Posts::detail');
 
 // Blog stuff #############################################
 $app->get('^/blog/.*feed.*', 'Blog::feed');
 $app->get('/blog', 'Blog::index');
 $app->get('/blog/pager/:offset', 'Blog::index');
+$app->get('/blog/tag/:tag(/:offset)', 'Posts::tag');
+$app->get('/blog/archive', 'Posts::archive');
 $app->get('/blog/:slug', 'Posts::detail');
 
 // The editor stuff #######################################
@@ -140,7 +142,7 @@ $app->get('/contact', 'Contact::index');
 
 // Photography page #######################################
 $app->get('/photography', 'Photography::index');
-$app->get('/photography/tag/photo(/:offset)', 'Photography::index');
+$app->get('/photography/pager/:offset', 'Photography::index');
 $app->get('/wallpaper', 'Photography::wallpaper');
 
 // Documentation page #####################################

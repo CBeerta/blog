@@ -217,7 +217,7 @@ class Import_Google extends Importer
                 if (isset($post->ID)) {
                     // There is a Matching Post, thus try to import 
                     // The Comments associated with it.
-                    d("Importing Comments on '{$attachment->displayName}' Attachment.");
+                    d("Importing Comments on '{$attachment->displayName}'.");
                     self::importComments($post->ID, $item->object->replies);
                 }
                 break;

@@ -192,7 +192,7 @@ class TwigView extends Slim_View
         $ret = '';
 
         foreach ($tags as $tag) {
-            $ret .= '<a href="/posts/tag/' . Helpers::buildSlug($tag) . '">';
+            $ret .= '<a href="/blog/tag/' . Helpers::buildSlug($tag) . '">';
             $ret .= $tag;
             $ret .= '</a>, ';
         }

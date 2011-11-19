@@ -102,7 +102,6 @@ class Other
 
         $app->view()->appendData(
             array(
-            'title' => 'Search',
             'active' => 'blog',
             'posts' => $posts,
             'search' => $s,
@@ -217,10 +216,9 @@ class Other
             }
             $count = $counts[$key];
             $real_count = $real_counts[$key];
-            $tag_link = '/posts/tag/';
             $tag_id = $tags[$key]->ID;
             $tag_name = $tags[$key]->name;
-            $tag_link = '/posts/tag/' . $tags[$key]->slug;
+            $tag_link = '/blog/tag/' . $tags[$key]->slug;
             $a[] = "<a href='{$tag_link}' " 
                 . "class='tag-link-{$tag_id}'" 
                 . "title='{$tag_name}' style='font-size: " .

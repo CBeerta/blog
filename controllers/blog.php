@@ -51,35 +51,7 @@ class Blog
     **/
     public static function index($offset = 0)
     {
-        $app = Slim::getInstance();
-        $ppp = Helpers::option('posts_per_page');
-
-        $app->view()->appendData(
-            array(
-            'title' => 'Blog',
-            'active' => 'blog',
-            'ppp' => $ppp,
-            'offset' => $offset,
-            )
-        );
-
-        $posts = ORM::for_table('posts')
-            ->select_expr(Posts::_POSTS_SELECT_EXPR)
-            ->order_by_desc('post_date')
-            ->limit($ppp)
-            ->offset($offset);
-        $posts = Posts::setPermissions($posts);
-        $posts = $posts->find_many();
-
-        if (!$posts) {
-            $app->response()->status(404);
-            return $app->render('404.html');
-        }
-        
-        $app->view()->setData('base_url', "/blog/pager");
-        $app->view()->setData('posts', $posts);
-        
-        return $app->render('posts/index.html');
+        return Posts::index($offset, 'blog', array('blog', 'deviantart'));
     }
 
     /**

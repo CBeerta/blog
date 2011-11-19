@@ -173,8 +173,6 @@ class Projects
         
         $app->view()->appendData(
             array(
-            'title' => 'Projects',
-            'active' => 'projects',
             'projects' => $project,
             'body' => $slug,
             )

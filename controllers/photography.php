@@ -52,7 +52,7 @@ class Photography
     **/
     public static function index($offset = 0)
     {
-        return Posts::tag('photo', $offset, 'photography');
+        return Posts::index($offset, 'photography', 'photo');
     }
 
     /**
@@ -81,7 +81,6 @@ class Photography
         
         $app->view()->appendData(
             array(
-            'title' => 'Wallpaper',
             'active' => 'wallpaper',
             'public_url' => $public_url,
             'post_meta' => $post_meta,
@@ -120,7 +119,6 @@ class Photography
         
         $app->view()->appendData(
             array(
-            'title' => 'Photography',
             'active' => 'photography',
             'posts' => $posts,
             )
