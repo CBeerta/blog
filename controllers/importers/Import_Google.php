@@ -214,7 +214,7 @@ class Import_Google extends Importer
                 //$content .= '"><img src="' . $attachment->image->url;
                 //$content .= '"></a>';
                 
-                if (isset($post->ID)) {
+                if (isset($post->ID) && isset($attachment->displayName)) {
                     // There is a Matching Post, thus try to import 
                     // The Comments associated with it.
                     d("Importing Comments on '{$attachment->displayName}'.");
@@ -303,7 +303,9 @@ class Import_Google extends Importer
             $comment->comment_content = $item->object->content;
             $comment->original_source = $item->selfLink;
             
-            $comment->save();
+            if (!$this->dryrun) {
+                $comment->save();
+            }
         }
 
     }

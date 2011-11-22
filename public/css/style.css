@@ -413,6 +413,11 @@ ul ul, ol ol, ul ol, ol ul {
 	margin-top: 2px;
 }
 
+.meta {
+    float: right;
+    font-size: smaller;
+    color: #202020;
+}
 
 /* =Post Formats
 -------------------------------------------------------------- */
