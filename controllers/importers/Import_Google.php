@@ -297,7 +297,7 @@ class Import_Google extends Importer
                 $comment->post_ID = $ID;
                 $comment->comment_status = 'visible';
             } else {
-                d("\t- Comment from '{$item->actor->displayName}' Already Exists.");
+                d("\t- Updating Comment from '{$item->actor->displayName}'.");
             }
 
             $parsed_date = strtotime($item->published);
@@ -314,6 +314,7 @@ class Import_Google extends Importer
             $comment->original_source = $item->selfLink;
             
             if (!$this->dryrun) {
+                print_r($comment);
                 $comment->save();
             }
         }

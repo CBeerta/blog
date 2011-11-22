@@ -173,7 +173,6 @@ class TwigView extends Slim_View
         } else if (strpos($uri, 'google') !== false) {
             // google url, probably from G+ comments
             $ret = $uri;
-            $ret .= '?sz=32';
         } 
         
         return $ret;

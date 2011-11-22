@@ -90,8 +90,9 @@ class Post_By_Mail extends Importer
             return;
         }
         
-        if ($headers['delivered-to'] !== 'claus@aello.beerta.net'
-            || $headers['return-path'] !== '<claus@beerta.net>'
+        if ( ($headers['delivered-to'] !== 'claus@aello.beerta.net'
+            || $headers['return-path'] !== '<claus@beerta.net>'  )
+            && $this->force == false
         ) {
             d("Source not verified, not posting");
             return;
@@ -117,8 +118,8 @@ class Post_By_Mail extends Importer
             $post->save();
         }
         
-        d($headers);
-        d($post);
+        // d($headers);
+        d($post->as_array());
     }
 
 }
