@@ -98,9 +98,19 @@ class Import_Google extends Importer
                 
                 // Import Comments for existing posts.
                 self::importComments($ret, $item->object->replies);
+                
+                // Import Tags from post
+                $tags = array('Google+');
+                preg_match_all(
+                    '|#(?P<tag>[a-z]+)|i', 
+                    $item->object->content, 
+                    $matches
+                );
+                if (!empty($matches['tag'])) {
+                    $tags = array_merge($tags, $matches['tag']);
+                }
 
-                // FIXME: Should parse '#' hashtags in posts and add them aswell
-                Helpers::addTags(array('Google+'), $ret);
+                Helpers::addTags($tags, $ret);
             }
         
         } while ($page_token !== null);
