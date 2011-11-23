@@ -56,10 +56,12 @@ function autoloader($class)
 
 spl_autoload_register("autoloader");
 
+Helpers::option('templates.path', __DIR__ . '/views/');
+
 $app = new Slim(
     array(
         'view' => 'TwigView',
-        'templates.path' => __DIR__ . '/views/',
+        'templates.path' => Helpers::option('templates.path'),
         'mode' => 'production',
     )
 );
@@ -84,7 +86,6 @@ $config = parse_ini_file(__DIR__."/config.ini");
 foreach ( $config as $k => $v ) {
     Helpers::option($k, $v);
 }
-
 ORM::configure('sqlite:' . Helpers::option('dbfile'));
 ORM::configure('id_column', 'ID');
 ORM::configure('logging', false);

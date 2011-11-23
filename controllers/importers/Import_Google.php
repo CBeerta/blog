@@ -191,8 +191,6 @@ class Import_Google extends Importer
     /**
     * Handle Attachments
     * FIXME: This needs more work to handle all possible attachments
-    * FIXME: Handling comments in here is a bit "wonkers" maybe?
-    * FIXME: HTML TERROR. This has to DIAF, and needs to be moved to a template
     *
     * @param string $content String with current content
     * @param object $item    The items 'object'
@@ -201,6 +199,8 @@ class Import_Google extends Importer
     **/
     public function handleAttachments($content, $item)
     {
+        $tpl = new SimpleTemplate(Helpers::option('templates.path'));
+        
         if (!isset($item->object->attachments)) {
             return $content;
         }
@@ -208,7 +208,7 @@ class Import_Google extends Importer
         foreach ($item->object->attachments as $attachment) {
 
             // This is probably a 'Note' that has a Photo attached
-            // Search for matching Post
+            // Look for matching Post, so we can maybe attach a comment to it
             if (isset($attachment->displayName)) {
                 $post = ORM::for_table('posts')
                     ->where('post_title', $attachment->displayName)
@@ -232,17 +232,9 @@ class Import_Google extends Importer
                 }
                 break;
                 
-
             case 'article':
-                $content .= '<br /><br />';
-                $content .= '<a href="' . $attachment->url;
-                $content .= '">';
-                //FIXME needs the favicon? : 
-                // https://s2.googleusercontent.com/s2/favicons?domain=owncloud.net
-                $content .=  $attachment->displayName;
-                $content .= '</a>';
-                $content .= '<br /><blockquote>' . $attachment->content;
-                $content .= '</blockquote>';
+                $tpl->set('attachment', $attachment);
+                $content .= $tpl->fetch('snippets/importer.google.article.html.php');
                 break;
 
             case 'photo-album':
@@ -314,7 +306,6 @@ class Import_Google extends Importer
             $comment->original_source = $item->selfLink;
             
             if (!$this->dryrun) {
-                print_r($comment);
                 $comment->save();
             }
         }
