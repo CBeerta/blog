@@ -45,8 +45,33 @@ if ( PHP_SAPI != 'cli' ) {
 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
 * @link     http://claus.beerta.de/
 **/
-class Import_Rss extends Importer
+class Import_Rss
 {
+
+    /**
+    * Url
+    **/
+    private $_url;
+
+    /**
+    * Cling App
+    **/
+    private $_cling;
+    
+    /**
+    * Constructor
+    *
+    * @param object $cling Cling Application
+    * @param string $url   Url to the rss feed
+    *
+    * @return object $post modified post 
+    **/
+    public function __construct($cling, $url)
+    {
+        $this->_url = $url;
+        $this->_cling = $cling;
+    }
+
     /**
     * DevArt Specific content
     *
@@ -99,15 +124,15 @@ class Import_Rss extends Importer
         
         $dst_name = str_replace('%', '_', basename($orig_img));
         
-        $dest_thumb_file = Helpers::option('public_loc') . 
+        $dest_thumb_file = $this->_cling->option('public_loc') . 
             'thumb_' . 
             $dst_name;
 
-        $square_thumb_file = Helpers::option('public_loc') . 
+        $square_thumb_file = $this->_cling->option('public_loc') . 
             'wallpaper_thumb_' . 
             $dst_name;
 
-        $dest_file = Helpers::option('public_loc') . basename($dst_name);
+        $dest_file = $this->_cling->option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
             d("Not regenerating thumb {$dst_name}");
@@ -138,10 +163,10 @@ class Import_Rss extends Importer
             );
 
         $content  = '<a href="';
-        $content .= Helpers::option('public_url') . basename($dest_file);
+        $content .= $this->_cling->option('public_url') . basename($dest_file);
         $content .= '" title="' . $post->post_title . '">';
         $content .= '<img src="';
-        $content .= Helpers::option('public_url') . basename($dest_thumb_file);
+        $content .= $this->_cling->option('public_url') . basename($dest_thumb_file);
         $content .= '" width="580" height="385"></a>';
 
         if (preg_match(
@@ -169,14 +194,14 @@ class Import_Rss extends Importer
     **/
     public function run()
     {
-        $created = 0;
-        $parsed_url = parse_url($this->value);
+        $created = 0;  
+        $parsed_url = parse_url($this->_url);
         
-        d("Will import {$this->value}");
+        d("Will import {$this->_url}");
         
         $rss = new SimplePie();        
         
-        $rss->set_feed_url($this->value);
+        $rss->set_feed_url($this->_url);
         $rss->set_cache_location('/var/tmp');
         $rss->set_cache_duration(60);
         $rss->init();
@@ -185,10 +210,10 @@ class Import_Rss extends Importer
         // don't sort by pubdate, 
         $rss->enable_order_by_date(false); 
 
-        $post_type = !is_null($this->post_type) 
-            ? $this->post_type 
+        $post_type = !is_null($this->_cling->option('post-type')) 
+            ? $this->_cling->option('post-type') 
             : 'blog';
-        
+            
         $items = array();
         foreach ($rss->get_items() as $item) {
 
@@ -251,12 +276,12 @@ class Import_Rss extends Importer
             
             //d($post->as_array());
             
-            if (!$this->dryrun) {
+            if (!$this->_cling->option('dry-run')) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
             }
             
-            if (!empty($post_meta) && !$this->dryrun) {
+            if (!empty($post_meta) && !$this->_cling->option('dry-run')) {
                 ORM::for_table('post_meta')
                     ->where_equal('posts_ID', $post->ID)
                     ->delete_many();

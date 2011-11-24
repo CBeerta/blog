@@ -45,8 +45,45 @@ if ( PHP_SAPI != 'cli' ) {
 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
 * @link     http://claus.beerta.de/
 **/
-class Import_Google extends Importer
+class Import_Google
 {
+    /**
+    * SimpleTemplate Class
+    **/
+    private $_tpl;
+
+    /**
+    * Google ID
+    **/
+    private $_google_id;
+
+    /**
+    * Google Api Key
+    **/
+    private $_google_api_key;
+
+    /**
+    * Dry Run
+    **/
+    private $_dry_run = true;
+        
+    /**
+    * Cling App
+    **/
+    private $_cling;
+    
+    /**
+    * Constructor
+    *
+    * @param object $cling Cling Application
+    *
+    * @return object $post modified post 
+    **/
+    public function __construct($cling)
+    {
+        $this->_cling = $cling;
+    }
+    
     /**
     * Create a new blog post by Email
     *
@@ -57,15 +94,17 @@ class Import_Google extends Importer
         $created = 0;
         $page_token = null;
         
-        $google_id = Helpers::option('google_id');
-        $api_key = Helpers::option('google_api_key');
+        $this->_google_id = $this->_cling->option('google_id');
+        $this->_google_api_key = $this->_cling->option('google_api_key');
+        $this->_dry_run = $this->_cling->option('dry-run');
+        $this->_tpl = new SimpleTemplate($this->_cling->option('templates.path'));
 
         do {
 
             $url = 'https://www.googleapis.com/plus/v1/people/';
-            $url .= $google_id;
+            $url .= $this->_google_id;
             $url .= '/activities/public?alt=json&pp=1&key=';
-            $url .= $api_key;
+            $url .= $this->_google_api_key;
             $url .= '&pageToken=';
             $url .= $page_token;
             
@@ -90,14 +129,14 @@ class Import_Google extends Importer
             }
             
             foreach ($json->items as $item) {
-                $ret = self::handleItem($item);
+                $ret = $this->handleItem($item);
                 
                 if ($ret === false || !is_numeric($ret)) {
                     continue;
                 }
                 
                 // Import Comments for existing posts.
-                self::importComments($ret, $item->object->replies);
+                $this->importComments($ret, $item->object->replies);
                 
                 // Import Tags from post
                 $tags = array('Google+');
@@ -132,11 +171,10 @@ class Import_Google extends Importer
         $title = strip_tags(substr($content, 0, $pos));
 
         // Handle Attachments
-        $content = self::handleAttachments($content, $item);
+        $content = $this->handleAttachments($content, $item);
 
         if (empty($title)) {
             d("Invalid Post: '{$item->object->content}'.");
-            // d($item->object);
             return false;
             $title = $content;
         } else {
@@ -180,7 +218,7 @@ class Import_Google extends Importer
         $post->original_source = $item->url;
         $post->post_type = 'blog';
         
-        if (!$this->dryrun) {
+        if (!$this->_dry_run) {
             $post->save();
             return $post->ID;
         }        
@@ -199,8 +237,6 @@ class Import_Google extends Importer
     **/
     public function handleAttachments($content, $item)
     {
-        $tpl = new SimpleTemplate(Helpers::option('templates.path'));
-        
         if (!isset($item->object->attachments)) {
             return $content;
         }
@@ -228,13 +264,14 @@ class Import_Google extends Importer
                     // There is a Matching Post, thus try to import 
                     // The Comments associated with it.
                     d("Importing Comments on '{$attachment->displayName}'.");
-                    self::importComments($post->ID, $item->object->replies);
+                    $this->importComments($post->ID, $item->object->replies);
                 }
                 break;
                 
             case 'article':
-                $tpl->set('attachment', $attachment);
-                $content .= $tpl->fetch('snippets/importer.google.article.html.php');
+                $this->_tpl->set('attachment', $attachment);
+                $content .= 
+                    $this->_tpl->fetch('snippets/importer.google.article.html.php');
                 break;
 
             case 'photo-album':
@@ -258,10 +295,7 @@ class Import_Google extends Importer
     **/
     public function importComments($ID, $replies)
     {
-        $google_id = Helpers::option('google_id');
-        $api_key = Helpers::option('google_api_key');
-
-        $url = $replies->selfLink . '?key=' . $api_key;
+        $url = $replies->selfLink . '?key=' . $this->_google_api_key;
 
         //d("### Comments: {$url}");
         
@@ -305,7 +339,7 @@ class Import_Google extends Importer
             $comment->comment_content = $item->object->content;
             $comment->original_source = $item->selfLink;
             
-            if (!$this->dryrun) {
+            if (!$this->_dry_run) {
                 $comment->save();
             }
         }

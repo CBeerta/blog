@@ -32,9 +32,10 @@
 **/
 
 require_once __DIR__.'/vendor/Slim/Slim/Slim.php';
-require_once __DIR__.'/lib/TwigView.php';
 require_once __DIR__.'/vendor/idiorm/idiorm.php';
 require_once __DIR__.'/vendor/markdown/markdown.php';
+
+require_once __DIR__.'/lib/TwigView.php';
 
 /**
 * Autoloader for helpers and controllers
@@ -170,16 +171,11 @@ $app->get(
     }
 );
 
-if (PHP_SAPI == 'cli') {
-    // Need to manually load here, as we'll skip the run();
-    include_once __DIR__.'/controllers/importers.php';
-    Importers::parseArgs();
-} else {
-    $app->view()->appendData(
-        array(
-        '_host' => $_SERVER['HTTP_HOST'],
-        )
-    );
-    $app->run();
-}
+$app->view()->appendData(
+    array(
+    '_host' => $_SERVER['HTTP_HOST'],
+    )
+);
+$app->run();
+
 

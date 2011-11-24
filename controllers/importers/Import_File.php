@@ -45,17 +45,33 @@ if ( PHP_SAPI != 'cli' ) {
 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
 * @link     http://claus.beerta.de/
 **/
-class Import_File extends Importer
+class Import_File
 {
+    /**
+    * Cling App
+    **/
+    private $_cling;
+    
+    /**
+    * Constructor
+    *
+    * @param object $cling Cling Application
+    *
+    * @return object $post modified post 
+    **/
+    public function __construct($cling)
+    {
+        $this->_cling = $cling;
+    }
 
     /**
-    * Create a new blog post by Email
+    * Import Files for Posts
     *
     * @return void
     **/
     public function run()
     {
-        $posts_dir = Helpers::option('posts_dir');
+        $posts_dir = $this->_cling->option('posts_dir');
         $created = 0;
         
         $glob = "{{$posts_dir}/*.html,{$posts_dir}/*.mkd}";
@@ -109,7 +125,7 @@ class Import_File extends Importer
             $post->guid = $post->post_slug . '-' . time();
             $post->original_source = null;
             
-            if (!$this->dryrun) {
+            if (!$this->_cling->option('dry-run')) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
             } else {
