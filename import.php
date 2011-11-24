@@ -68,7 +68,8 @@ $app->command('help', 'h',
     {
         print $app;
         exit;
-    });
+    })
+    ->help("This Help Text.");
 
 /**
 * Enable Dry Run
@@ -95,7 +96,8 @@ $app->command('post-type:',
     function($post_type) use ($app)
     {
         $app->option('post-type', $post_type);
-    });
+    })
+    ->help("Force a post_type. Not All Importers honour this.");
 
 /**
 * Import Google+ Posts
@@ -105,7 +107,8 @@ $app->command('import-google',
     {
         $importer = new Import_Google($app);
         $importer->run();
-    });
+    })
+    ->help("Import Google+ Posts.");
 
 /**
 * Import Files
@@ -115,7 +118,8 @@ $app->command('import-files',
     {
         $importer = new Import_File($app);
         $importer->run();
-    });
+    })
+    ->help("Import Files from Data Directory.");
 
 /**
 * Import Files
@@ -125,7 +129,8 @@ $app->command('import-rss:',
     {
         $importer = new Import_Rss($app, $url);
         $importer->run();
-    });
+    })
+    ->help("Import Posts from a RSS Feed.");
 
 
 /**
