@@ -51,6 +51,7 @@ function autoloader($class)
     foreach ($directories as $dir) {
         if (file_exists(__DIR__ . $dir . strtolower($class) . '.php')) {
             include_once __DIR__ . $dir . strtolower($class) . '.php';
+            return;
         }
     }
 }

@@ -31,19 +31,35 @@
 * @link     http://claus.beerta.de/
 **/
 
-/**
-* TODO: YIKES, needs an autoloader!
-**/
 require_once __DIR__ . '/vendor/Cling/Cling.php';
 require_once __DIR__ . '/vendor/idiorm/idiorm.php';
-require_once __DIR__ . '/lib/simpletemplate.php';
-require_once __DIR__ . '/lib/helpers.php';
-require_once __DIR__ . '/lib/resize.php';
 
 require_once __DIR__ . '/controllers/importers.php';
-require_once __DIR__ . '/controllers/importers/Import_Google.php';
-require_once __DIR__ . '/controllers/importers/Import_File.php';
-require_once __DIR__ . '/controllers/importers/Import_Rss.php';
+
+/**
+* Autoloader for helpers and controllers
+*
+* @param string $class A Class file that is needed
+*
+* @return void
+**/
+function autoloader($class)
+{
+    $directories = array('/controllers/importers/', '/lib/');
+    
+    foreach ($directories as $dir) {
+        if (file_exists(__DIR__ . $dir . strtolower($class) . '.php')) {
+            include_once __DIR__ . $dir . strtolower($class) . '.php';
+            return;
+        }
+        if (file_exists(__DIR__ . $dir . $class . '.php')) {
+            include_once __DIR__ . $dir . $class . '.php';
+            return;
+        }
+    }
+}
+
+spl_autoload_register("autoloader");
 
 
 $app = new Cling(array(
