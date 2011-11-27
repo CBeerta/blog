@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
 * Homebrew Website of Claus Beerta

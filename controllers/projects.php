@@ -68,6 +68,9 @@ class Projects
             }
 
             $content = file($filename);
+            $extension = $matches[3];
+            $post_slug = $matches[2];
+            $post_date = $matches[1];
             
             // Pop the title
             $title = rtrim($content[0]);
@@ -76,10 +79,15 @@ class Projects
             $more = false;
             $teaser = '';
             $post_content = '';
+            $github_project = false;
             foreach ($content as $line) {
                 if (stripos($line, '<!--more-->') !== false) {
                     $more = true;
                     continue;
+                }
+                
+                if (preg_match('|.*github.com/CBeerta/(\w+)|', $line, $matches)) {
+                    $github_project = $matches[1];
                 }
                 
                 if (!$more) {
@@ -89,22 +97,23 @@ class Projects
                 }
             }
             
-            if (in_array($matches[3], array('md','mkd'))) {
+            if (in_array($extension, array('md','mkd'))) {
                 // Markdown
                 $teaser = Markdown($teaser);
                 $post_content = Markdown($post_content);
             }
             
-            $post_date = new DateTime($matches[1]);
+            $post_date = new DateTime($post_date);
             
             $projects[$post_date->format('U')] = (object) array(
                 'filename' => $filename,
-                'post_slug' => $matches[2],
+                'post_slug' => $post_slug,
                 'post_title' => $title,
                 'post_date' => $post_date,
                 'teaser' => $teaser,
                 'content' => $post_content,
                 'post_content' => $teaser . $post_content,
+                'github_project' => $github_project,
                 'post_type' => 'projects',
             );
         }
