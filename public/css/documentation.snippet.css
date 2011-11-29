@@ -8,6 +8,13 @@ body {
     padding: 0 auto;
 }
 
+
+pre, code {
+    background-color: #eee;
+    color: #222;
+    border-radius: 5px;
+    padding: 2px;
+}
 #container {
     width: 100%;
 }
