@@ -1,16 +1,31 @@
 /* ######################### Documentation ############ */
 
+html { overflow-y: scroll; }
+
+body {
+    background: #fff;
+    margin: 0 auto;
+    padding: 0 auto;
+}
+
+#container {
+    width: 100%;
+}
+
 .documentation .index {
+    height: 100%;
+    position: fixed;
+    top: 0px;
+    right: 0px;
     margin-left: 5px;
-    padding: 5px;
     text-align: left;
-    min-width: 200px;
+    width: 250px;
     float: right;
     display: block;
-    border: 1px solid #444;
-    background-color: #fafafa;
-    border-radius: 5px 5px 5px 5px;
+    border-left: 1px solid #444;
+    background-color: #eee;
 }
+
 .documentation .index ul { 
     margin: 0;
     padding-left: 5px;
@@ -23,5 +38,7 @@
 }
 
 .documentation {
+    margin-right: 255px;
+    padding: 10px;
     text-align: left;
 }

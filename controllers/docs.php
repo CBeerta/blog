@@ -78,7 +78,7 @@ class Docs
 
             // load topics from the file
             foreach ($data as $line) {
-                if (!preg_match('|^#(\s)?(.*)$|', $line, $matches)) {
+                if (!preg_match('|^#+(\s)?(.*)$|', $line, $matches)) {
                     continue;
                 }
                 $topics[] = $matches[2];
@@ -147,7 +147,7 @@ class Docs
             )
         );
         
-        return $app->render('docs.html');
+        return $app->render('documentation/content.html');
     }
 
 }
