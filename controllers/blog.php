@@ -55,6 +55,33 @@ class Blog
     }
 
     /**
+    * Landing Page
+    *
+    * @return html
+    **/
+    public static function article()
+    {
+        $app = Slim::getInstance();
+
+        $posts = ORM::for_table('posts')
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
+            ->order_by_desc('post_date')
+            ->limit(1)
+            ->where_like('tags', "%Article%");
+            
+        $posts = Posts::setPermissions($posts);
+        $post = $posts->find_one();
+
+        $app->view()->appendData(
+            array(
+            'post' => $post,
+            )
+        );
+
+        return $app->render('posts/article.html');
+    }
+
+    /**
     * Return a RSS Feed
     *
     * @return xml

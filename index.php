@@ -163,14 +163,7 @@ if (Helpers::isEditor()) {
 }
 
 // And the root of all evil ###############################
-// Maybe a landing Page?
-$app->get(
-    '/', 
-    function() use ($app) 
-    { 
-        $app->redirect('/projects'); 
-    }
-);
+$app->get('/', 'Blog::article');
 
 $app->view()->appendData(
     array(

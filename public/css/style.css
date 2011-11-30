@@ -40,7 +40,10 @@ body {
 
 pre {
     overflow: auto;
+    background-color: #fafafa;
+    padding: 5px;
 }
+
 
 /* =Header
 ----------------------------------------------- */
