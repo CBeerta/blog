@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="/public/css/article.snippet.css?v=2">
 {% endblock %}
 
-{% block title %} - Article{% endblock %}
+{% block title %}{{ post.post_title }}{% endblock %}
 
 {%block content %}
 <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }} post" id="{{ post.ID }}">
