@@ -70,8 +70,12 @@ class Blog
             ->where_like('tags', "%Article%");
             
         $posts = Posts::setPermissions($posts);
-        $post = $posts->find_one();
-
+        $posts = $posts->find_many();
+        
+        $posts = Projects::mergeBlogPosts($posts);
+        
+        $post = array_shift($posts);
+        
         $app->view()->appendData(
             array(
             'post' => $post,
