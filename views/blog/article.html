@@ -1,0 +1,26 @@
+{% extends 'simple_base.html' %}
+
+{% block pagecss %}
+  <link rel="stylesheet" href="/public/css/article.snippet.css?v=2">
+{% endblock %}
+
+{% block title %}{{ post.post_title }}{% endblock %}
+
+{%block content %}
+<div class="post hentry format-{{ post.post_type }} post-{{ post.ID }} post" id="{{ post.ID }}">
+{% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
+</div>
+
+<div id="article-nav">
+<h1 id="site-title"><a href="http://{{ _host }}/projects">Claus Beerta</a></h1>
+<ul>
+{% for key, item in menu_items %}
+    <li>
+        <a href="/{{ key }}">{{ item }}</a>
+    </li>
+{% endfor %}
+</ul>
+
+</div>
+{% endblock %}
+

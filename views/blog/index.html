@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ active|title }}{% endblock %}
+{% block content %}
+<div id="contents">
+
+{% for post in posts %}
+    <div class="post hentry format-{{ post.post_type }} post-{{ post.ID }}" id="post">
+{% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
+    </div>
+{% else %}
+    <alert>No more Posts!</alert>
+{% endfor %}
+</div>
+
+{%if ppp %}
+<div class="navigation">
+	<div class="nav-previous">
+{% if posts|length == ppp %}
+        <a href="{{ base_url}}/{{ offset + ppp }}" ><span class="meta-nav">&larr;</span> Older posts</a>
+{% endif %}
+    </div>
+    <div class="nav-next">
+{% if offset >= ppp %}    
+        <a href="{{ base_url}}/{{ offset - ppp}}" >Newer posts <span class="meta-nav">&rarr;</span></a>
+{% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

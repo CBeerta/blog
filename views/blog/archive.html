@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block pagecss %}
+  <link rel="stylesheet" href="/public/css/archive.snippet.css?v=2">
+{% endblock %}
+
+{% block title %}Archive{% endblock %}
+{%block content %}
+<h1>Posts Archive</h1>
+<ul class="archive">
+{% for post in posts %}
+<li>
+    {% if post.post_status == 'draft' %}<b>Draft: </b>{% endif %}
+    <a href="/blog/{{ post.post_slug }}">
+        {{ post.post_title }}
+    </a>
+    <span class="date">{{ post.post_date|date(date_format) }}</span>
+</li>
+{% else %}
+<alert>Not a single Post!</alert>
+{% endfor %}
+</ul>
+{% endblock %}
