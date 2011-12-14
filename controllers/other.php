@@ -109,7 +109,7 @@ class Other
             )
         );
 
-        return $app->render('posts/index.html');
+        return $app->render('blog/index.html');
     }
 
     /**
@@ -151,7 +151,7 @@ class Other
 
         foreach ($parts as $part) {
             if (in_array($part, $slugs)) {
-                $app->redirect('/post/' . $part);
+                $app->redirect('/blog/' . $part);
             }
         }
         

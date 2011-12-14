@@ -32,7 +32,7 @@
 **/
 
 /**
-* Blog
+* Blog - Functions that are for displaying all Blog articles
 *
 * @category Personal_Website
 * @package  MyWebPage
@@ -55,63 +55,114 @@ class Blog
     }
 
     /**
-    * Landing Page
+    * Tags Archive
+    *
+    * @param string $tag    Selected Tag
+    * @param int    $offset Offset for Pager
     *
     * @return html
     **/
-    public static function article()
+    public static function tag($tag, $offset = 0)
     {
         $app = Slim::getInstance();
-
+        $ppp = Helpers::option('posts_per_page');
+    
+        $app->view()->appendData(
+            array(
+            'active' => 'blog',
+            'ppp' => $ppp,
+            'offset' => $offset,
+            )
+        );
+    
         $posts = ORM::for_table('posts')
             ->select_expr(Posts::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
-            ->limit(1)
-            ->where_like('tags', "%Article%");
+            ->limit($ppp)
+            ->offset($offset)
+            ->where_like('tags', "%{$tag}%");
             
         $posts = Posts::setPermissions($posts);
         $posts = $posts->find_many();
+
+        if (!$posts) {
+            $app->response()->status(404);
+            return $app->render('404.html');
+        }
+
+        $app->view()->setData('base_url', "/blog/tag/{$tag}");
+        $app->view()->setData('posts', $posts);
         
-        $posts = Projects::mergeBlogPosts($posts);
-        
-        $post = array_shift($posts);
+        return $app->render('blog/index.html');
+    }
+
+
+    /**
+    * Detail on a slug
+    *
+    * @param string $slug   detail on which slug
+    * @param string $active What Title to activate
+    *
+    * @return html
+    **/
+    public static function detail($slug, $active = 'blog')
+    {
+        $app = Slim::getInstance();
         
         $app->view()->appendData(
             array(
-            'post' => $post,
+            'active' => $active,
             )
         );
 
-        return $app->render('posts/article.html');
+        $post = ORM::for_table('posts')
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
+            ->where_like('post_slug', "%{$slug}%")
+            ->order_by_desc('post_date');
+
+        $post = Posts::setPermissions($post);
+        $post = $post->find_one();
+
+        if ($post) {            
+            $comments = ORM::for_table('comments')
+                ->where('post_ID', $post->ID)
+                ->order_by_asc('comment_date')
+                ->find_many();
+        
+            $app->view()->setData('comments', $comments);
+        } else {
+            $app->response()->status(404);
+            return $app->render('404.html');
+        }
+        
+        $app->view()->setData('post', $post);
+        
+        return $app->render('blog/single.html');
     }
 
     /**
-    * Return a RSS Feed
+    * Archives
     *
-    * @return xml
+    * @return html
     **/
-    public static function feed()
+    public static function archive()
     {
         $app = Slim::getInstance();
         
         $posts = ORM::for_table('posts')
-            ->where('post_status', 'publish')
-            ->order_by_desc('post_date')
-            ->limit(Helpers::option('posts_per_page'))
-            ->where_equal('post_type', 'blog')
-            ->find_many();
+            ->order_by_desc('post_date');
 
-        $posts = Projects::mergeBlogPosts($posts);
-        $posts = array_splice($posts, 0, Helpers::option('posts_per_page'));
+        $posts = Posts::setPermissions($posts);
+        $posts = $posts->find_many();
 
         $app->view()->appendData(
             array(
+            'active' => 'blog',
             'posts' => $posts,
             )
         );
-        
-        $app->response()->header('Content-Type', 'application/rss+xml');        
-        return $app->render('posts/feed.xml');
+
+        return $app->render('blog/archive.html');
     }
 
 }

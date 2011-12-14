@@ -84,7 +84,7 @@ class Import_Rss
     **/
     private function _deviantArt($item, $post)
     {
-        $content  = '<div class="rss-imported">';
+        $content  = '';
         
         if (isset($item->get_enclosure()->thumbnails[0])) {
             $content .= '<a href="' . $item->get_enclosure()->link . '">';
@@ -97,8 +97,6 @@ class Import_Rss
         } else {
             $content .= $item->get_content();
         }
-        
-        $content .= '</div><br/>';
         
         $post->post_content = $content;
 
@@ -116,8 +114,7 @@ class Import_Rss
     private function _photography($item, $post)
     {
         if (!function_exists("imagecreatefromjpeg")) {
-            d("Requires GD to be installed");
-            die;
+            die("Requires GD to be installed");
         }
         
         $orig_img = $item->get_enclosure()->link;
@@ -135,10 +132,10 @@ class Import_Rss
         $dest_file = $this->_cling->option('public_loc') . basename($dst_name);
 
         if (file_exists($dest_file) && file_exists($dest_thumb_file) ) {
-            d("Not regenerating thumb {$dst_name}");
+            echo "... Not regenerating thumb {$dst_name}";
             $img = new Resize($dest_file);
         } else {
-            d("Loading image: " . $orig_img);
+            echo "... Loading image: " . $orig_img;
             
             $img = new Resize($orig_img);
             $img->resizeImage(1920, 1200);
@@ -197,7 +194,7 @@ class Import_Rss
         $created = 0;  
         $parsed_url = parse_url($this->_url);
         
-        d("Will import {$this->_url}");
+        echo "Will import {$this->_url}.\n";
         
         $rss = new SimplePie();        
         
@@ -229,9 +226,9 @@ class Import_Rss
                 ->find_one();
             
             if (isset($post->ID)) {
-                d("Updating: " . $post->post_slug);
+                echo "Updating: " . $post->post_slug;
             } else {
-                d("Adding: " . $post_slug);
+                echo "Adding: " . $post_slug;
                 $post = ORM::for_table('posts')->create();
                 $post->post_date = $item->get_date('c');
                 $post->post_status = 'publish';
@@ -264,6 +261,7 @@ class Import_Rss
                 break;
             case 'backend.deviantart.com':
                 $post = $this->_deviantArt($item, $post);
+                $post->protected = 1; // protect them by default.
                 $tags = array('deviantArt');
                 break;
             case 'github.com':
@@ -276,11 +274,14 @@ class Import_Rss
             
             // d($post->as_array());
             
+            if ($post->protected != 0) {
+                echo "... Post is protected, not altering\n";
+                continue;
+            }
+            
             if (!$this->_cling->option('dry-run')) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
-            } else {
-                echo "Dry-run, not saving\n";
             }
             
             if (!empty($post_meta) && !$this->_cling->option('dry-run')) {
@@ -297,9 +298,8 @@ class Import_Rss
                     $meta->save();
                 }
             }
-            
+            echo "... done\n";
         }
-        
         return $created;
     }
 

@@ -117,16 +117,13 @@ $app->view()->appendData(
 // Projects related #######################################
 $app->get('/projects(/:slug)', 'Projects::overview');
 
-// Posts stuff ############################################
-$app->get('/post/:slug', 'Posts::detail');
-
 // Blog stuff #############################################
-$app->get('^/blog/.*feed.*', 'Blog::feed');
+$app->get('^/blog/.*feed.*', 'Posts::feed');
 $app->get('/blog', 'Blog::index');
 $app->get('/blog/pager/:offset', 'Blog::index');
-$app->get('/blog/tag/:tag(/:offset)', 'Posts::tag');
-$app->get('/blog/archive', 'Posts::archive');
-$app->get('/blog/:slug', 'Posts::detail');
+$app->get('/blog/tag/:tag(/:offset)', 'Blog::tag');
+$app->get('/blog/archive', 'Blog::archive');
+$app->get('/blog/:slug', 'Blog::detail');
 
 // The editor stuff #######################################
 if (Helpers::isEditor()) {
@@ -163,7 +160,7 @@ if (Helpers::isEditor()) {
 }
 
 // And the root of all evil ###############################
-$app->get('/', 'Blog::article');
+$app->get('/', 'Posts::article');
 
 $app->view()->appendData(
     array(

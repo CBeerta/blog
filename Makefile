@@ -5,9 +5,13 @@ all: csstidy phpcs
 
 imports:
 	php cli.php $(OPTION) --import-files
+	#
 	php cli.php --post-type=deviantart $(OPTION) --import-rss "http://backend.deviantart.com/rss.xml?q=gallery%3Aamg%2F23117831&type=deviation"
+	#
 	php cli.php --post-type=photo $(OPTION) --import-rss "http://picasaweb.google.com/data/feed/base/user/106832871642761506709/albumid/5656649800328939665?alt=rss&hl=en_US&imgmax=d"
-	php cli.php --post-type=photo $(OPTION) --import-rss "http://picasaweb.google.com/data/feed/base/user/106832871642761506709/albumid/5666564519291602657?alt=rss&hl=en_US&imgmax=d"
+	#
+	#php cli.php --post-type=photo $(OPTION) --import-rss "http://picasaweb.google.com/data/feed/base/user/106832871642761506709/albumid/5666564519291602657?alt=rss&hl=en_US&imgmax=d"
+	#
 	php cli.php $(OPTION) --import-google
 
 	#php index.php --import-rss "https://github.com/CBeerta.atom" --post-type activity $(OPTION)

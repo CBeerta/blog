@@ -155,7 +155,7 @@ class Projects
                 'post_content' => $post->post_content,
                 'guid' => $post->guid,
                 'post_status' => $post->post_status,
-                'post_type' => 'post',
+                'post_type' => 'blog',
             );
         }
         krsort($merged);

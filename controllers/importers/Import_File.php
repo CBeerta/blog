@@ -83,7 +83,7 @@ class Import_File
                 continue;
             }
             
-            d("# Importing: {$filename}");
+            echo "Importing: {$filename}";
 
             $content = file($filename);
             
@@ -108,15 +108,15 @@ class Import_File
                 ->find_one();
                 
             if (!$post) {
-                print "## Creating: ";
+                print "... Creating: ";
                 $post = ORM::for_table('posts')->create();
                 $post->post_status = 'publish';
                 $created++;
             } else {
-                print "## Updating: ";
+                print "... Updating: ";
             }
             
-            print $title . "\n";
+            print $title;
             
             $post->post_date = date('c', $post_date);
             $post->post_slug = Helpers::buildSlug($title);
@@ -128,8 +128,9 @@ class Import_File
             if (!$this->_cling->option('dry-run')) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
+                print "... done\n";
             } else {
-                print "Dry Run, not saving\n";
+                print "... Dry Run, not saving\n";
             }
         }
         

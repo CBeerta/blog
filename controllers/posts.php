@@ -32,7 +32,7 @@
 **/
 
 /**
-* Posts
+* Posts - Functions that are more global and used in all parts of the Site
 *
 * @category Personal_Website
 * @package  MyWebPage
@@ -78,7 +78,7 @@ class Posts
             ";
 
     /**
-    * Posts Index
+    * Posts Index. Used by the Blog and Photography
     *
     * @param int    $offset    Offset when there is a tag selected
     * @param string $active    Which subsection to show as active
@@ -116,117 +116,67 @@ class Posts
         $app->view()->setData('base_url', "/{$active}/pager");
         $app->view()->setData('posts', $posts);
         
-        return $app->render('posts/index.html');
+        return $app->render('blog/index.html');
     }
 
     /**
-    * Tags Archive
-    *
-    * @param string $tag    Selected Tag
-    * @param int    $offset Offset for Pager
+    * Landing Page with an Article to display (can be Project or Blog)
     *
     * @return html
     **/
-    public static function tag($tag, $offset = 0)
+    public static function article()
     {
         $app = Slim::getInstance();
-        $ppp = Helpers::option('posts_per_page');
-    
-        $app->view()->appendData(
-            array(
-            'active' => 'blog',
-            'ppp' => $ppp,
-            'offset' => $offset,
-            )
-        );
-    
+
         $posts = ORM::for_table('posts')
             ->select_expr(Posts::_POSTS_SELECT_EXPR)
             ->order_by_desc('post_date')
-            ->limit($ppp)
-            ->offset($offset)
-            ->where_like('tags', "%{$tag}%");
+            ->limit(1)
+            ->where_like('tags', "%Article%");
             
         $posts = Posts::setPermissions($posts);
         $posts = $posts->find_many();
-
-        if (!$posts) {
-            $app->response()->status(404);
-            return $app->render('404.html');
-        }
-
-        $app->view()->setData('base_url', "/blog/tag/{$tag}");
-        $app->view()->setData('posts', $posts);
         
-        return $app->render('posts/index.html');
-    }
-
-    /**
-    * Detail on a slug
-    *
-    * @param string $slug   detail on which slug
-    * @param string $active What Title to activate
-    *
-    * @return html
-    **/
-    public static function detail($slug, $active = 'blog')
-    {
-        $app = Slim::getInstance();
+        $posts = Projects::mergeBlogPosts($posts);
+        
+        $post = array_shift($posts);
         
         $app->view()->appendData(
             array(
-            'active' => $active,
+            'post' => $post,
             )
         );
 
-        $post = ORM::for_table('posts')
-            ->select_expr(Posts::_POSTS_SELECT_EXPR)
-            ->where_like('post_slug', "%{$slug}%")
-            ->order_by_desc('post_date');
-
-        $post = Posts::setPermissions($post);
-        $post = $post->find_one();
-
-        if ($post) {            
-            $comments = ORM::for_table('comments')
-                ->where('post_ID', $post->ID)
-                ->order_by_asc('comment_date')
-                ->find_many();
-        
-            $app->view()->setData('comments', $comments);
-        } else {
-            $app->response()->status(404);
-            return $app->render('404.html');
-        }
-        
-        $app->view()->setData('post', $post);
-        
-        return $app->render('posts/single.html');
+        return $app->render('blog/article.html');
     }
 
     /**
-    * Archives
+    * Return a RSS Feed
     *
-    * @return html
+    * @return xml
     **/
-    public static function archive()
+    public static function feed()
     {
         $app = Slim::getInstance();
         
         $posts = ORM::for_table('posts')
-            ->order_by_desc('post_date');
+            ->where('post_status', 'publish')
+            ->order_by_desc('post_date')
+            ->limit(Helpers::option('posts_per_page'))
+            ->where_equal('post_type', 'blog')
+            ->find_many();
 
-        $posts = Posts::setPermissions($posts);
-        $posts = $posts->find_many();
+        $posts = Projects::mergeBlogPosts($posts);
+        $posts = array_splice($posts, 0, Helpers::option('posts_per_page'));
 
         $app->view()->appendData(
             array(
-            'active' => 'blog',
             'posts' => $posts,
             )
         );
-
-        return $app->render('posts/archive.html');
+        
+        $app->response()->header('Content-Type', 'application/rss+xml');        
+        return $app->render('blog/feed.xml');
     }
 
     /**
@@ -249,7 +199,6 @@ class Posts
             
             $ret->$k = $v;
         }
-        
         return $ret;
     }
 
@@ -269,7 +218,6 @@ class Posts
         } else {
         
         }
-        
         return $posts;    
     }
 
