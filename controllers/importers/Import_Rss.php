@@ -274,11 +274,13 @@ class Import_Rss
             $post_meta = $post->post_meta;
             unset($post->post_meta);
             
-            //d($post->as_array());
+            // d($post->as_array());
             
             if (!$this->_cling->option('dry-run')) {
                 $post->save();
                 Helpers::addTags($tags, $post->ID);
+            } else {
+                echo "Dry-run, not saving\n";
             }
             
             if (!empty($post_meta) && !$this->_cling->option('dry-run')) {
