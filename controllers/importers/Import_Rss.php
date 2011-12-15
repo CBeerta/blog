@@ -164,7 +164,7 @@ class Import_Rss
         $content .= '" title="' . $post->post_title . '">';
         $content .= '<img src="';
         $content .= $this->_cling->option('public_url') . basename($dest_thumb_file);
-        $content .= '" width="580" height="385"></a>';
+        $content .= '"></a>';
 
         if (preg_match(
             '#.*>Date:\s+(.*?(AM|PM))<.*#i', 

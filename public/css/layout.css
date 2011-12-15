@@ -19,7 +19,7 @@
 body { }
 
 pre { overflow: auto; background-color: #eee; padding: 5px; }
-li { list-style: square inside none; }
+
 /* Header and Navigation
 ================================================== */
 header { padding-top: 50px; padding-bottom: 10px; }
@@ -38,6 +38,17 @@ nav.pagination .nav-next { float: right; }
 /* Content
 ================================================== */
 #content { padding-top: 10px; }
+
+/* footer
+================================================== */
+footer.sidebar { margin-top: 50px; margin-bottom: 100px; }
+
+/* #Page Styles
+================================================== */
+.contact-info .portrait { float: right; margin: 5px; border: 3px solid #eee; }
+
+/* #Article Styles
+================================================== */
 article {
     border-bottom: 1px solid #eaeaea;
     -moz-box-shadow: 0 5px 8px -5px rgba(0, 0, 0, 0.075);
@@ -56,17 +67,7 @@ article footer .feedback,.links { float: right; }
 article footer a { text-decoration: none; }
 article footer a:hover { text-decoration: underline; }
 
-
-/* footer
-================================================== */
-footer.sidebar { margin-top: 50px; margin-bottom: 100px; }
-
-/* #Page Styles
-================================================== */
-
-/* #Article Styles
-================================================== */
-
+article p li { list-style: square inside none; }
 
 /* #Media Queries
 ================================================== */
@@ -86,14 +87,18 @@ footer.sidebar { margin-top: 50px; margin-bottom: 100px; }
 	/* All Mobile Sizes (devices and browser) */
 	@media only screen and (max-width: 767px) {
 	    header { padding-top: 5px; }
+	    article img { max-width: 400px; }
 	}
 
 	/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
-	@media only screen and (min-width: 480px) and (max-width: 767px) {}
+	@media only screen and (min-width: 480px) and (max-width: 767px) {
+	    article img { max-width: 400px; }
+	}
 
 	/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
-	@media only screen and (max-width: 479px) {}
-
+	@media only screen and (max-width: 479px) {
+	    article img { max-width: 300px; }
+	}
 
 /* #Font-Face
 ================================================== */

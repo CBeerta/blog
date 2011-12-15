@@ -2,89 +2,111 @@
 
 {% block title %}About{% endblock %}
 {%block content %}
-    <div id="deckblatt">
-
-        <!--div>
-            <img class="portrait" src="public/img/portrait.jpg" name="Portrait" title="Claus Beerta">
-        </div-->
-
-        <!--h1>Profile</h1-->
-    
-    
+    <section class="contact-info">
+        <div>
+            <img class="portrait" src="public/img/portrait-small.jpg" name="Portrait" title="Claus Beerta">
+        </div>
         <h1>Contact Info</h1>
-        
         <p>
         <b>Claus Beerta</b><br/>
         L&uuml;tjenmoor 44<br/>
         22850 Norderstedt<br/>
         <a href="mailto: claus@beerta.de">claus@beerta.de</a><br/>
         </p>
-        
-    </div>
+    </section>
     
-    <div id="lebenslauf">
+    <section class="work-experience">
     
-        <h1>Work Experience</h1>
+        <h1>Berufstätigkeit</h1>
 
         <ul class="first">
-            <h2>since 2011</h2>
-            <li>Systems Administrator, Moorbek Computer Systeme in Hamburg
+            <h2>seit 20011</h2>
+            <li>Technical Consultant, MCS Moorbek Computer Systeme GmbH in Hamburg
             <ul class="second">
+                <li>Entwickling einer Kickstart und Preseed Umgebung mit Cobbler und Chef
             </ul>
         </ul>
         
         <ul class="first">
             <h2>2005 - 2011</h2>
-            <li>Systems Administrator, Interactive Data Managed Solutions AG (previous IS.Teledata AG) in Frankfurt
+            <li>Systemadministrator, Interactive Data Managed Solutions AG (vormals IS.Teledata AG) in Frankfurt
             <ul class="second">
-                <li>IPVS and Nginx Loadbalancing
-                <li>Implement Virtualization based on XEN with later migration to KVM
-                <li>Support with the implementation and rollout of PHP5
-                <li>Support Tomcat setups 
-                <li>ITIL and SOx
+                <li>Unterstützung der Frontend Teams bei der Einführung und Migration auf PHP5
+                <li>Einführung der Virtualisierung auf Basis von XEN und der späteren Migration auf KVM
+                <li>Neuaufbau aller Loadbalancer mit IPVS. Einführung von Nginx für Layer-7 Loadbalancing
+                <li>Setup und Betrieb von Tomcat
+                <li>Unterstützung bei diversen Security Audits 
+                <li>Beschaffung und Support von SSL-Zertifikaten (Client und Server)
+                <li>Rechenzentrumsumzug mit ca. 1.400 Systemen
+                <li>Betrieb diverser propriet&auml;rer Software im Backend und Frontend
+                <li>ITIL und SOx
             </ul>
         </ul>
 
         <ul class="first">
             <h2>2003 – 2005</h2>
-            <li>Systems Administrator, IS.Teledata AG (Fusion of Onvista Technologies and Innovative Software AG) in Frankfurt
+            <li>Systemadministrator, IS.Teledata AG (Zusammenschluss der Onvista Technologies und Innovative Software AG) in Frankfurt
             <ul class="second">
-                <li>Assumption of the Apache, PHP4 environment from Frontend Developers
-                <li>Operation and Development of DNS Services and their High Availability
-                <li>Capacity planning for Webserver infrastructure
-                <li>Rollout and Support of MySQL. Backup and HA Strategies
+                <li>&Uuml;bernahme der Apache, PHP4 Umgebung der Onvista Technologies
+                <li>Einführung von MySQL im Frontend-Bereich. Entwicklung von Monitoring- und Backupstrategien
+                <li>Betrieb und Weiterentwicklung von DNS Services und deren Hochverfügbarkeit
+                <li>Kapazit&auml;tsplanung im Bereich Webserver Infrastruktur
             </ul>
         </ul>
         
         <ul class="first">
             <h2>2000 - 2003</h2>
-            <li>Systems Administrator, Innovative Software AG in Frankfurt
+            <li>Systemadministrator, Innovative Software AG in Frankfurt
             <ul class="second">
-                <li>Support of inhouse developed Infrastructure such as Databases, Webservers and a "Ticketplant"
-                <li>Build an eFinance Plattform in NYC, and training of the on-site Systems Administrators
-                <li>Emplement and Operation of various statistic services and traffic accounting for billing purposes
-                <li>Primary Maintainer of the inhouse and datacenter mailservices based on Postfix, Qmail and Cyrus
+                <li>Betrieb der Inhouse entwickelten Applikationen wie Datenbanken, Webserver und der „Ticketplant“
+                <li>Build einer „eFinance“ Plattform in NYC für die damalige Comstock, sowie das Training der Systemadministratoren vor Ort
+                <li>Hauptverantwortlich für die Inhouse sowie Rechenzentrums Email Services basierend auf Postfix, Qmail und Cyrus
+                <li>Implementation und Betrieb von Statistiken sowie Traffic Accounting
             </ul>
         </ul>
 
         <ul class="first">
             <h2>1997 – 2000</h2>
-            <li>Systems Administrator, Selos Informatiossysteme GmbH in Wilhelmshaven
+            <li>Systemadministrator, Selos Informationssysteme GmbH in Wilhelmshaven
             <ul class="second">
-                <li>Administration of Windows and Novell Networks
-                <li>Support of User Desktops running on Dos, Windows and OS/2
-                <li>Planning and Implementation of Network infrastructure
+                <li>Administration von Windows und Novell Netzwerken
+                <li>Support von Benutzer Arbeitsplätzen (DOS, Windows, OS/2)
+                <li>Planung und Implementation von Netzwerk Infrastruktur
             </ul>
         </ul>
-        <h1>Education</h1>
+    </section>
+    <section class="school">
+
+        <h1>Berufsausbildung</h1>
         <ul class="first">
             <h2>1995 – 1997</h2>
-            <li>Full-time vocational school: Technical Assistant for Information Technology
+            <li>Technischer Assistent für Informatik, Berufsschule Varel
         </ul>
+
+        <h1>Schulische Ausbildung</h1>
         <ul class="first">
             <h2>1991 – 1995</h2>
-            <li>Erweiterten Sekundarabschluß 1, Alexander von Humboldt Schule in Wittmund
+            <li>Erweiterter Sekundarabschluß 1, Alexander von Humboldt Schule in Wittmund
         </ul>
-    
-    </div>
+        <ul class="first">
+            <h2>1989 – 1991</h2>
+            <li>Orientierungsstufe der Alexander von Humboldt Schule in Wittmund
+        </ul>
+
+        <h1>Sprachkenntnisse</h1>
+        <ul class="first">
+            <h2>Englisch</h2>
+            <li>flie&szlig;end in Wort und Schrift
+        </ul>
+        <ul class="first">
+            <h2>Niederl&auml;ndisch</h2>
+            <li>sehr gute Kenntnisse
+        </ul>
+
+        <h1>Hobbys und Interessen</h1>
+        <ul class="first">
+            <li>Programmierung in PHP und Python, Javascript und HTML
+            <li>Landschafts- und Makro- Fotografie
+        </ul>
+    </section>
 {% endblock %}

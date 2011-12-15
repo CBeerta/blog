@@ -12,34 +12,29 @@
 <article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
 
-<section id="comments">
 {% for c in comments %}
 {% if loop.first %}
-<div class="comment-{{ c.ID }}" id="comments">
-    <h2 id="comments-title">{{ post.comment_count|plural('though') }} on &ldquo;<span>{{ post.post_title }}</span>&rdquo;</h2>
-    <ol class="commentlist">
+<section class="comments">
+    <h2>{{ post.comment_count|plural('though') }} on &ldquo;<span>{{ post.post_title }}</span>&rdquo;</h2>
+    <ul>
 {% endif %}
     <li class="comment" id="{{ comment-c.ID }}">
-    <div class="comment-body">
-        <div class="comment-author vcard">
-            <img class="avatar" src="{{ c.comment_author_email|raw|comment_image }}" width="32" height="32"/>
+    <div>
+        <span>{{ c.comment_date|date() }}</span>
+        <div>
+            <img class="avatar" src="{{ c.comment_author_email|raw|comment_image }}" width="48" height="48"/>
             <cite class="fn"><a href="{{ c.comment_author_url|default('#')|raw }}" rel="external nofollow" class="url">{{ c.comment_author }}</a></cite>
             <span class="says">says:</span>
         </div>
-
-        <div class="comment-meta commentmetadata"><a href="#">{{ c.comment_date|date(date_format) }}</a></div>
-        
         <p>{{ c.comment_content|raw }}</p>
     </div>
+    <br class="clear" />
     </li>
 {% if loop.last %}
-    </ol>
+    </ul>
+</section>
 {% endif %}
 {% endfor %}
-</section><!-- comments end -->
 </article>
-<br class="clear" />
-
 {% endif %}
-
 {% endblock %}

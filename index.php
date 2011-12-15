@@ -95,7 +95,7 @@ ORM::configure('logging', false);
 $menu_items = array(
     'projects' => 'Projects',
     'blog' => 'Blog',
-    'wallpaper' => 'Wallpaper',
+    'wallpapers' => 'Wallpapers',
     'photography' => 'Photograpy',
     /* 'docs' => 'Brain Dump', */
     'about' => 'About',
@@ -135,7 +135,7 @@ $app->get('/about', 'Contact::about');
 // Photography page #######################################
 $app->get('/photography', 'Photography::index');
 $app->get('/photography/pager/:offset', 'Photography::index');
-$app->get('/wallpaper', 'Photography::wallpaper');
+$app->get('/wallpaper.*', 'Photography::wallpapers');
 
 // Documentation page #####################################
 $app->get('/docs', 'Docs::index');

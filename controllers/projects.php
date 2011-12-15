@@ -59,11 +59,10 @@ class Projects
             preg_match('#/(\d+-\d+-\d+) (.*)\.(\w+)$#', $filename, $matches);
             
             if (count($matches) != 4) {
-                // FIXME: should output a warning of some sort
                 continue;
             }
 
-            if ( !is_null($slug) && $matches[2] != $slug ) {
+            if ( !is_null($slug) && strtolower($matches[2]) != strtolower($slug) ) {
                 continue;
             }
 

@@ -6,8 +6,8 @@
 
 {% block title %}Wallpaper{% endblock %}
 {%block content %}
-<div class="wallpaper">
-<!--h3>Wallpaper</h3-->
+<section class="wallpaper">
+<h1>Wallpapers</h1>
 <p>
 Some Photos from my collection that are suitable as Desktop Wallpapers. Licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License</a>. 
 </p>
@@ -15,7 +15,7 @@ Some Photos from my collection that are suitable as Desktop Wallpapers. Licensed
 <ul>
 {% for post in posts %}
 <li>
-    <img src="{{ public_url }}wallpaper_thumb_{{ post_meta[post.guid].filename }}" width="240" height="150">
+    <img src="{{ public_url }}wallpaper_thumb_{{ post_meta[post.guid].filename }}">
     <div>
         <strong><a href="{{ post.original_source }}">{{ post.post_title }}</a></strong>
     </div>
@@ -30,7 +30,6 @@ Some Photos from my collection that are suitable as Desktop Wallpapers. Licensed
 </li>
 {% endfor %}
 </ul>
-
-</div>
-<div style="clear: both;"></div>
+<br class="clear" />
+</section>
 {% endblock %}

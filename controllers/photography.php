@@ -42,7 +42,6 @@
 **/
 class Photography
 {
-
     /**
     * Photography Page
     *
@@ -60,7 +59,7 @@ class Photography
     *
     * @return html
     **/
-    public static function wallpaper()
+    public static function wallpapers()
     {
         $app = Slim::getInstance();
         $public_url = Helpers::option('public_url');
@@ -81,7 +80,7 @@ class Photography
         
         $app->view()->appendData(
             array(
-            'active' => 'wallpaper',
+            'active' => 'wallpapers',
             'public_url' => $public_url,
             'post_meta' => $post_meta,
             'posts' => $posts,
@@ -90,43 +89,6 @@ class Photography
         
         return $app->render('wallpaper.html');
     }
-
-    /**
-    * Grid layout of images
-    *
-    * @return html
-    **/
-    public static function grid()
-    {
-        $app = Slim::getInstance();
-        $public_dir = Helpers::option('public_loc');
-        $public_url = Helpers::option('public_url');
-        
-        $glob = "{{$public_dir}/square_thumb_*.jpg}";
-        foreach (glob($glob, GLOB_BRACE) as $filename) {
-            $square_thumb[] = basename($filename);
-        }
-
-        $posts = ORM::for_table('posts')
-            ->select_expr(Posts::_POSTS_SELECT_EXPR)
-            ->order_by_desc('post_date')
-            ->where_equal('post_type', 'photo');
-
-        if (!Helpers::isEditor()) {
-            $posts = $posts->where('post_status', 'publish');
-        }
-        $posts = $posts->find_many();
-        
-        $app->view()->appendData(
-            array(
-            'active' => 'photography',
-            'posts' => $posts,
-            )
-        );
-        
-        return $app->render('photogrid.html');
-    }
-
 }
 
 

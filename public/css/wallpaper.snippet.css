@@ -6,9 +6,8 @@
     float: left;
     list-style: none;
     margin: 2px 2px 30px 2px;
-    border: 1px solid #aaa;
     padding: 2px;
 }
-.wallpaper img { border: 1px solid #888; }
+.wallpaper img { border: 3px solid #ddd; }
 .wallpaper a { padding: 0; }
 .wallpaper ul li div { text-align: center; }
