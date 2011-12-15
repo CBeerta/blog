@@ -8,14 +8,14 @@
 {% for post in posts %}
     <article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
-    </article>
     <br class="clear" />
+    </article>
 {% else %}
     <alert>No more Posts!</alert>
 {% endfor %}
 
 {%if ppp %}
-<div class="navigation">
+<nav class="pagination">
 	<div class="nav-previous">
 {% if posts|length == ppp %}
         <a href="{{ base_url}}/{{ offset + ppp }}" ><span class="meta-nav">&larr;</span> Older posts</a>
@@ -26,7 +26,7 @@
         <a href="{{ base_url}}/{{ offset - ppp}}" >Newer posts <span class="meta-nav">&rarr;</span></a>
 {% endif %}
     </div>
-</div>
+</nav>
 {% endif %}
 
 {% endblock %}

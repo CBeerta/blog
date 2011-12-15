@@ -39,11 +39,9 @@
 <body>
 
 <div class="container">
-
-    <section class="sixteen columns" id="content">
+{% block precontent %}{% endblock %}
 {% block content %}{% endblock %}
-    </section>
-
+{% block postcontent %}{% endblock %}
 </div><!-- container -->
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>

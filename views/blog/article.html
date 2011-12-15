@@ -7,11 +7,15 @@
 {% block title %}{{ post.post_title }}{% endblock %}
 
 {%block content %}
-<article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
+<section class="twelve columns" id="content">
+    <article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
-</article>
+    </article>
+</section>
+{% endblock %}
 
-<nav>
+{% block postcontent %}
+<nav class="twelve columns">
     <h2><a href="http://{{ _host }}/projects">Claus Beerta</a></h2>
     <ul>
     {% for key, item in menu_items %}

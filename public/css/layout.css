@@ -19,7 +19,7 @@
 body { }
 
 pre { overflow: auto; background-color: #eee; padding: 5px; }
-
+li { list-style: square inside none; }
 /* Header and Navigation
 ================================================== */
 header { padding-top: 50px; padding-bottom: 10px; }
@@ -32,11 +32,34 @@ nav li { list-style: none; line-height: 0.6em; }
 nav a { text-decoration: none; }
 nav #current_page_item { font-weight: bold; }
 
+nav.pagination .nav-previous { float: left; }
+nav.pagination .nav-next { float: right; }
+
 /* Content
 ================================================== */
 #content { padding-top: 10px; }
-article img { float: left; margin: 5px; border: 3px solid #ddd; }
-article img:hover { border: 3px solid #bbb; }
+article {
+    border-bottom: 1px solid #eaeaea;
+    -moz-box-shadow: 0 5px 8px -5px rgba(0, 0, 0, 0.075);
+    -webkit-box-shadow: 0 5px 8px -5px rgba(0, 0, 0, 0.075);
+    -o-box-shadow: 0 5px 8px -5px rgba(0, 0, 0, 0.075);
+    box-shadow: 0 5px 8px -5px rgba(0, 0, 0, 0.075);
+    margin-bottom: 2em;
+}
+article.format-photo img { float: none; display: block; margin: 0 auto; }
+article img { float: left; margin: 5px; border: 3px solid #eee; border-radius: 3px; }
+article img:hover { border: 3px solid #ddd; }
+
+article.format-photo h1:after { content: "\2192"; padding-left: 10px; }
+
+article footer .feedback,.links { float: right; }
+article footer a { text-decoration: none; }
+article footer a:hover { text-decoration: underline; }
+
+
+/* footer
+================================================== */
+footer.sidebar { margin-top: 50px; margin-bottom: 100px; }
 
 /* #Page Styles
 ================================================== */

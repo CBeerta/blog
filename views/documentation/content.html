@@ -1,37 +1,35 @@
 {% extends "simple_base.html" %}
 
-{% block pagecss %}
-  <link rel="stylesheet" href="/public/css/documentation.snippet.css?v=2">
-{% endblock %}
-
 {% block title %}{{ display.doc_name }} - Documentation{% endblock %}
-{%block content %}
-<div class="documentation">
 
-    <div class="index">
-        <ul>
-            <h3>Topics</h3>
+{%block precontent %}
+<nav class="four columns">
+    <ul>
+        <h3>Topics</h3>
 {% for doc in docs %}
-            <li><a href="{{ base_url}}/docs/{{ doc.doc_name }}">{{ doc.doc_name }}</a>
+        <li><a href="{{ base_url}}/docs/{{ doc.doc_name }}">{{ doc.doc_name }}</a>
 {% if display.doc_name == doc.doc_name %}
-        <ul>
+    <ul>
 {% for sub in doc.topics %}
-            <li>{{ sub }}
+        <li>{{ sub }}
 {% endfor %}
-        </ul>
+    </ul>
 {% endif %}
 {% endfor %}
-        </ul>
-    </div>
+    </ul>
+</nav>
+{% endblock %}
 
-<h1>{{ display.doc_name }}</h1>
+
+{%block content %}
+<section class="twelve columns" id="content">
+    <h1>{{ display.doc_name }}</h1>
    
-<p id="intro">This is my Collection of random Bits'n'Pieces. Code, Documentation and whatever
-else i might want to keep around. I made this public as there might be Information
-here that other people find Interesting.</p>
-<hr>
+    <p id="intro">This is my Collection of random Bits'n'Pieces. Code, Documentation and whatever
+    else i might want to keep around. I made this public as there might be Information
+    here that other people find Interesting.</p>
+    <hr>
 
-<p>{{ display.content|raw }}</p>
-
-</div>
+    <p>{{ display.content|raw }}</p>
+</section>
 {% endblock %}

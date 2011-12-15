@@ -14,6 +14,15 @@
     </h1>
     <p>{{ post.post_content|format_content|raw }}</p>
 
+    <footer>
+        <time datetime="{{ post.post_date|date('c') }}">{{ post.post_date|date(date_format) }}</time>
+        {% if post.comment_count > 0 %}
+        <p class="feedback">
+            <a href="/post/{{ post.post_slug }}#comments">{{ post.comment_count|plural('Comment') }}</a>
+        </p>
+        {% endif %}
+    </footer>
+
 {# if post.original_source %}
     <a class="meta" href="{{ post.original_source }}">Comment on this Post</a>        
 {% endif #}

@@ -6,24 +6,27 @@
 {%block content %}
 {% for post in projects %}
 <article class="project format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
-    <div class="entry-meta">
-        <div class="date">{{ post.post_date|date(date_format) }}</div>
-    </div>
-    <h2 class="entry-title"><a href="/projects/{{ post.post_slug }}">{{ post.post_title }}</a></h2>
-    <div class="entry-content project">
-        <p>
-            {{ post.teaser|raw }}
-        </p>
+    <h1>
+        <a href="/projects/{{ post.post_slug }}">
+            {{ post.post_title }}
+        </a>
+    </h1>
+    <p>
+        {{ post.teaser|raw }}
+        <br class="clear" />
+    </p>
 {% if body %}
-        <p>
-            {{ post.content|raw }}
-        </p>
+    <p>{{ post.content|raw }}</p>
 {% elseif post.content %}
-        <div class="meta">
-            <p class="links"><a href="/projects/{{ post.post_slug }}" class="comments">Continue Reading</a></p>
-        </div>
+    <footer>
+        <time datetime="{{ post.post_date|date('c') }}">{{ post.post_date|date(date_format) }}</time>
+        <p class="links"><a href="/projects/{{ post.post_slug }}" class="comments">Continue Reading</a></p>
+    </footer>
+{% else %}
+    <footer>
+        <time datetime="{{ post.post_date|date('c') }}">{{ post.post_date|date(date_format) }}</time>
+    </footer>
 {% endif %}
-    </div>
 </article>
 <br class="clear" />
 {% else %}
