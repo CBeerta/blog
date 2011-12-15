@@ -1,48 +1,32 @@
 {% extends "base.html" %}
 
-{% block pagecss %}
-  <link rel="stylesheet" href="/public/css/projects.snippet.css?v=2">
-{% endblock %}
+{% block pagecss %}{% endblock %}
 
 {% block title %}Projects{% endblock %}
 {%block content %}
-<div id="contents">
-{% for proj in projects %}
-<div class="post hentry post_type_{{ post.post_type }} post-{{ post.ID }}" id="post">
+{% for post in projects %}
+<article class="project format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
     <div class="entry-meta">
-        <div class="date">{{ proj.post_date|date(date_format) }}</div>
-        {% if proj.github_project %}
-        <a class="github" href="https://github.com/CBeerta/{{ proj.github_project }}">
-            <img src="/public/img/Cloud upload 48x48.png" title="Project at Github">
-        </a>
-        <ul class="github">
-            <li><img title="Watchers" id="watches" src="/public/img/Eye 16x16.png">
-            <li><img title="Forks" id="forks" src="/public/img/Shuffle 16x16.png">
-        </ul>
-        {% endif %}
+        <div class="date">{{ post.post_date|date(date_format) }}</div>
     </div>
-    
-    <div class="main">
-
-        <h2 class="entry-title"><a href="/projects/{{ proj.post_slug }}">{{ proj.post_title }}</a></h2>
-        <div class="entry-content project">
-            <p>
-                {{ proj.teaser|raw }}
-            </p>
+    <h2 class="entry-title"><a href="/projects/{{ post.post_slug }}">{{ post.post_title }}</a></h2>
+    <div class="entry-content project">
+        <p>
+            {{ post.teaser|raw }}
+        </p>
 {% if body %}
-            <p>
-                {{ proj.content|raw }}
-            </p>
-{% elseif proj.content %}
+        <p>
+            {{ post.content|raw }}
+        </p>
+{% elseif post.content %}
         <div class="meta">
-            <p class="links"><a href="/projects/{{ proj.post_slug }}" class="comments">Continue Reading</a></p>
+            <p class="links"><a href="/projects/{{ post.post_slug }}" class="comments">Continue Reading</a></p>
         </div>
 {% endif %}
-        </div>
     </div>
-</div>
+</article>
+<br class="clear" />
 {% else %}
     <alert>No Project Found!</alert>
 {% endfor %}
-</div>
 {% endblock %}

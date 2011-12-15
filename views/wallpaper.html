@@ -16,21 +16,17 @@ Some Photos from my collection that are suitable as Desktop Wallpapers. Licensed
 {% for post in posts %}
 <li>
     <img src="{{ public_url }}wallpaper_thumb_{{ post_meta[post.guid].filename }}" width="240" height="150">
-    
     <div>
-    <strong><a href="{{ post.original_source }}">{{ post.post_title }}</a></strong>
+        <strong><a href="{{ post.original_source }}">{{ post.post_title }}</a></strong>
     </div>
-
     <div>
-    Resolution: {{ post_meta[post.guid].photo_width }}x{{ post_meta[post.guid].photo_height }}
+        Resolution: {{ post_meta[post.guid].photo_width }}x{{ post_meta[post.guid].photo_height }}
     </div>
-
     <div>
-    <a href="{{ public_url }}{{ post_meta[post.guid].filename }}">
-        Download
-    </a>
+        <a href="{{ public_url }}{{ post_meta[post.guid].filename }}">
+            Download
+        </a>
     </div>
-
 </li>
 {% endfor %}
 </ul>

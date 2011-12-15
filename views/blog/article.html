@@ -1,26 +1,23 @@
 {% extends 'simple_base.html' %}
 
 {% block pagecss %}
-  <link rel="stylesheet" href="/public/css/article.snippet.css?v=2">
+  <link rel="stylesheet" href="/public/css/article.snippet.css">
 {% endblock %}
 
 {% block title %}{{ post.post_title }}{% endblock %}
 
 {%block content %}
-<div class="post hentry format-{{ post.post_type }} post-{{ post.ID }} post" id="{{ post.ID }}">
+<article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
-</div>
+</article>
 
-<div id="article-nav">
-<h1 id="site-title"><a href="http://{{ _host }}/projects">Claus Beerta</a></h1>
-<ul>
-{% for key, item in menu_items %}
-    <li>
-        <a href="/{{ key }}">{{ item }}</a>
-    </li>
-{% endfor %}
-</ul>
-
-</div>
+<nav>
+    <h2><a href="http://{{ _host }}/projects">Claus Beerta</a></h2>
+    <ul>
+    {% for key, item in menu_items %}
+        <li><a href="/{{ key }}">{{ item }}</a>
+    {% endfor %}
+    </ul>
+</nav>
 {% endblock %}
 

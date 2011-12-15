@@ -61,6 +61,11 @@ class Contact
     public static function about()
     {
         $app = Slim::getInstance();
+        $app->view()->appendData(
+            array(
+            'active' => 'about',
+            )
+        );
         return $app->render('about.html');
     }
     

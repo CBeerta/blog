@@ -96,7 +96,6 @@ class Blog
         return $app->render('blog/index.html');
     }
 
-
     /**
     * Detail on a slug
     *
@@ -166,5 +165,4 @@ class Blog
     }
 
 }
-
 

@@ -63,22 +63,6 @@ $(document).ready(function()
             });
         }
     });
-    
-    $("form#post_tags").submit(function() {
-        var tags = $('input#post_tags').attr('value'); 
-        var postID = $('input#post_ID').attr('value'); 
-        $.ajax({  
-            type: "POST",
-            url: "/blog/save/tags",
-            data: { 'value': tags, 'id': postID,'_METHOD': 'PUT' },
-            success: function(tags)
-            {
-                $("input#post_tags").attr('value', tags);
-            }
-        });                  
-        return false;
-    });
-    
 
 });
 
@@ -86,64 +70,4 @@ function basename(path)
 {
     return path.replace(/\\/g,'/').replace( /.*\//, '' );
 }
-
-function toggle_publish(id)
-{
-    $.ajax({  
-        type: "POST",
-        url: "/blog/toggle_publish",
-        data: { 'id': id },
-        success: function(data) {
-            var toggle = $("img.toggle_publish");
-            if (data == 'publish') {
-                toggle.attr('src', '/public/img/check_alt_32x32.png')
-            } else {
-                toggle.attr('src', '/public/img/denied_32x32.png')
-            }
-        }
-    });
-}
-
-function trash_post(id)
-{
-    var answer = confirm("You sure you want to Delete it?");
-    
-    if (!answer) {
-        return;
-    }
-    
-    $.ajax({  
-        type: "POST",
-        url: "/blog/trash",
-        data: { 'id': id, '_METHOD': 'DELETE' },
-        success: function(data) {
-            alert(data);
-        }
-    });
-}
-
-/**
-http://wynnnetherland.com/journal/use-javascript-to-put-github-info-on-your-site
-**/
-
-jQuery(document).ready(function($){
-  $.each($('a.github'), function() {
-    console.log($(this));
-    var post = $(this).parents(".post");
-    var url = $(this).attr('href');
-    var segments = url.split('/');
-    var repo = segments.pop();
-    var username = segments.pop();
-    $.getJSON("http://github.com/api/v2/json/repos/show/"+username+"/"+repo+"?callback=?", function(data){
-      var repo_data = data.repository;
-      if(repo_data) {
-        var watchers_link = $('<a>').addClass('watchers').attr('href', url+'/watchers').text(repo_data.watchers);
-        var forks_link = $('<a>').addClass('forks').attr('href', url+'/network').text(repo_data.forks);
-        var comment_link = post.find('.entry-meta .github');
-        post.find('.entry-meta .github #watches').before(watchers_link);
-        post.find('.entry-meta .github #forks').before(forks_link);
-      }
-    });
-  });
-});
 

@@ -55,7 +55,7 @@ class Helpers
         'public_url' => 'http://localhost/data/uploads',
         'public_loc' => './data/uploads',
         'deviantart_items' => 4,
-        'posts_per_page' => 10,
+        'posts_per_page' => 5,
         'date_format' => 'M d Y',
         'base_uri' => '/',
         'public_dir' => './public/',
@@ -103,7 +103,6 @@ class Helpers
         return basename($files[$rand]);
     }
 
-
     /**
     * Add Tags to a Post
     *
@@ -150,7 +149,6 @@ class Helpers
         }
     }
      
-    
     /**
     * Format a DateTime / String for display
     *

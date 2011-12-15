@@ -106,6 +106,7 @@ class Projects
             $post_date = new DateTime($post_date);
             
             $projects[$post_date->format('U')] = (object) array(
+                'ID' => md5($filename),
                 'filename' => $filename,
                 'post_slug' => $post_slug,
                 'post_title' => $title,
@@ -114,7 +115,7 @@ class Projects
                 'content' => $post_content,
                 'post_content' => $teaser . $post_content,
                 'github_project' => $github_project,
-                'post_type' => 'projects',
+                'post_type' => 'project',
             );
         }
         
