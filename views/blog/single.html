@@ -32,6 +32,9 @@
     </li>
 {% if loop.last %}
     </ul>
+{% if post.original_source %}
+    <a href="{{ post.original_source }}">Comment on this Post</a>        
+{% endif %}
 </section>
 {% endif %}
 {% endfor %}

@@ -51,7 +51,7 @@ class Blog
     **/
     public static function index($offset = 0)
     {
-        return Posts::index($offset, 'blog', array('blog', 'deviantart'));
+        return Posts::index($offset, 'blog', array('blog', 'deviantart', 'photo'));
     }
 
     /**
