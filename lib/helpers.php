@@ -56,7 +56,7 @@ class Helpers
         'public_loc' => './data/uploads',
         'deviantart_items' => 4,
         'posts_per_page' => 5,
-        'date_format' => 'F j',
+        'date_format' => 'F j, Y',
         'base_uri' => '/',
         'public_dir' => './public/',
         'google_id' => null,
