@@ -32,34 +32,9 @@
 * @link     http://claus.beerta.de/
 **/
 
-require_once __DIR__ . '/vendor/Cling/Cling.php';
-require_once __DIR__ . '/vendor/idiorm/idiorm.php';
-require_once __DIR__ . '/vendor/simplepie/SimplePieAutoloader.php';
-
-/**
-* Autoloader for helpers and controllers
-*
-* @param string $class A Class file that is needed
-*
-* @return void
-**/
-function autoloader($class)
-{
-    $directories = array('/controllers/importers/', '/lib/');
-    
-    foreach ($directories as $dir) {
-        if (file_exists(__DIR__ . $dir . strtolower($class) . '.php')) {
-            include_once __DIR__ . $dir . strtolower($class) . '.php';
-            return;
-        }
-        if (file_exists(__DIR__ . $dir . $class . '.php')) {
-            include_once __DIR__ . $dir . $class . '.php';
-            return;
-        }
-    }
-}
-
-spl_autoload_register("autoloader");
+require_once __DIR__ . '/../setup.php';
+require_once __DIR__ . '/../vendor/Cling/Cling.php';
+require_once __DIR__ . '/../vendor/simplepie/SimplePieAutoloader.php';
 
 /**
 * Debugging shortcut function
@@ -86,18 +61,13 @@ $app = new Cling(array(
     'debug' => true,
     'dry-run' => false,
     'force' => false,
-    'templates.path' => __DIR__ . '/views/',
+    'templates.path' => __DIR__ . '/../views/',
 ));
 
-$app->configure(__DIR__ . '/config.ini');
-
-ORM::configure('sqlite:' . $app->option('dbfile'));
-ORM::configure('id_column', 'ID');
-ORM::configure('logging', false);
+$app->configure(__DIR__ . '/../config.ini');
 
 /**
 * Help comes first
-* FIXME: integrate into Cling?
 **/
 $app->command('help', 'h', 
     function() use ($app)

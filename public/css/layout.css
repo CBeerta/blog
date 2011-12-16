@@ -28,7 +28,7 @@ header h2 { margin-bottom: 0px; line-height: 0.8em; }
 header a { text-decoration: none; }
 
 nav { margin-top: 20px; }
-nav li { list-style: none; line-height: 0.6em; }
+nav li { list-style: none; line-height: 0.8em; }
 nav a { text-decoration: none; }
 nav #current_page_item { font-weight: bold; }
 
@@ -72,7 +72,7 @@ article footer .feedback,.links { float: right; }
 article footer a { text-decoration: none; }
 article footer a:hover { text-decoration: underline; }
 article footer .feedback a { 
-    background-image: url(/public/img/icon-comments-2x.png); 
+    background-image: url(/img/icon-comments-2x.png); 
     background-repeat: no-repeat; 
     background-position: left -47px; 
     display: block;

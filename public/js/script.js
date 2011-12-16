@@ -33,7 +33,7 @@ $(document).ready(function()
             type        : "autogrow",
             submit      : "Save",
             submitdata  : { '_METHOD': 'PUT' },
-            indicator   : '<img src="/public/img/indicator.gif">',
+            indicator   : '<img src="/img/indicator.gif">',
             tooltip     : 'Click to edit.',
             onblur      : 'cancel',
             width       : 'auto',

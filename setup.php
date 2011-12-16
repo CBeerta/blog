@@ -31,11 +31,11 @@
 * @link     http://claus.beerta.de/
 **/
 
-require_once __DIR__.'/vendor/Slim/Slim/Slim.php';
-require_once __DIR__.'/vendor/idiorm/idiorm.php';
-require_once __DIR__.'/vendor/markdown/markdown.php';
+require_once __DIR__ . '/vendor/Slim/Slim/Slim.php';
+require_once __DIR__ . '/vendor/idiorm/idiorm.php';
+require_once __DIR__ . '/vendor/markdown/markdown.php';
 
-require_once __DIR__.'/lib/TwigView.php';
+require_once __DIR__ . '/lib/TwigView.php';
 
 /**
 * Autoloader for helpers and controllers
@@ -46,11 +46,14 @@ require_once __DIR__.'/lib/TwigView.php';
 **/
 function autoloader($class)
 {
-    $directories = array('/controllers/', '/lib/');
+    $directories = array('/controllers/', '/lib/', '/controllers/importers/');
     
     foreach ($directories as $dir) {
         if (file_exists(__DIR__ . $dir . strtolower($class) . '.php')) {
             include_once __DIR__ . $dir . strtolower($class) . '.php';
+            return;
+        } else if (file_exists(__DIR__ . $dir . $class . '.php')) {
+            include_once __DIR__ . $dir . $class . '.php';
             return;
         }
     }
@@ -59,6 +62,22 @@ function autoloader($class)
 spl_autoload_register("autoloader");
 
 Helpers::option('templates.path', __DIR__ . '/views/');
+
+/**
+* Load config file and override default options
+**/    
+$config = parse_ini_file(__DIR__."/config.ini");
+foreach ( $config as $k => $v ) {
+    Helpers::option($k, $v);
+}
+
+ORM::configure('sqlite:' . Helpers::option('dbfile'));
+ORM::configure('id_column', 'ID');
+ORM::configure('logging', false);
+
+if (PHP_SAPI == 'cli') {
+    return;
+}
 
 $app = new Slim(
     array(
@@ -81,82 +100,17 @@ $app->configureMode(
 
 $app->notFound('Other::notFound');
 
-/**
-* Load config file and override default options
-**/    
-$config = parse_ini_file(__DIR__."/config.ini");
-foreach ( $config as $k => $v ) {
-    Helpers::option($k, $v);
-}
-ORM::configure('sqlite:' . Helpers::option('dbfile'));
-ORM::configure('id_column', 'ID');
-ORM::configure('logging', false);
-
-$menu_items = array(
-    'projects' => 'Projects',
-    'blog' => 'Blog',
-    'wallpapers' => 'Wallpapers',
-    'photography' => 'Photograpy',
-    /* 'docs' => 'Brain Dump', */
-    'about' => 'About',
-    /* 'contact' => 'Contact',*/
-);
 
 $app->view()->appendData(
     array(
-    'menu_items' => $menu_items,
-    'header_image'=> Helpers::randomHeaderImage('header-images/'),
+    'header_image'=> Helpers::randomHeaderImage(__DIR__ . '/public/header-images/'),
     'date_format' => Helpers::option('date_format'),
     'editor' => Helpers::isEditor(),
     'tag_cloud' => Other::tagCloud(),
     'active' => 'projects',
     'title' => null,
-    )
-);
-
-// Projects related #######################################
-$app->get('/projects(/:slug)', 'Projects::overview');
-
-// Blog stuff #############################################
-$app->get('^/blog/.*feed.*', 'Posts::feed');
-$app->get('/blog', 'Blog::index');
-$app->get('/blog/pager/:offset', 'Blog::index');
-$app->get('/blog/tag/:tag(/:offset)', 'Blog::tag');
-$app->get('/blog/archive', 'Blog::archive');
-$app->get('/blog/:slug', 'Blog::detail');
-
-// sidebar content. probably ajax #########################
-$app->post('/sidebar/search', 'Other::search');
-
-// contact ################################################
-$app->get('/contact', 'Contact::about');
-$app->get('/about', 'Contact::about');
-
-// Photography page #######################################
-$app->get('/photography', 'Photography::index');
-$app->get('/photography/pager/:offset', 'Photography::index');
-$app->get('/wallpaper.*', 'Photography::wallpapers');
-
-// Documentation page #####################################
-$app->get('/docs', 'Docs::index');
-$app->get('/docs/:slug', 'Docs::index');
-
-// Sitemap ################################################
-$app->get('/sitemap.xml', 'Other::sitemap');
-
-// In Development Stuff ###################################
-if (Helpers::isEditor()) {
-    $app->config('debug', true);
-}
-
-// And the root of all evil ###############################
-$app->get('/', 'Posts::article');
-
-$app->view()->appendData(
-    array(
     '_host' => $_SERVER['HTTP_HOST'],
     )
 );
-$app->run();
 
 

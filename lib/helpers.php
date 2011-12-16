@@ -58,7 +58,6 @@ class Helpers
         'posts_per_page' => 5,
         'date_format' => 'F j, Y',
         'base_uri' => '/',
-        'public_dir' => './public/',
         'google_id' => null,
         'google_api_key' => null,
     );
@@ -83,13 +82,12 @@ class Helpers
     /**
     * Return a Random Header Image
     *
-    * @param string $image_dir Directory under $public_dir with images
+    * @param string $dir Directory with images
     *
     * @return void
     **/
-    public static function randomHeaderImage($image_dir)
+    public static function randomHeaderImage($dir)
     {
-        $dir = Helpers::option('public_dir') . '/' .  $image_dir;
         $glob = "{{$dir}*.jpg, {$dir}*.png}";
         
         $files = array();
