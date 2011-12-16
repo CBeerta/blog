@@ -22,7 +22,7 @@ pre { overflow: auto; background-color: #eee; padding: 5px; }
 
 /* Header and Navigation
 ================================================== */
-header { padding-top: 50px; padding-bottom: 10px; }
+header { padding-top: 75px; padding-bottom: 10px; }
 header img { max-width: 280px; border-radius: 5px; }
 header h2 { margin-bottom: 0px; line-height: 0.8em; }
 header a { text-decoration: none; }
@@ -34,6 +34,9 @@ nav #current_page_item { font-weight: bold; }
 
 nav.pagination .nav-previous { float: left; }
 nav.pagination .nav-next { float: right; }
+
+.socialicons img { opacity: 0.5; }
+.socialicons img:hover { opacity: 1; }
 
 /* Content
 ================================================== */
