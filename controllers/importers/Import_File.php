@@ -113,6 +113,10 @@ class Import_File
                 $post->post_status = 'publish';
                 $created++;
             } else {
+                if ($post->protected != 0) {
+                    print "... Post is Protected, skipping\n";
+                    continue;
+                }
                 print "... Updating: ";
             }
             
@@ -121,9 +125,10 @@ class Import_File
             $post->post_date = date('c', $post_date);
             $post->post_slug = Helpers::buildSlug($title);
             $post->post_title = $title;
+            $post->protected = 0;
             $post->post_content = implode("", $content);
             $post->guid = $post->post_slug . '-' . time();
-            $post->original_source = null;
+            $post->original_source = $filename;
             
             if (!$this->_cling->option('dry-run')) {
                 $post->save();

@@ -54,6 +54,16 @@ $app->command('help', 'h',
     ->help("This Help Text.");
 
 /************************************************************************************
+* Limit list display to a single tag
+**/
+$app->command('tag:', 
+    function($tag) use ($app)
+    {
+        $app->option('tag', $tag);
+    })
+    ->help("Limit list display to a single tag.");
+
+/************************************************************************************
 * List all available posts
 **/
 $app->command('list', 'l',
@@ -61,8 +71,12 @@ $app->command('list', 'l',
     {
         $posts = ORM::for_table('posts')
             ->select_expr(Posts::_POSTS_SELECT_EXPR)
-            ->order_by_asc('post_date')
-            ->find_many();
+            ->order_by_asc('post_date');
+        if ($app->option('tag')) {
+            $posts = 
+                $posts->where_like('tag_names', '%' . $app->option('tag') . '%');
+        }
+        $posts = $posts->find_many();
             
         foreach ($posts as $post) {
             $flags = array();
@@ -166,6 +180,9 @@ $app->command('edit:', 'e:',
                 case "title":
                 case "post_status":
                 case "original_source":
+                case "protected":
+                case "post_type":
+                case "post_slug":
                     $post->$key = trim($value);
                     break;
                 case "post_date":

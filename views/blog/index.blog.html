@@ -1,5 +1,5 @@
     <h1>
-        {% if post.post_status == 'draft' %}Draft{% endif %}
+        {% if post.post_status == 'draft' %}Draft: {% endif %}
         <a href="/{{ post.post_type }}/{{ post.post_slug }}">
             {{ post.post_title }}
         </a>

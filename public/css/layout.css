@@ -66,6 +66,7 @@ article img { float: left; margin: 5px; border: 3px solid #eee; border-radius: 3
 article img:hover { border: 3px solid #ddd; }
 
 article.format-photo h1:after { content: "\2192"; padding-left: 10px; }
+article.format-deviantart h1:after { content: "\2192"; padding-left: 10px; }
 
 article footer { }
 article footer .feedback,.links { float: right; }
