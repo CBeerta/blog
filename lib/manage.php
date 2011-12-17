@@ -42,7 +42,7 @@ $app->configure(__DIR__ . '/../config.ini');
 
 define("EDITOR", isset($_SERVER['EDITOR']) ? $_SERVER['EDITOR'] : 'vi');
 
-/**
+/************************************************************************************
 * Help comes first
 **/
 $app->command('help', 'h', 
@@ -53,6 +53,9 @@ $app->command('help', 'h',
     })
     ->help("This Help Text.");
 
+/************************************************************************************
+* List all available posts
+**/
 $app->command('list', 'l',
     function() use ($app)
     {
@@ -87,6 +90,9 @@ $app->command('list', 'l',
     })
     ->help("List Available Posts.");
 
+/************************************************************************************
+* Show details on a post
+**/
 $app->command('detail:', 'v:',
     function($id) use ($app)
     {
@@ -112,6 +118,9 @@ $app->command('detail:', 'v:',
     })
     ->help("Show a Post.");
 
+/************************************************************************************
+* Edit a post
+**/
 $app->command('edit:', 'e:',
     function($id) use ($app, $tpl)
     {
@@ -140,9 +149,41 @@ $app->command('edit:', 'e:',
         passthru(EDITOR . " {$tmpname} > $(tty)", $ret);
         
         if (md5($content) != md5_file($tmpname)) {
-            print "storing\n";
-        }
 
+            print "Storing\n";
+
+            $content = '';
+            foreach (file($tmpname) as $line) {
+            
+                if (!preg_match("|^#--\s*(.+?):\s*(.*)$|", $line, $matches)) {
+                    $content .= $line;
+                    continue;
+                }
+                
+                list($nil, $key, $value) = $matches;
+                
+                switch($key) {
+                case "title":
+                case "post_status":
+                case "original_source":
+                    $post->$key = trim($value);
+                    break;
+                case "post_date":
+                    $date = new DateTime($value);
+                    $post->post_date = $date->format('c');
+                    break;
+                case "tags":
+                    $tags = explode(',', $value);
+                    Helpers::addTags($tags, $post->ID);
+                    break;
+                default:
+                    break;
+                }
+                
+            }
+            $post->post_content = trim($content);
+            $post->save();
+        }
         unlink($tmpname);
     })
     ->help("Edit a Post.");
