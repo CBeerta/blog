@@ -75,6 +75,14 @@ ORM::configure('sqlite:' . Helpers::option('dbfile'));
 ORM::configure('id_column', 'ID');
 ORM::configure('logging', false);
 
+ORM::configure(
+    'id_column_overrides', array(
+        'term_relations' => 'post_terms_ID',
+        'post_meta' => 'post_meta_id',
+        'posts' => 'ID',
+    )
+);
+
 if (PHP_SAPI == 'cli') {
     return;
 }

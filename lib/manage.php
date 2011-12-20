@@ -54,6 +54,56 @@ $app->command('help', 'h',
     ->help("This Help Text.");
 
 /************************************************************************************
+* Fix the term_relations table after manually fiddling with the database
+**/
+$app->command('fix-tables',
+    function() use ($app)
+    {
+        echo "Fixing term_relations\n";
+        $posts = ORM::for_table('term_relations')
+            ->where_raw('posts_id not in (select id from posts)')
+            ->find_many();
+
+        foreach ($posts as $post) {
+            echo "Deleting {$post->post_terms_ID}\n";
+            $post->delete();
+        }
+
+        echo "Fixing post_meta\n";
+        $posts = ORM::for_table('post_meta')
+            ->where_raw('posts_ID not in (select id from posts)')
+            ->find_many();
+
+        foreach ($posts as $post) {
+            echo "Deleting {$post->post_meta_id}\n";
+            $post->delete();
+        }
+    })->help("Cleanup und delete obsolete Entries from Tables.");
+
+/************************************************************************************
+* Show a List of tags currently used
+**/
+$app->command('taglist',
+    function() use ($app)
+    {
+        $tags = ORM::for_table('post_terms')
+            ->select_expr(
+                '*, 
+                (
+                    SELECT COUNT(posts_ID) 
+                    FROM term_relations 
+                    WHERE term_relations.post_terms_ID=post_terms.ID
+                ) AS posts_with_term'
+            )->find_many();
+            
+        foreach ($tags as $tag) {
+            print "{$tag->name} ({$tag->posts_with_term})\n";
+        }
+
+    })
+    ->help("Show a Taglist.");
+
+/************************************************************************************
 * Limit list display to a single tag
 **/
 $app->command('tag:', 
@@ -100,9 +150,32 @@ $app->command('list', 'l',
                 $post->post_title
             );
         }
-    
     })
     ->help("List Available Posts.");
+
+/************************************************************************************
+* Delete a Post
+**/
+$app->command('delete:', 'd:',
+    function($id) use ($app)
+    {
+        if (!is_numeric($id)) {
+            $app->notFound();
+        }
+
+        $post = ORM::for_table('posts')
+            ->select_expr(Posts::_POSTS_SELECT_EXPR)
+            ->order_by_asc('post_date')
+            ->where('ID', $id)
+            ->find_one();
+
+        if (!$post) {
+            echo "Post Not Found\n";
+        } else {
+            $post->delete();
+        }
+    })
+    ->help("Delete a Post.");
 
 /************************************************************************************
 * Show details on a post
@@ -147,12 +220,23 @@ $app->command('edit:', 'e:',
             ->order_by_asc('post_date')
             ->where('ID', $id)
             ->find_one();
-        
+
         if (!$post) {
-            exit;
+            $post = ORM::for_table('posts')->create();
+            $post->post_date = new DateTime("now");
+            $post->post_status = 'draft';
+            $post->post_type = 'blog';
+            $post->protected = 0;
+        } else {
+            $post->post_date = new DateTime($post->post_date);
         }
-            
-        $post->post_date = new DateTime($post->post_date);
+        
+        if (function_exists('tidy_parse_string')) {
+            /*
+            $tidy = tidy_parse_string($post->post_content);
+            $post->post_content = $tidy->body();
+            */
+        }
         
         $tpl->set("post", $post);
         $content = $tpl->fetch("snippets/manage.edit.txt.php");
@@ -177,12 +261,17 @@ $app->command('edit:', 'e:',
                 list($nil, $key, $value) = $matches;
                 
                 switch($key) {
-                case "title":
+                case "post_title":
                 case "post_status":
                 case "original_source":
                 case "protected":
                 case "post_type":
+                    $post->$key = trim($value);
+                    break;
                 case "post_slug":
+                    if (empty($value)) {
+                        $value = Helpers::buildSlug($post->post_title);
+                    }
                     $post->$key = trim($value);
                     break;
                 case "post_date":
