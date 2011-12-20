@@ -2,7 +2,7 @@
 
 {% block pagecss %}{% endblock %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}{{ page_title|default(active|title) }}{% endblock %}
 {%block content %}
 {% for post in projects %}
 <article class="project format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
@@ -15,7 +15,7 @@
         {{ post.teaser|raw }}
         <br class="clear" />
     </p>
-{% if body %}
+{% if show_body %}
     <p>{{ post.content|raw }}</p>
 {% elseif post.content %}
     <footer>

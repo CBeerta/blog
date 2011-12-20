@@ -173,17 +173,27 @@ class Projects
     public static function overview($slug = null) 
     {
         $app = Slim::getInstance();
-        $project = self::loadProjects($slug);
+        $projects = self::loadProjects($slug);
         
-        if (empty($project)) {
+        if (empty($projects)) {
             $app->response()->status(404);
             return $app->render('404.html');
         }
         
+        if (!is_null($slug) && count($projects) == 1) { 
+            $project = current($projects);
+            $app->view()->appendData(
+                array(
+                    'page_title' => $project->post_title,
+                )
+            );
+        }
+        
         $app->view()->appendData(
             array(
-            'projects' => $project,
-            'body' => $slug,
+            'active' => 'projects',
+            'projects' => $projects,
+            'show_body' => $slug,
             )
         );
         

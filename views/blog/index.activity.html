@@ -1,9 +1,5 @@
-<div class="entry-meta">
-    <div class="date">{{ post.post_date|date(date_format) }}</div>
-    <span class="cat-links">{{ post.tags|format_tags|raw }}</span>
-</div>
-<div class="main">
-    <div class="blog entry-content" id="{{ post.ID }}">
-        <p>{{ post.post_content|format_content|raw }}</p>
-    </div>
-</div>
+    <p>
+        {{ post.post_title }} ({{ post.post_date|date(date_format) }})
+        {{ post.post_content|format_content|raw }}
+    </p>
+    <br class="clear" />
