@@ -33,10 +33,13 @@
 
 require_once __DIR__ . '/../setup.php';
 require_once __DIR__ . '/../vendor/Cling/Cling.php';
-require_once __DIR__ . '/../vendor/simplepie/SimplePieAutoloader.php';
 
-$tpl = new SimpleTemplate(__DIR__ . '/../views/');
-$app = new Cling(array('debug' => true));
+$app = new Cling(
+    array(
+        'debug' => true,
+        'template.path' => __DIR__ . '/../views/',
+    )
+);
 
 $app->configure(__DIR__ . '/../config.ini');
 
@@ -209,7 +212,7 @@ $app->command('detail:', 'v:',
 * Edit a post
 **/
 $app->command('edit:', 'e:',
-    function($id) use ($app, $tpl)
+    function($id) use ($app)
     {
         if (!is_numeric($id)) {
             $app->notFound();
@@ -238,8 +241,8 @@ $app->command('edit:', 'e:',
             */
         }
         
-        $tpl->set("post", $post);
-        $content = $tpl->fetch("snippets/manage.edit.txt.php");
+        $app->view->set("post", $post);
+        $content = $app->view->fetch("snippets/manage.edit.txt.php");
         
         $tmpname = tempnam("/var/tmp", "page-edit-{$id}-");
         file_put_contents($tmpname, $content);
