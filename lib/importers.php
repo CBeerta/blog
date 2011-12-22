@@ -60,7 +60,7 @@ $app = new Cling(array(
     'debug' => true,
     'dry-run' => false,
     'force' => false,
-    'templates.path' => __DIR__ . '/../views/',
+    'template.path' => __DIR__ . '/../views/',
 ));
 
 $app->configure(__DIR__ . '/../config.ini');
@@ -112,7 +112,8 @@ $app->command('post-type:',
 $app->command('import-google', 
     function() use ($app)
     {
-        $importer = new Import_Google($app);
+        $importer = new Import_Google();
+        $importer->setCling($app);
         $importer->run();
     })
     ->help("Import Google+ Posts.");
@@ -134,7 +135,8 @@ $app->command('import-files',
 $app->command('import-rss:', 
     function($url) use ($app)
     {
-        $importer = new Import_Rss($app, $url);
+        $importer = new Import_Rss($url);
+        $importer->setCling($app);
         $importer->run();
     })
     ->help("Import Posts from a RSS Feed.");

@@ -47,7 +47,6 @@ if ( PHP_SAPI != 'cli' ) {
 **/
 class Import_Rss
 {
-
     /**
     * Url
     **/
@@ -61,14 +60,24 @@ class Import_Rss
     /**
     * Constructor
     *
-    * @param object $cling Cling Application
-    * @param string $url   Url to the rss feed
+    * @param string $url Url to the rss feed
     *
-    * @return object $post modified post 
+    * @return void
     **/
-    public function __construct($cling, $url)
+    public function __construct($url)
     {
         $this->_url = $url;
+    }
+
+    /**
+    * Set Cling
+    *
+    * @param object $cling Cling Application
+    *
+    * @return void
+    **/
+    public function setCling($cling)
+    {
         $this->_cling = $cling;
     }
 
@@ -79,17 +88,15 @@ class Import_Rss
     * @param object $post an idiorm object with the post
     *
     * @return object $post modified post
-    *
-    * FIXME: Gee, HTML pastery action. I should shoot myself.
     **/
     private function _deviantArt($item, $post)
     {
         $content  = '';
         
         if (isset($item->get_enclosure()->thumbnails[0])) {
-            $content .= '<a href="' . $item->get_enclosure()->link . '">';
-            $content .= '<img src="' . $item->get_enclosure()->thumbnails[0];
-            $content .= '"></a>';
+            $this->_cling->view->set('item', $item->get_enclosure());
+            $content .= 
+                $this->_cling->view->fetch('snippets/importer.deviantart.html.php');
         }
         
         if (isset($item->get_enclosure()->description)) {
@@ -183,6 +190,38 @@ class Import_Rss
 
         return $post;
     }
+
+    /**
+    * Github public feed
+    *
+    * @param object $item simplepies item
+    * @param object $post an idiorm object with the post
+    *
+    * @return object $post modified post
+    **/
+    private function _github($item, $post)
+    {
+        $title = $item->get_title();
+        $date = new DateTime($item->get_date());
+        if (!preg_match("|^(.*?) pushed to (.*?) at (.*?)$|i", $title, $matches)) {
+            return false;
+        }
+
+        $item = (object) array(
+            'title' => $title,
+            'date' => $date,
+            'user' => $matches[1],
+            'branch' => $matches[2],
+            'repo' => $matches[3],
+        );
+        
+        $this->_cling->view->set('item', $item);
+        $post->post_content = $this->_cling->view->fetch(
+            'snippets/importer.github.html.php'
+        );
+
+        return $post;    
+    }
     
     /**
     * Import RSS Feeds into blog
@@ -239,7 +278,6 @@ class Import_Rss
             /**
             * Basic style if there is no custom one
             **/
-
             $post->post_type = $post_type;
             $post->post_slug = $post_slug;
             $post->guid = Helpers::buildSlug($item->get_title()) . '-' 
@@ -265,8 +303,16 @@ class Import_Rss
                 $tags = array('deviantArt');
                 break;
             case 'github.com':
+                $post->post_status = 'draft';
+                $post = $this->_github($item, $post);
                 $tags = array('Github');
                 break;
+            }
+
+            if ($post === false) {
+                // if a content build returns false: skip the post
+                echo "... Skipping\n";
+                continue;
             }
             
             $post_meta = $post->post_meta;
@@ -274,7 +320,7 @@ class Import_Rss
             
             // d($post->as_array());
             
-            if ($post->protected != 0) {
+            if ($post->protected != 0 && !$this->_cling->option('force')) {
                 echo "... Post is protected, not altering\n";
                 continue;
             }

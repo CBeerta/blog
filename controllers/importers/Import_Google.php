@@ -48,11 +48,6 @@ if ( PHP_SAPI != 'cli' ) {
 class Import_Google
 {
     /**
-    * SimpleTemplate Class
-    **/
-    private $_tpl;
-
-    /**
     * Google ID
     **/
     private $_google_id;
@@ -75,11 +70,20 @@ class Import_Google
     /**
     * Constructor
     *
-    * @param object $cling Cling Application
-    *
     * @return object $post modified post 
     **/
-    public function __construct($cling)
+    public function __construct()
+    {
+    }
+
+    /**
+    * Set Cling
+    *
+    * @param object $cling Cling Application
+    *
+    * @return void
+    **/
+    public function setCling($cling)
     {
         $this->_cling = $cling;
     }
@@ -97,7 +101,6 @@ class Import_Google
         $this->_google_id = $this->_cling->option('google_id');
         $this->_google_api_key = $this->_cling->option('google_api_key');
         $this->_dry_run = $this->_cling->option('dry-run');
-        $this->_tpl = new SimpleTemplate($this->_cling->option('templates.path'));
 
         do {
 
@@ -217,7 +220,7 @@ class Import_Google
         $post->guid = $post->post_slug . '-' . time();
         $post->original_source = $item->url;
         $post->post_type = 'blog';
-        
+
         if (!$this->_dry_run) {
             $post->save();
             return $post->ID;
@@ -269,9 +272,10 @@ class Import_Google
                 break;
                 
             case 'article':
-                $this->_tpl->set('attachment', $attachment);
-                $content .= 
-                    $this->_tpl->fetch('snippets/importer.google.article.html.php');
+                $this->_cling->view->set('attachment', $attachment);
+                $content .= $this->_cling->view->fetch(
+                    'snippets/importer.google.article.html.php'
+                );
                 break;
 
             case 'photo-album':

@@ -3,7 +3,6 @@ SOURCES = setup.php \
 	 controllers/*.php \
 	 lib/helpers.php \
 	 lib/resize.php \
-	 lib/simpletemplate.php \
 	 lib/TwigView.php \
 	 controllers/*/*.php \
 	 public/index.php

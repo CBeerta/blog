@@ -1,5 +1,1 @@
-    <p>
-        {{ post.post_title }} ({{ post.post_date|date(date_format) }})
-        {{ post.post_content|format_content|raw }}
-    </p>
-    <br class="clear" />
+{{ post.post_content|format_content|raw }}

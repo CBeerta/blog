@@ -97,7 +97,8 @@ $app->command('taglist',
                     FROM term_relations 
                     WHERE term_relations.post_terms_ID=post_terms.ID
                 ) AS posts_with_term'
-            )->find_many();
+            )->order_by_asc('slug')
+            ->find_many();
             
         foreach ($tags as $tag) {
             print "{$tag->name} ({$tag->posts_with_term})\n";
