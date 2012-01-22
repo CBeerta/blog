@@ -59,7 +59,7 @@ class Docs
  
         $docs_dir = Helpers::option('docs_dir');
         
-        $glob = "{{$docs_dir}/*.html,{$docs_dir}/*.mkd, {$docs_dir}/*.markdown}";
+        $glob = "{{$docs_dir}/*.html,{$docs_dir}/*.mkd,{$docs_dir}/*.markdown}";
         foreach (glob($glob, GLOB_BRACE) as $filename) {
         
             // Don't want unreadable files
