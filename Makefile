@@ -35,7 +35,10 @@ ci:
 
 phpcs:
 	phpcs $(SOURCES)
-    
 
+unittests:
+	phpunit -v
+    
+build: phpcs unittests
 
 # vim: set tabstop=4 shiftwidth=4 noexpandtab:

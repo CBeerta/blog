@@ -115,7 +115,26 @@ class Docs
     **/
     public static function loadContent($doc)
     {
-        $data = file_get_contents($doc->filename);
+        $data = file($doc->filename);
+
+        $meta_open = false;
+        foreach ($data as $k => $line) {
+            
+            /**
+            * Strip Gitit's meta block
+            **/
+            if (preg_match('|^---$|', $line)) {
+                $meta_open = true;
+            } else if (preg_match('|^...$|', $line)) {
+                $meta_open = false;
+                unset($data[$k]);
+            }
+            if ($meta_open) {
+                unset($data[$k]);
+            }
+        }
+        
+        $data = implode('', $data);
         $doc->content = Markdown($data);
         
         return $doc;
