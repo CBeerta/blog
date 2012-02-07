@@ -259,7 +259,7 @@ class Helpers
             // for now only allow editing on phoebe
             return true;
         }
-        if (php_uname('n') === 'alkaia' /*&& PHP_SAPI == 'cli'*/) {
+        if (php_uname('n') === 'areto' /*&& PHP_SAPI == 'cli'*/) {
             // for now only allow editing on phoebe
             return true;
         }

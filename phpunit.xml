@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit color="true">
+
+    <testsuites>
+
+        <testsuite name="Posts">
+            <file>tests/Posts.php</file>
+        </testsuite>
+
+
+        <testsuite name="Projects">
+            <file>tests/Projects.php</file>
+        </testsuite>
+
+    </testsuites>
+
+</phpunit>
