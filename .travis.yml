@@ -5,3 +5,7 @@ php:
 before_script:
   - git submodule init
   - git submodule update
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
+
+script: make phpcs
