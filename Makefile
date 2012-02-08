@@ -37,6 +37,9 @@ phpcs:
 	phpcs $(SOURCES)
 
 unittests:
+	rm -rf data/
+	mkdir -vp data/projects data/docs data/posts data/uploads
+	cat schema.sql | sqlite3 data/planner.db
 	phpunit -v
     
 build: phpcs unittests

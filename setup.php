@@ -66,9 +66,11 @@ Helpers::option('templates.path', __DIR__ . '/views/');
 /**
 * Load config file and override default options
 **/    
-$config = parse_ini_file(__DIR__."/config.ini");
-foreach ( $config as $k => $v ) {
-    Helpers::option($k, $v);
+if (file_exists(__DIR__."/config.ini")) {
+    $config = parse_ini_file(__DIR__."/config.ini");
+    foreach ( $config as $k => $v ) {
+        Helpers::option($k, $v);
+    }
 }
 
 ORM::configure('sqlite:' . Helpers::option('dbfile'));
