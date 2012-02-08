@@ -2,13 +2,14 @@
 
 class ProjectsTest extends PHPUnit_Framework_TestCase
 {
-    public function testProject()
+    public function testProjectOverview()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        Projects::overview();
     }
 
-
+    public function testProject()
+    {
+        Projects::overview('testproject');
+    }
 }
 

@@ -1,26 +1,61 @@
 <?php
 
+require_once __DIR__ . '/../setup.php';
+require_once __DIR__ . '/InitTests.php';
+
 class PostTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp() {
+
+        $_SERVER['REQUEST_METHOD'] = "GET";
+        $_ENV['SLIM_MODE'] = null;
+        $_COOKIE['foo'] = 'bar';
+        $_COOKIE['foo2'] = 'bar2';
+        $_SERVER['REQUEST_URI'] = "/";
+
+        $app = new Slim(
+            array(
+                'view' => 'CustomView',
+                'templates.path' => Helpers::option('templates.path'),
+                'mode' => 'testing',
+            )
+        );
+
+        $app->configureMode(
+            'production', function() use ($app) {
+                $app->config(
+                    array(
+                    'log.enable' => false,
+                    'debug' => true
+                    )
+                );
+            }
+        );
+    }
+    
     public function testArticle()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        Posts::article();
+    }
+
+    public function testBlog()
+    {
+        Blog::index();
+    }
+
+    public function testTag()
+    {
+        Blog::tag('deviantart');
     }
 
     public function testPost()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        Blog::detail('testpost');
     }
 
     public function testFeed()
     {
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        Posts::feed();
     }
 
 }
