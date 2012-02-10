@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../setup.php';
+
 //Prepare mock HTTP request
 $_SERVER['REDIRECT_STATUS'] = "200";
 $_SERVER['HTTP_HOST'] = "slim";
@@ -45,4 +47,30 @@ session_start();
 class CustomView extends Slim_View {
     function render($template) { echo "Custom view"; }
 }
+
+$_SERVER['REQUEST_METHOD'] = "GET";
+$_ENV['SLIM_MODE'] = null;
+$_COOKIE['foo'] = 'bar';
+$_COOKIE['foo2'] = 'bar2';
+$_SERVER['REQUEST_URI'] = "/";
+
+$app = new Slim(
+    array(
+        'view' => 'TwigView',
+        /* 'view' => 'CustomView', */
+        'templates.path' => Helpers::option('templates.path'),
+        'mode' => 'testing',
+    )
+);
+
+$app->configureMode(
+    'production', function() use ($app) {
+        $app->config(
+            array(
+            'log.enable' => false,
+            'debug' => true
+            )
+        );
+    }
+);
 

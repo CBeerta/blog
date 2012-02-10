@@ -1,63 +1,104 @@
 <?php
 
-require_once __DIR__ . '/../setup.php';
-require_once __DIR__ . '/InitTests.php';
-
-class PostTest extends PHPUnit_Framework_TestCase
+class PostsTest extends PHPUnit_Framework_TestCase
 {
-    public function setUp() {
-
-        $_SERVER['REQUEST_METHOD'] = "GET";
-        $_ENV['SLIM_MODE'] = null;
-        $_COOKIE['foo'] = 'bar';
-        $_COOKIE['foo2'] = 'bar2';
-        $_SERVER['REQUEST_URI'] = "/";
-
-        $app = new Slim(
-            array(
-                'view' => 'CustomView',
-                'templates.path' => Helpers::option('templates.path'),
-                'mode' => 'testing',
-            )
-        );
-
-        $app->configureMode(
-            'production', function() use ($app) {
-                $app->config(
-                    array(
-                    'log.enable' => false,
-                    'debug' => true
-                    )
-                );
-            }
-        );
-    }
-    
+    /**
+    * @group articles
+    **/
     public function testArticle()
     {
         Posts::article();
+
+        $app = Slim::getInstance();
+        $this->assertEquals(200, $app->response()->status());
+        $this->expectOutputRegex('|Lorem ipsum dolor sit amet|');
     }
 
+    /**
+    * @group blog
+    **/
     public function testBlog()
     {
         Blog::index();
+
+        $app = Slim::getInstance();
+        $this->assertEquals(200, $app->response()->status());
+        $this->expectOutputRegex('|Lorem ipsum dolor sit amet|');
     }
 
+    /**
+    * @group blog
+    **/
+    public function testBlogPost()
+    {
+        Blog::detail('test');
+
+        $app = Slim::getInstance();
+        $this->assertEquals(200, $app->response()->status());
+        $this->expectOutputRegex('|Lorem ipsum dolor sit amet|');
+    }
+
+    /**
+    * @group blog
+    **/
+    public function testBlogPostNonExisting()
+    {
+        Blog::detail('testthatdoesnotexist');
+
+        $app = Slim::getInstance();
+        $this->assertEquals(404, $app->response()->status());
+        $this->expectOutputRegex('|Sorry. Couldn\'t Find That Page!|');
+
+        // reset status for followup tests
+        $app->response()->status(200);
+    }
+
+    /**
+    * @group blog
+    **/
+    public function testBlogArchive()
+    {
+        Blog::archive();
+
+        $app = Slim::getInstance();
+        $this->assertEquals(200, $app->response()->status());
+        $this->expectOutputRegex('|Blog Archive|');
+    }
+
+    /**
+    * @group blog
+    **/
     public function testTag()
     {
-        Blog::tag('deviantart');
+        Blog::tag('test');
+
+        $app = Slim::getInstance();
+        $this->assertEquals(200, $app->response()->status());
+        $this->expectOutputRegex('|Lorem ipsum dolor sit amet|');
     }
 
+    /**
+    * @group blog
+    **/
     public function testPost()
     {
-        Blog::detail('testpost');
+        Blog::detail('test');
+
+        $app = Slim::getInstance();
+        $this->assertEquals(200, $app->response()->status());
+        $this->expectOutputRegex('|Lorem ipsum dolor sit amet|');
     }
 
-    public function testFeed()
+     /**
+    * @group blog
+    **/
+   public function testFeed()
     {
         Posts::feed();
+
+        $app = Slim::getInstance();
+        $this->assertEquals('application/rss+xml', $app->response()->header('Content-Type'));
+        $this->expectOutputRegex('|content:encoded|');
+        $this->assertEquals(200, $app->response()->status());
     }
-
 }
-
-
