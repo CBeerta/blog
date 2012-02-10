@@ -153,6 +153,11 @@ class Docs
         
         $docs = self::loadDocs();
         
+        if (count($docs) < 1) {
+            $app->response()->status(404);
+            return $app->render('404.html');
+        }
+        
         if ($slug === null) {
             $content = $docs[self::$_latest];
         } else {

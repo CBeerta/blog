@@ -60,6 +60,11 @@ class Other
         $posts = Projects::mergeBlogPosts($posts);
 
         reset($posts);
+
+        if (count($posts) < 1) {
+            $app->response()->status(404);
+            return $app->render('404.html');
+        }
         
         $app->view()->appendData(
             array(
@@ -187,7 +192,11 @@ class Other
             )
             ->order_by_asc('slug')
             ->find_many();
-        
+
+        if (count($tags) < 1) {
+            return false;
+        }
+
         $counts = array();
         $real_counts = array(); // For the alt tag
         foreach ( (array) $tags as $key => $tag ) {

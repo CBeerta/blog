@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit color="true">
+<phpunit colors="false" bootstrap="tests/bootstrap.php">
+    <php>
+    <!--
+      <env name="foo" value="bar"/>
+      <post name="foo" value="bar"/>
+      <get name="foo" value="bar"/>
+      <cookie name="foo" value="bar"/>
+      <server name="foo" value="bar"/>
+      <files name="foo" value="bar"/>
+      <request name="foo" value="bar"/>
+    -->
+      <post name="s" value="test"/> <!-- Search POST -->
+    </php>
 
     <testsuites>
 
@@ -8,9 +20,18 @@
             <file>tests/Posts.php</file>
         </testsuite>
 
+        <testsuite name="Photography">
+            <file>tests/Photography.php</file>
+        </testsuite>
 
+        <testsuite name="Other">
+            <file>tests/Other.php</file>
+        </testsuite>
         <testsuite name="Projects">
             <file>tests/Projects.php</file>
+        </testsuite>
+        <testsuite name="Docs">
+            <file>tests/Docs.php</file>
         </testsuite>
 
     </testsuites>
