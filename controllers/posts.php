@@ -130,14 +130,18 @@ class Posts
 
         $posts = ORM::for_table('posts')
             ->select_expr(Posts::_POSTS_SELECT_EXPR)
-            ->order_by_desc('post_date')
-            ->limit(1)
-            ->where_like('tags', "%Article%");
+            ->where_like('tags', "%Article%")
+            ->order_by_raw('RANDOM()')
+            ->limit(1);
             
         $posts = Posts::setPermissions($posts);
         $posts = $posts->find_many();
         
         $posts = Projects::mergeBlogPosts($posts);
+        
+        if (Helpers::option('randomize_landing_page') == 1) {
+            shuffle($posts);
+        }
         
         $post = array_shift($posts);
         

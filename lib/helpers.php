@@ -58,6 +58,7 @@ class Helpers
         'posts_per_page' => 5,
         'date_format' => 'F j, Y',
         'base_uri' => '/',
+        'randomize_landing_page' => 0,
         'google_id' => null,
         'google_api_key' => null,
     );
@@ -255,7 +256,7 @@ class Helpers
     **/
     public static function isEditor()
     {
-        if (php_uname('n') === 'phoebe' /*&& PHP_SAPI == 'cli'*/) {
+        if (php_uname('n') === 'eurybe' /*&& PHP_SAPI == 'cli'*/) {
             // for now only allow editing on phoebe
             return true;
         }
