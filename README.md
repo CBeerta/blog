@@ -8,6 +8,8 @@ This is my Personal Fun Project. It may act as inspiration. Don't expect it to w
 
 This ain't Wordpress. It's as bare bones as it gets. It may kill your kittens too.
 
+[![Build Status](https://secure.travis-ci.org/CBeerta/Playground.png?branch=retheme)](http://travis-ci.org/CBeerta/Playground)
+
 # Uses
 
 * [Slim](https://github.com/codeguy/Slim)
