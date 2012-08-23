@@ -7,7 +7,7 @@ SOURCES = setup.php \
 	 controllers/*/*.php \
 	 public/index.php
 
-all: css phpcs
+all: css phpcs lint
 
 imports:
 	./import $(OPTION) --import-files
@@ -30,6 +30,9 @@ css:
 	cp vendor/Skeleton/stylesheets/base.css public/css/base.css
 	cp vendor/Skeleton/stylesheets/skeleton.css public/css/skeleton.css
 
+lint:
+	for source in $(SOURCES) ; do php -l $$source || exit 1 ; done
+
 ci:
 	git push
 
@@ -45,6 +48,6 @@ unittests:
 	cp tests/Help.page data/docs
 	phpunit -v
     
-build: phpcs unittests
+build: phpcs lint unittests
 
 # vim: set tabstop=4 shiftwidth=4 noexpandtab:
