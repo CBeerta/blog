@@ -120,7 +120,7 @@ class Blog
 
         $post = ORM::for_table('posts')
             ->select_expr(Posts::_POSTS_SELECT_EXPR)
-            ->where_like('post_slug', "%{$slug}%")
+            ->where('post_slug', "{$slug}")
             ->order_by_desc('post_date');
 
         $post = Posts::setPermissions($post);

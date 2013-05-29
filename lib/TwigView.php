@@ -118,7 +118,7 @@ class TwigView extends Slim_View
     **/
     public static function formatContent($content, $line_break='<br />')
     {
-        if (strstr($content, '<') !== false) {
+        if (preg_match('#\<(br|p)(\s|/)?>#i', $content)) {
             /**
             * This is somewhat specific. I dunno if Wordpress generated these.
             * It SUCKS. maybe easier to just clean my posts?

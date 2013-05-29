@@ -16,7 +16,9 @@
 
 /* #Site Styles
 ================================================== */
-body { }
+body { 
+    font: normal 13px Roboto,arial,sans-serif;
+}
 
 pre { overflow: auto; background-color: #eee; padding: 5px; }
 
