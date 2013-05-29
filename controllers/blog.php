@@ -54,7 +54,7 @@ class Blog
         return Posts::index(
             $offset, 
             'blog', 
-            array('blog', 'deviantart', 'photo' /* , 'activity' */)
+            array('blog', 'deviantart'/*, 'photo' *//* , 'activity' */)
         );
     }
 
