@@ -1,0 +1,21 @@
+[submodule "vendor/idiorm"]
+	path = vendor/idiorm
+	url = https://github.com/CBeerta/idiorm.git
+[submodule "vendor/markdown"]
+	path = vendor/markdown
+	url = http://git.michelf.com/php-markdown
+[submodule "vendor/simplepie"]
+	path = vendor/simplepie
+	url = https://github.com/simplepie/simplepie.git
+[submodule "vendor/Slim"]
+	path = vendor/Slim
+	url = https://github.com/codeguy/Slim.git
+[submodule "vendor/Twig"]
+	path = vendor/Twig
+	url = https://github.com/fabpot/Twig.git
+[submodule "vendor/Cling"]
+	path = vendor/Cling
+	url = git://github.com/CBeerta/Cling.git
+[submodule "vendor/Skeleton"]
+	path = vendor/Skeleton
+	url = git://github.com/CBeerta/Skeleton.git

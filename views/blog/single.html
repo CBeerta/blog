@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ post.post_title }}{% endblock %}
+
+{% block content %}
+
+{% if not post %}
+<alert>Post does not exist!</alert>
+{% else %}
+
+<article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
+{% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
+
+{% for c in comments %}
+{% if loop.first %}
+<section class="comments">
+    <h2>{{ post.comment_count|plural('though') }} on &ldquo;<span>{{ post.post_title }}</span>&rdquo;</h2>
+    <ul>
+{% endif %}
+    <li class="comment" id="{{ comment-c.ID }}">
+    <div>
+        <span>{{ c.comment_date|date() }}</span>
+        <div>
+            <img class="avatar" src="{{ c.comment_author_email|raw|comment_image }}" width="48" height="48"/>
+            <cite class="fn"><a href="{{ c.comment_author_url|default('#')|raw }}" rel="external nofollow" class="url">{{ c.comment_author }}</a></cite>
+            <span class="says">says:</span>
+        </div>
+        <p>{{ c.comment_content|raw }}</p>
+    </div>
+    <br class="clear" />
+    </li>
+{% if loop.last %}
+    </ul>
+{% if post.original_source %}
+    <a href="{{ post.original_source }}">Comment on this Post</a>        
+{% endif %}
+</section>
+{% endif %}
+{% endfor %}
+</article>
+{% endif %}
+{% endblock %}

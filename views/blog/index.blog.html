@@ -1,0 +1,19 @@
+    <h1>
+        {% if post.post_status == 'draft' %}Draft: {% endif %}
+        <a href="/{{ post.post_type }}/{{ post.post_slug }}">
+            {{ post.post_title }}
+        </a>
+    </h1>
+    <p>{{ post.post_content|format_content|raw }}</p>
+    <br class="clear" />
+    <footer>
+        <aside class="tags">
+        {{ post.tag_names|format_tags|raw }}
+        </aside>
+        <time datetime="{{ post.post_date|date('c') }}">{{ post.post_date|date(date_format) }}</time>
+        {% if post.comment_count > 0 %}
+        <p class="feedback">
+            <a href="/post/{{ post.post_slug }}#comments">{{ post.comment_count }}</a>
+        </p>
+        {% endif %}
+    </footer>

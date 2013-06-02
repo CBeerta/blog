@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+   <url>
+      <loc>http://{{ _host }}/</loc>
+      <lastmod>{{ lastmod }}</lastmod>
+      <changefreq>weekly</changefreq>
+   </url>
+
+{% for key, item in menu_items %}
+   <url>
+      <loc>http://{{ _host }}/{{ key }}</loc>
+      <lastmod>{{ lastmod }}</lastmod>
+      <changefreq>daily</changefreq>
+   </url>
+{% endfor %}
+
+{% for post in posts %}
+   <url>
+      <loc>http://{{ _host }}/{{ post.post_type }}/{{ post.post_slug }}</loc>
+      <lastmod>{{ post.post_date|date('Y-m-d') }}</lastmod>
+      <changefreq>weekly</changefreq>
+   </url>
+{% endfor %}
+</urlset>

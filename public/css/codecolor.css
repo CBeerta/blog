@@ -1,0 +1,36 @@
+/* Layout */
+.codecolorer { padding: 5px; overflow: auto; /* max-width: 700px; max-height: 400px; */}
+.codecolorer, .codecolorer *, .codecolorer-container, .codecolorer-container * { font: 12px/1.4em Monaco, Lucida Console, monospace }
+
+/* Layout styles */
+.codecolorer { border: 1px solid #9F9F9F; }
+
+/* "Slush & Poppies" color scheme (default) */
+.codecolorer { color: #ffffff; background-color: #F1F1F1; }
+/* Comment */
+.codecolorer .co0, .codecolorer .co1, .codecolorer .co2, .codecolorer .co3, .codecolorer .co4, .codecolorer .coMULTI { color: #406040; font-style: italic; }
+/* Constant */
+.codecolorer .nu0, .codecolorer .re3 { color: #0080A0; }
+/* String */
+.codecolorer .st0, .codecolorer .st_h, .codecolorer .es0, .codecolorer .es1 { color: #C03030; }
+/* Entity */
+.codecolorer .me1, .codecolorer .me2 { color: #0080FF; }
+/* Keyword */
+.codecolorer .kw1, .codecolorer .kw2, .codecolorer .sy1 { color: #2060A0; }
+/* Storage */
+.codecolorer .kw3, .codecolorer .kw4, .codecolorer .kw5, .codecolorer .re2 { color: #008080; }
+/* Variable */
+.codecolorer .re0, .codecolorer .re1 { color: #A08000; }
+
+/* "Vibrant Ink" color scheme */
+.vibrant { color: #FFFFFF; background-color: #000000; }
+.vibrant .codecolorer .co0, .vibrant .codecolorer .co1, .vibrant .codecolorer .co2, .vibrant .codecolorer .co3, .vibrant .codecolorer .co4, .vibrant .codecolorer .coMULTI { color: #9933CC; font-style: italic; }
+.vibrant .codecolorer .nu0, .vibrant .codecolorer .re3 { color: #339999; }
+.vibrant .codecolorer .st0, .vibrant .codecolorer .st_h, .vibrant .codecolorer .es0, .vibrant .codecolorer .es1 { color: #66FF00; }
+.vibrant .codecolorer .me1, .vibrant .codecolorer .me2 { color: #FFCC00; }
+.vibrant .codecolorer .kw1, .vibrant .codecolorer .kw2, .vibrant .codecolorer .sy1 { color: #FF6600; }
+.vibrant .codecolorer .kw3, .vibrant .codecolorer .kw4, .vibrant .codecolorer .kw5, .vibrant .codecolorer .re2 { color: #FFCC00; }
+.vibrant .codecolorer .re0, .vibrant .codecolorer .re1 { color: #FFFFFF; }
+.vibrant .codecolorer .br0, .vibrant .codecolorer .sy0 { color: #FFFFFF; }
+.vibrant .xml .re1 { color: #FFCC00; }
+.vibrant .xml .re0 { color: #339999; }

@@ -1,0 +1,13 @@
+/* ######################### Wallpapers ############### */
+
+.wallpaper p { text-align: left; }
+.wallpaper ul { text-align: center; }
+.wallpaper ul li {
+    float: left;
+    list-style: none;
+    margin: 2px 2px 30px 2px;
+    padding: 2px;
+}
+.wallpaper img { border: 3px solid #ddd; }
+.wallpaper a { padding: 0; }
+.wallpaper ul li div { text-align: center; }

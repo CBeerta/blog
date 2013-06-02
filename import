@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+DIR=$(dirname $0)
+
+php -q $DIR/lib/importers.php $*
+
+

@@ -1,0 +1,35 @@
+{% extends "simple_base.html" %}
+
+{% block title %}{{ display.doc_name }} - Documentation{% endblock %}
+
+{%block precontent %}
+<nav class="four columns">
+    <ul>
+        <h3>Topics</h3>
+{% for doc in docs %}
+        <li><a href="{{ base_url}}/docs/{{ doc.doc_name }}">{{ doc.doc_name }}</a>
+{% if display.doc_name == doc.doc_name %}
+    <ul>
+{% for sub in doc.topics %}
+        <li>{{ sub }}
+{% endfor %}
+    </ul>
+{% endif %}
+{% endfor %}
+    </ul>
+</nav>
+{% endblock %}
+
+
+{%block content %}
+<section class="twelve columns" id="content">
+    <h1>{{ display.doc_name }}</h1>
+   
+    <p id="intro">This is my Collection of random Bits'n'Pieces. Code, Documentation and whatever
+    else i might want to keep around. I made this public as there might be Information
+    here that other people find Interesting.</p>
+    <hr>
+
+    <p>{{ display.content|raw }}</p>
+</section>
+{% endblock %}
