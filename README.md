@@ -34,3 +34,4 @@ This ain't Wordpress. It's as bare bones as it gets. It may kill your kittens to
 * Download all modules in `vendor/`. Look at .gitmodules for details.
 * Adapt config.ini (Check index.php configure section for all available options)
 * Create Posts Database
+
