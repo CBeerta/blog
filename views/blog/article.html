@@ -7,7 +7,7 @@
 {% block title %}{{ post.post_title }}{% endblock %}
 
 {%block content %}
-<section class="twelve columns" id="content">
+<section class="twelve columns">
     <article class="post format-{{ post.post_type }} post-{{ post.ID }}" id="{{ post.ID }}">
 {% include ['blog/index.' ~ post.post_type ~ '.html', 'blog/index.blog.html'] %} 
     </article>

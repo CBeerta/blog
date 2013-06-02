@@ -35,6 +35,9 @@
     <link href="http://{{ _host }}/blog/feed" rel="alternate" title="Claus Beerta - Feed" type="application/atom+xml" />
     <meta name="google-site-verification" content="zX85kldtRmA8Y85FYTLcIMpLimAS9zTEZy-UgEk4HFA" />
     <meta name="msvalidate.01" content="2209F686A8D39BD35A7304F56B09DD52" />
+
+    <script src="http://use.typekit.net/ajf8ggy.js"></script>
+    <script>try { Typekit.load(); } catch (e) {}</script>
 </head>
 <body>
 
@@ -43,7 +46,7 @@
     <header class="four columns">
         <h2><a href="/">Claus Beerta</a></h2>
         <small>Stuff i do, don't and other babble.</small>
-        <img src="/header-images/{{ header_image }}">
+        <img src="/header-images/{{ header_image }}" id="header-img">
         <nav>
         <ul>
 {% for key, item in menu_items %}
@@ -68,7 +71,7 @@
     </section>
 
     <footer class="sixteen columns sidebar">
-	    <div class="one-third column">
+	    <div class="four column">
 	        <h4>Search</h4>
             <form role="search" method="POST" id="searchform" action="/sidebar/search" >
         	    <div>
@@ -85,8 +88,6 @@
             {{ tag|raw }}
 {% endfor %}
         </div>
-	    <div class="one-third column">
-	    </div>
     </footer>
 
 </div><!-- container -->

@@ -17,15 +17,15 @@
 /* #Site Styles
 ================================================== */
 body { 
-    font: normal 13px Roboto,arial,sans-serif;
+    font: sans-serif;
 }
 
 pre { overflow: auto; background-color: #eee; padding: 5px; }
 
 /* Header and Navigation
 ================================================== */
-header { padding-top: 75px; padding-bottom: 10px; }
-header img { max-width: 280px; border-radius: 5px; }
+header { padding-top: 75px; padding-bottom: 10px; position: fixed; left: 20px; }
+header img { max-width: 220px; border-radius: 5px; }
 header h2 { margin-bottom: 0px; line-height: 0.8em; border-bottom: 1px solid black; margin-bottom: 10px; }
 header a { text-decoration: none; }
 
@@ -42,11 +42,11 @@ nav.pagination .nav-next { float: right; }
 
 /* Content
 ================================================== */
-#content { padding-top: 10px; }
+#content { padding-top: 10px; margin-left: 220px; }
 
 /* footer
 ================================================== */
-footer.sidebar { margin-top: 50px; margin-bottom: 100px; }
+footer.sidebar { margin-top: 50px; margin-bottom: 100px; padding-left: 220px; }
 
 /* #Page Styles
 ================================================== */
@@ -99,49 +99,40 @@ aside.tags a:hover { color: #222; text-decoration: none; }
 
 /* #Media Queries
 ================================================== */
-    @media only screen and (min-width: 960px) and (max-width: 1199px) {
-	    header img { max-width: 220px; }
-    }
+@media only screen and (min-width: 960px) and (max-width: 1199px) {
+    header { max-width: 220px; }
+}
 
-	/* Smaller than standard 960 (devices and browsers) */
-	@media only screen and (max-width: 959px) {
-	}
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 959px) {
+    header { max-width: 172px; }
+}
 
-	/* Tablet Portrait size to standard 960 (devices and browsers) */
-	@media only screen and (min-width: 768px) and (max-width: 959px) {
-	    header img { max-width: 172px; }
-	}
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+    header { max-width: 172px; }
+    #content { padding-left: 180px; }
+}
 
-	/* All Mobile Sizes (devices and browser) */
-	@media only screen and (max-width: 767px) {
-	    header { padding-top: 5px; }
-	    article img { max-width: 400px; }
-	}
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    header { padding-top: 5px; max-width: 120px; }
+    article img { max-width: 400px; }
+    header img#header-img { display: none; }
+    #content { padding-left: 120px; }
+}
 
-	/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
-	@media only screen and (min-width: 480px) and (max-width: 767px) {
-	    article img { max-width: 400px; }
-	}
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    article img { max-width: 400px; }
+    header { max-width: 172px; }
+}
 
-	/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
-	@media only screen and (max-width: 479px) {
-	    article img { max-width: 300px; }
-	}
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
+    article img { max-width: 300px; }
+    header { max-width: 120px;}
+    header img#header-img { display: none; }
+    #content {padding-left: 120px; }
+}
 
-/* #Font-Face
-================================================== */
-/* 	This is the proper syntax for an @font-face file
-		Just create a "fonts" folder at the root,
-		copy your FontName into code below and remove
-		comment brackets */
-
-/*	@font-face {
-	    font-family: 'FontName';
-	    src: url('../fonts/FontName.eot');
-	    src: url('../fonts/FontName.eot?iefix') format('eot'),
-	         url('../fonts/FontName.woff') format('woff'),
-	         url('../fonts/FontName.ttf') format('truetype'),
-	         url('../fonts/FontName.svg#webfontZam02nTh') format('svg');
-	    font-weight: normal;
-	    font-style: normal; }
-*/
