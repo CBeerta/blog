@@ -1,5 +1,7 @@
 <?php
 
+use \Slim\Slim;
+
 class ProjectsTest extends PHPUnit_Framework_TestCase
 {
     public function testProjectOverview()

@@ -1,5 +1,7 @@
 <?php
 
+use \Slim\Slim;
+
 class DocsTest extends PHPUnit_Framework_TestCase
 {
     /**

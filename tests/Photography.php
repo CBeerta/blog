@@ -1,5 +1,7 @@
 <?php
 
+use \Slim\Slim;
+
 class PhotographyTest extends PHPUnit_Framework_TestCase
 {
     /**
