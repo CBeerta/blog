@@ -31,6 +31,9 @@
 * @link     http://claus.beerta.de/
 **/
 
+use Slim\Slim;
+use Michelf\Markdown;
+
 /**
 * Projects
 *
@@ -98,8 +101,8 @@ class Projects
             
             if (in_array($extension, array('md','mkd'))) {
                 // Markdown
-                $teaser = Markdown($teaser);
-                $post_content = Markdown($post_content);
+                $teaser = Markdown::defaultTransform($teaser);
+                $post_content = Markdown::defaultTransform($post_content);
             }
             
             $post_date = new DateTime($post_date);

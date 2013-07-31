@@ -31,6 +31,8 @@
 * @link     http://claus.beerta.de/
 **/
 
+use \Slim\Slim;
+
 /**
 * Photography
 *
@@ -51,7 +53,7 @@ class Photography
     **/
     public static function index($offset = 0)
     {
-        return Posts::index($offset, 'photography', 'photo');
+        return Posts::index($offset, 'photography', array('photo'));
     }
 
     /**

@@ -31,6 +31,9 @@
 * @link     http://claus.beerta.de/
 **/
 
+use Slim\Slim;
+use Michelf\Markdown;
+
 /**
 * Docs
 *
@@ -135,7 +138,7 @@ class Docs
         }
         
         $data = implode('', $data);
-        $doc->content = Markdown($data);
+        $doc->content = Markdown::defaultTransform($data);
         
         return $doc;
     }

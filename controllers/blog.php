@@ -31,6 +31,8 @@
 * @link     http://claus.beerta.de/
 **/
 
+use \Slim\Slim;
+
 /**
 * Blog - Functions that are for displaying all Blog articles
 *

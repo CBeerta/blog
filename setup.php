@@ -31,11 +31,7 @@
 * @link     http://claus.beerta.de/
 **/
 
-require_once __DIR__ . '/vendor/Slim/Slim/Slim.php';
-require_once __DIR__ . '/vendor/idiorm/idiorm.php';
-require_once __DIR__ . '/vendor/markdown/markdown.php';
-
-require_once __DIR__ . '/lib/TwigView.php';
+require 'vendor/autoload.php';
 
 /**
 * Autoloader for helpers and controllers
@@ -89,7 +85,7 @@ if (PHP_SAPI == 'cli') {
     return;
 }
 
-$app = new Slim(
+$app = new \Slim\Slim(
     array(
         'view' => 'TwigView',
         'templates.path' => Helpers::option('templates.path'),
@@ -98,7 +94,7 @@ $app = new Slim(
 );
 
 $app->configureMode(
-    'production', function() use ($app) {
+    'production', function () use ($app) {
         $app->config(
             array(
             'log.enable' => false,

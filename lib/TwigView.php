@@ -31,6 +31,9 @@
 * @link     http://claus.beerta.de/
 **/
 
+use Slim\Slim;
+use Michelf\Markdown;
+
 /**
 * TwigView
 *
@@ -43,7 +46,7 @@
 * @license  http://www.opensource.org/licenses/mit-license.php MIT License
 * @link     http://claus.beerta.de/
 **/
-class TwigView extends Slim_View
+class TwigView extends \Slim\View
 {
     /**
      * @var array The options for the Twig environment, see
@@ -80,7 +83,6 @@ class TwigView extends Slim_View
     private function _getEnvironment() 
     {
         if ( !$this->_twigEnvironment ) {
-            include_once __DIR__ . '/../vendor/Twig/lib/Twig/Autoloader.php';
             Twig_Autoloader::register();
             $loader = new Twig_Loader_Filesystem($this->getTemplatesDirectory());
             $this->_twigEnvironment = new Twig_Environment(
@@ -139,7 +141,7 @@ class TwigView extends Slim_View
             );
         } else {
             // This is probably Markdown or plaintext
-            $content = Markdown($content);
+            $content = Markdown::defaultTransform($content);
         }
         
         $pattern = '#\s*\<pre\s(.*?)\>(.*?)\</pre\>\s*#si';

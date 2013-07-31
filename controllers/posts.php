@@ -31,6 +31,8 @@
 * @link     http://claus.beerta.de/
 **/
 
+use \Slim\Slim;
+
 /**
 * Posts - Functions that are more global and used in all parts of the Site
 *

@@ -32,9 +32,8 @@
 **/
 
 require_once __DIR__ . '/../setup.php';
-require_once __DIR__ . '/../vendor/Cling/Cling.php';
 
-$app = new Cling(
+$app = new \Cling(
     array(
         'debug' => true,
         'template.path' => __DIR__ . '/../views/',

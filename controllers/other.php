@@ -31,6 +31,8 @@
 * @link     http://claus.beerta.de/
 **/
 
+use \Slim\Slim;
+
 /**
 * Sidebar
 *

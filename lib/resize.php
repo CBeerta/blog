@@ -82,9 +82,12 @@ Class Resize
     {
         switch(pathinfo($file, PATHINFO_EXTENSION)) {
         case 'jpg':
-        case 'jpeg': return imagecreatefromjpeg($file);
-        case 'gif':	 return imagecreatefromgif($file);
-        case 'png':	 return imagecreatefrompng($file);
+        case 'jpeg': 
+            return imagecreatefromjpeg($file);
+        case 'gif':	 
+            return imagecreatefromgif($file);
+        case 'png':	 
+            return imagecreatefrompng($file);
         }
 
         throw new Exception("Invalid image extension for {$file}.");

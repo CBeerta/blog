@@ -37,7 +37,7 @@ ci:
 	git push
 
 phpcs:
-	phpcs $(SOURCES)
+	./vendor/bin/phpcs $(SOURCES)
 
 unittests:
 	rm -rf data/
