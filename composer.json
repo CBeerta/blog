@@ -1,0 +1,31 @@
+{
+    "name": "cbeerta/playground",
+    "description": "My Playground / Website",
+    "authors": [
+        {
+            "name": "Claus Beerta",
+            "email": "claus@beerta.de"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/CBeerta/Cling.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/CBeerta/Skeleton.git"
+        }
+    ],
+    "require": {
+        "php": ">= 5.3.0",
+        "j4mie/idiorm": "*",
+        "michelf/php-markdown": "*",
+        "simplepie/simplepie": "*",
+        "slim/slim": "*",
+        "twig/twig": "*",
+        "cbeerta/cling": "*",
+        "skeleton": "*",
+
+    }
+}

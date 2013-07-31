@@ -38,3 +38,6 @@ build/config/buildinfo.properties
 config.ini*
 
 data
+
+# composer
+composer.phar
