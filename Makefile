@@ -46,7 +46,7 @@ unittests:
 	cat tests/testdata.sql | sqlite3 data/planner.db
 	cp tests/2010-12-29\ webtail-a-tail-for-files-located-on-a-webserver.html data/projects
 	cp tests/Help.page data/docs
-	phpunit -v
+	./vendor/bin/phpunit -v
     
 build: phpcs lint unittests
 

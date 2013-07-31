@@ -1,5 +1,7 @@
 <?php
 
+use Slim\Slim;
+
 require_once __DIR__ . '/../setup.php';
 
 //Prepare mock HTTP request
@@ -44,7 +46,7 @@ $_SERVER['argc'] = 0;
 session_start();
 
 //Mock custom view
-class CustomView extends Slim_View {
+class CustomView extends \Slim\View {
     function render($template) { echo "Custom view"; }
 }
 

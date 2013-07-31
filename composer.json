@@ -23,6 +23,7 @@
         "slim/slim": "2.2.*",
         "twig/twig": "~1.13",
         "squizlabs/php_codesniffer": "~1.4",
+        "phpunit/phpunit": "3.7.22",
         "cbeerta/cling": "dev-master"
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Slim\Slim;
+
 class PostsTest extends PHPUnit_Framework_TestCase
 {
     /**
